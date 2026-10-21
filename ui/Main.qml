@@ -61,9 +61,9 @@ ApplicationWindow {
             Rectangle {
                 anchors.fill: parent
                 gradient: Gradient {
-                    GradientStop { position: 0; color: "#D8EFF7" }
-                    GradientStop { position: 0.44; color: "#B8CFEF" }
-                    GradientStop { position: 1; color: "#B5AADB" }
+                    GradientStop { position: 0; color: creosData.wallpaper === "peach" ? "#FFE8DA" : creosData.wallpaper === "midnight" ? "#27395F" : "#D8EFF7" }
+                    GradientStop { position: 0.44; color: creosData.wallpaper === "peach" ? "#F8D4DB" : creosData.wallpaper === "midnight" ? "#4D5285" : "#B8CFEF" }
+                    GradientStop { position: 1; color: creosData.wallpaper === "peach" ? "#D7A5C6" : creosData.wallpaper === "midnight" ? "#75669C" : "#B5AADB" }
                 }
             }
             Rectangle {
@@ -86,8 +86,8 @@ ApplicationWindow {
                 radius: height / 2
                 rotation: -27
                 gradient: Gradient {
-                    GradientStop { position: 0; color: "#93D1EFFF" }
-                    GradientStop { position: 0.5; color: "#8AC7B5F2" }
+                    GradientStop { position: 0; color: creosData.wallpaper === "peach" ? "#85FFF2DC" : "#93D1EFFF" }
+                    GradientStop { position: 0.5; color: creosData.wallpaper === "midnight" ? "#85A0A5DB" : "#8AC7B5F2" }
                     GradientStop { position: 1; color: "#4FB9C0F6" }
                 }
             }
@@ -313,11 +313,11 @@ ApplicationWindow {
             Component.onCompleted: openAnimation.start()
         }
 
-        // Responsive dock with spatial hover, spring transitions, real blur.
+        // Dynamic Dock — built from the same application registry as Launchpad.
         Item {
             id: dock
             z: 15
-            width: 180
+            width: System.Apps.applications.length * 65 + 91
             height: 78
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
@@ -341,68 +341,79 @@ ApplicationWindow {
             Rectangle {
                 anchors.fill: parent
                 radius: 24
-                color: "#A9FFFFFF"
+                color: "#B7FFFFFF"
                 border.width: 1
-                border.color: "#EFFFFFFF"
+                border.color: "#F6FFFFFF"
             }
             Rectangle {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: parent.top
-                anchors.leftMargin: 15; anchors.rightMargin: 15
-                height: 1
-                color: "#CFFFFFFF"
+                anchors.leftMargin: 16; anchors.rightMargin: 16
+                height: 1; color: "#CFFFFFFF"
             }
-
             Row {
                 anchors.centerIn: parent
-                spacing: 13
-                Item {
-                    id: dockApp
-                    width: 59; height: 65
-                    CreosMark {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        y: dockAppHit.containsMouse ? 0 : 7
-                        size: dockAppHit.containsMouse ? 52 : 46
-                        Behavior on y { NumberAnimation { duration: 210; easing.type: Easing.OutBack } }
-                        Behavior on size { NumberAnimation { duration: 210; easing.type: Easing.OutBack } }
-                    }
-                    Rectangle {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 2
-                        width: 4; height: 4; radius: 2
-                        color: root.appOpen ? "#4C587A" : "transparent"
-                    }
-                    MouseArea {
-                        id: dockAppHit
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: root.openApp(0)
+                spacing: 6
+                Repeater {
+                    model: System.Apps.applications
+                    delegate: Item {
+                        id: pinnedItem
+                        required property var modelData
+                        required property int index
+                        width: 59; height: 65
+                        AppIcon {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            y: dockHit.containsMouse ? 0 : 7
+                            size: dockHit.containsMouse ? 51 : 45
+                            glyph: pinnedItem.modelData.glyph
+                            tint: pinnedItem.modelData.tint
+                            Behavior on y { NumberAnimation { duration: 215; easing.type: Easing.OutBack } }
+                            Behavior on size { NumberAnimation { duration: 215; easing.type: Easing.OutBack } }
+                        }
+                        Rectangle {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.bottom: parent.bottom
+                            anchors.bottomMargin: 1
+                            width: 4; height: 4; radius: 2
+                            color: root.appOpen && root.activeAppIndex === pinnedItem.index ?
+                                   "#4C587A" : "transparent"
+                        }
+                        MouseArea {
+                            id: dockHit
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.openApp(pinnedItem.index)
+                        }
                     }
                 }
                 Rectangle {
-                    width: 1; height: 40
-                    color: "#99A9C7"
+                    width: 1; height: 38
+                    color: "#A0B2CC"
                     anchors.verticalCenter: parent.verticalCenter
                 }
                 Item {
                     width: 59; height: 65
                     Rectangle {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        y: libraryHit.containsMouse ? 0 : 7
-                        width: libraryHit.containsMouse ? 52 : 46
+                        y: launcherHit.containsMouse ? 0 : 7
+                        width: launcherHit.containsMouse ? 51 : 45
                         height: width
                         radius: 15
-                        color: "#F1FFFFFF"
+                        color: "#ECFFFFFF"
                         border.color: "#FFFFFF"
-                        Behavior on y { NumberAnimation { duration: 210; easing.type: Easing.OutBack } }
-                        Behavior on width { NumberAnimation { duration: 210; easing.type: Easing.OutBack } }
-                        Text { anchors.centerIn: parent; text: "▦"; font.pixelSize: 27; color: "#6876AB" }
+                        Behavior on y { NumberAnimation { duration: 215; easing.type: Easing.OutBack } }
+                        Behavior on width { NumberAnimation { duration: 215; easing.type: Easing.OutBack } }
+                        Text {
+                            anchors.centerIn: parent
+                            text: "▦"
+                            font.pixelSize: 27
+                            color: "#6876AB"
+                        }
                     }
                     MouseArea {
-                        id: libraryHit
+                        id: launcherHit
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
@@ -412,12 +423,12 @@ ApplicationWindow {
             }
         }
 
-        // App library appears above dock. Reusable app registry.
+        // Launchpad shares its app model and icons with Dock.
         Item {
             id: launcherLayer
             z: 13
-            width: 352
-            height: 253
+            width: 425
+            height: 355
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: dock.top
             anchors.bottomMargin: 13
@@ -425,14 +436,19 @@ ApplicationWindow {
             opacity: root.launcherOpen ? 1 : 0
             scale: root.launcherOpen ? 1 : 0.94
             transformOrigin: Item.Bottom
-            Behavior on opacity { NumberAnimation { id: launcherOpacity; duration: 210; easing.type: Easing.OutCubic } }
-            Behavior on scale { NumberAnimation { duration: 290; easing.type: Easing.OutBack } }
+            Behavior on opacity {
+                NumberAnimation { id: launcherOpacity; duration: 210; easing.type: Easing.OutCubic }
+            }
+            Behavior on scale {
+                NumberAnimation { duration: 290; easing.type: Easing.OutBack }
+            }
 
             ShaderEffectSource {
                 id: libraryCapture
                 anchors.fill: parent
                 sourceItem: wallpaper
-                sourceRect: Qt.rect(launcherLayer.x, launcherLayer.y, launcherLayer.width, launcherLayer.height)
+                sourceRect: Qt.rect(launcherLayer.x, launcherLayer.y,
+                                    launcherLayer.width, launcherLayer.height)
                 visible: false
             }
             MultiEffect {
@@ -444,32 +460,48 @@ ApplicationWindow {
             Rectangle {
                 anchors.fill: parent
                 radius: 25
-                color: "#D5FFFFFF"
-                border.color: "#EFFFFFFF"
+                color: "#E2FFFFFF"
+                border.color: "#F6FFFFFF"
                 border.width: 1
             }
             Column {
                 anchors.fill: parent
-                anchors.margins: 23
+                anchors.margins: 21
                 spacing: 12
-                Text { text: "Ứng dụng của bạn"; font.pixelSize: 19; font.weight: Font.DemiBold; color: "#34455D" }
-                Text { text: "Một thế giới bên trong CreOS."; font.pixelSize: 11; color: "#7788A3" }
-                Row {
-                    width: parent.width
-                    spacing: 13
+                Text {
+                    text: "Thư viện ứng dụng"
+                    font.pixelSize: 19
+                    font.weight: Font.DemiBold
+                    color: "#34455D"
+                }
+                Text {
+                    text: System.Apps.applications.length + " ứng dụng · Chọn để mở trong CreOS"
+                    font.pixelSize: 11
+                    color: "#7788A3"
+                }
+                Grid {
+                    columns: 4
+                    spacing: 10
                     Repeater {
                         model: System.Apps.applications
                         delegate: Item {
+                            id: launcherItem
                             required property var modelData
                             required property int index
-                            width: 92; height: 105
+                            width: 88; height: 107
                             Column {
-                                anchors.centerIn: parent
-                                spacing: 8
-                                CreosMark { size: 61; anchors.horizontalCenter: parent.horizontalCenter }
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                y: 10; spacing: 8
+                                AppIcon {
+                                    size: 56
+                                    glyph: launcherItem.modelData.glyph
+                                    tint: launcherItem.modelData.tint
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                }
                                 Text {
-                                    text: modelData.name
-                                    font.pixelSize: 11; font.weight: Font.DemiBold
+                                    text: launcherItem.modelData.name
+                                    font.pixelSize: 11
+                                    font.weight: Font.DemiBold
                                     color: "#425373"
                                     anchors.horizontalCenter: parent.horizontalCenter
                                 }
@@ -477,7 +509,7 @@ ApplicationWindow {
                             MouseArea {
                                 anchors.fill: parent
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: root.openApp(index)
+                                onClicked: root.openApp(launcherItem.index)
                             }
                         }
                     }
