@@ -1,20 +1,34 @@
 {
-  "version": "0.1.0-dev",
+  "version": "0.1.1-dev",
   "channel": "Developer Preview",
   "repository": "https://github.com/yuri271006/creos",
   "releases": [
     {
-      "version": "0.1.0-dev",
-      "name": "The Beginning",
-      "status": "Đang phát triển",
+      "version": "0.1.1-dev",
+      "name": "Glass Reborn",
+      "status": "Bản dựng thử nghiệm",
       "type": "current",
       "date": "22.10.2026",
-      "description": "Bản dựng đầu tiên của CreOS, tập trung vào giao diện và trung tâm thông tin phiên bản.",
+      "description": "Thiết kế lại CreOS theo ngôn ngữ hệ điều hành: bố cục sáng, cửa sổ bo tròn bằng mask, dock kính mờ lấy mẫu nền và chuyển động tương tác.",
       "highlights": [
-        "Cửa sổ CreOS có thể thay đổi kích thước trên Ubuntu.",
-        "Giao diện kính mờ và chuyển cảnh bằng Qt Quick.",
-        "Trung tâm phiên bản, ghi chú phát hành và lộ trình.",
-        "Dữ liệu phát hành tách riêng để cập nhật dễ dàng."
+        "Cửa sổ con có bo góc cắt cả nội dung, bóng đổ và hiệu ứng mở/đóng.",
+        "Dock kính nổi cùng Launcher, phản hồi hover và animation.",
+        "Qt Quick Effects hỗ trợ làm mờ nền thực tế cho các bề mặt hệ thống.",
+        "Ứng dụng CreOS được thiết kế lại: Giới thiệu, Bản phát hành, Giao diện hệ thống.",
+        "Khung UI thuộc CreOS; app mới có thể theo System Style hoặc Custom Style."
+      ]
+    },
+    {
+      "version": "0.1.0-dev",
+      "name": "The Beginning",
+      "status": "Bản dựng trước",
+      "type": "previous",
+      "date": "22.10.2026",
+      "description": "Bản thử nghiệm giao diện đầu tiên và trung tâm thông tin phiên bản.",
+      "highlights": [
+        "Thiết lập repository CreOS và PySide6 / Qt Quick.",
+        "Tạo hệ thống dữ liệu bản phát hành.",
+        "Bước đầu có desktop, app frame và dock."
       ]
     },
     {
