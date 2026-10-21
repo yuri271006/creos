@@ -241,7 +241,7 @@ ApplicationWindow {
                                     required property string modelData
                                     required property int index
                                     width: index === 1 ? 108 : 100; height: 35; hoverEnabled: true
-                                    onClicked: root.releaseFilter = index
+                                    onClicked: { root.releaseFilter = index; if (index === 1) root.selectedReleaseIndex = 0; if (index === 2 && root.selectedReleaseIndex === 0) root.selectedReleaseIndex = 1 }
                                     background: Rectangle {
                                         radius: 13
                                         color: root.releaseFilter === index ? "#50C9DFFF" : (parent.hovered ? "#30FFFFFF" : "#1BFFFFFF")
