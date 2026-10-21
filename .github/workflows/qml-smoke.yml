@@ -28,7 +28,6 @@ jobs:
         run: python -m json.tool data/releases.json > /dev/null
       - name: Load QML scene with desktop OpenGL on virtual X display
         env:
-          QT_QUICK_BACKEND: ''
           QSG_RHI_BACKEND: opengl
           LIBGL_ALWAYS_SOFTWARE: '1'
         run: xvfb-run -a -s "-screen 0 1400x900x24 +extension GLX" python main.py --smoke-test
