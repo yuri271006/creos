@@ -4,30 +4,38 @@ import QtQuick.Layouts
 import "../components"
 import "../system" as System
 
-// Built-in About CreOS app: only content lives here.
-// CreOS provides its surrounding window, animations and controls.
+// This app never draws its own operating-system window controls.
+// CreOS supplies the outer chrome; this component owns only app content.
 Item {
     id: app
-    property int tab: 0
+    property int section: 0
     property int selectedRelease: 0
-    readonly property color ink: System.Theme.ink
-    readonly property color secondary: System.Theme.secondary
     readonly property var release: releaseStore.releases[selectedRelease]
+    readonly property color ink: "#2E3C58"
+    readonly property color softText: "#7B8BA3"
     clip: true
-    onTabChanged: tabTransition.restart()
-    NumberAnimation {
-        id: tabTransition
-        target: tabPages
-        property: "opacity"
-        from: 0.15
-        to: 1
-        duration: System.Theme.durationNormal
-        easing.type: Easing.OutCubic
-    }
 
+    function goTo(index) {
+        if (section === index) return
+        section = index
+        pageMotion.restart()
+    }
+    ParallelAnimation {
+        id: pageMotion
+        NumberAnimation {
+            target: pages; property: "opacity"
+            from: 0; to: 1; duration: 280
+            easing.type: Easing.OutCubic
+        }
+        NumberAnimation {
+            target: pages; property: "scale"
+            from: 0.986; to: 1; duration: 320
+            easing.type: Easing.OutCubic
+        }
+    }
     Rectangle {
         anchors.fill: parent
-        color: "#F2F8FCFF"
+        color: "#DDF9FCFF"
     }
 
     RowLayout {
@@ -36,489 +44,428 @@ Item {
 
         Rectangle {
             id: sidebar
-            Layout.preferredWidth: 190
+            Layout.preferredWidth: 207
             Layout.fillHeight: true
-            color: "#B5EDF4FD"
-            border.color: "#BCFFFFFF"
-            border.width: 1
-
+            color: "#7AE9F2FF"
+            Rectangle {
+                anchors.right: parent.right; width: 1; height: parent.height
+                color: "#73CED8E7"
+            }
             Column {
                 anchors.fill: parent
-                anchors.margins: 14
+                anchors.margins: 17
                 spacing: 5
                 Row {
-                    width: parent.width
-                    height: 64
-                    spacing: 11
-                    CreosMark { size: 39; anchors.verticalCenter: parent.verticalCenter }
+                    height: 69; spacing: 12
+                    CreosMark { size: 37; anchors.verticalCenter: parent.verticalCenter }
                     Column {
-                        anchors.verticalCenter: parent.verticalCenter
-                        spacing: 3
-                        Text {
-                            text: "CreOS"
-                            font.family: System.Theme.fontFamily
-                            font.pixelSize: 16
-                            font.weight: Font.DemiBold
-                            color: app.ink
-                        }
-                        Text {
-                            text: "TRUNG TÂM HỆ THỐNG"
-                            font.pixelSize: 8
-                            font.letterSpacing: 0.7
-                            color: "#8897AD"
-                        }
+                        anchors.verticalCenter: parent.verticalCenter; spacing: 3
+                        Text { text: "CreOS"; font.pixelSize: 16; font.weight: Font.DemiBold; color: app.ink }
+                        Text { text: "SYSTEM INFORMATION"; font.pixelSize: 8; font.letterSpacing: 1; color: "#94A2B5" }
                     }
                 }
                 Text {
                     text: "THƯ VIỆN"
+                    leftPadding: 10
                     topPadding: 15
-                    bottomPadding: 6
-                    leftPadding: 9
+                    bottomPadding: 9
                     font.pixelSize: 9
                     font.weight: Font.Bold
-                    font.letterSpacing: 1
-                    color: System.Theme.muted
+                    font.letterSpacing: 1.2
+                    color: "#97A6B8"
                 }
                 SidebarItem {
                     width: parent.width
                     glyph: "◈"
-                    text: "Tổng quan"
-                    selected: app.tab === 0
-                    onClicked: app.tab = 0
+                    text: "Giới thiệu"
+                    selected: app.section === 0
+                    onClicked: app.goTo(0)
                 }
                 SidebarItem {
                     width: parent.width
                     glyph: "▤"
                     text: "Bản phát hành"
-                    selected: app.tab === 1
-                    onClicked: app.tab = 1
+                    selected: app.section === 1
+                    onClicked: app.goTo(1)
                 }
                 SidebarItem {
                     width: parent.width
-                    glyph: "✧"
-                    text: "Bộ giao diện"
-                    selected: app.tab === 2
-                    onClicked: app.tab = 2
+                    glyph: "✳"
+                    text: "Giao diện CreOS"
+                    selected: app.section === 2
+                    onClicked: app.goTo(2)
                 }
             }
             Column {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
-                anchors.margins: 19
-                spacing: 7
-                Rectangle { width: parent.width; height: 1; color: "#BDD0E4" }
-                Text {
-                    text: "●  " + releaseStore.channel
-                    color: "#5787A5"
-                    font.pixelSize: 10
+                anchors.margins: 24
+                spacing: 8
+                Rectangle { width: parent.width; height: 1; color: "#93C7D6E9" }
+                Row {
+                    spacing: 8
+                    Rectangle { width: 7; height: 7; radius: 4; color: "#54B698"; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "Developer Preview"; color: "#6F889B"; font.pixelSize: 10 }
                 }
-                Text {
-                    text: "Version " + releaseStore.latestVersion
-                    color: System.Theme.muted
-                    font.pixelSize: 10
-                }
+                Text { text: "Version " + releaseStore.latestVersion; color: "#A0ADC0"; font.pixelSize: 10 }
             }
         }
 
         Item {
+            id: content
             Layout.fillWidth: true
             Layout.fillHeight: true
-
             ColumnLayout {
                 anchors.fill: parent
                 spacing: 0
 
                 RowLayout {
+                    Layout.preferredHeight: 69
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 70
-                    Layout.leftMargin: 27
-                    Layout.rightMargin: 25
-                    spacing: 10
-                    Column {
+                    Layout.leftMargin: 30
+                    Layout.rightMargin: 27
+                    Text {
                         Layout.fillWidth: true
-                        spacing: 5
-                        Text {
-                            text: "CREOS / " + (app.tab === 0 ? "TỔNG QUAN" : app.tab === 1 ? "PHÁT HÀNH" : "SYSTEM UI")
-                            font.pixelSize: 9
-                            font.weight: Font.DemiBold
-                            font.letterSpacing: 1.2
-                            color: System.Theme.muted
-                        }
-                        Text {
-                            text: app.tab === 0 ? "Xin chào, CreOS." : app.tab === 1 ? "Các bản phát hành" : "Ngôn ngữ thiết kế"
-                            font.family: System.Theme.fontFamily
-                            font.pixelSize: 20
-                            font.weight: Font.DemiBold
-                            color: app.ink
-                        }
+                        text: app.section === 0 ? "Giới thiệu CreOS" : app.section === 1 ? "Bản phát hành" : "CreOS System UI"
+                        font.pixelSize: 16
+                        font.weight: Font.DemiBold
+                        font.family: System.Theme.fontFamily
+                        color: app.ink
                     }
                     Rectangle {
-                        Layout.preferredWidth: 116; Layout.preferredHeight: 29
-                        radius: 14
-                        color: "#D8EDEEFF"
-                        border.color: "#F8FFFFFF"
+                        width: 87; height: 25; radius: 13
+                        color: "#D9E7F2FF"
+                        border.color: "#C7FFFFFF"
                         Text {
                             anchors.centerIn: parent
-                            text: "●  DEVELOPER"
+                            text: "◈  PREVIEW"
+                            color: "#6E83B2"
                             font.pixelSize: 9
                             font.weight: Font.DemiBold
-                            color: "#5977B6"
                         }
                     }
                 }
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 1
+                    color: "#6FDCE3EF"
+                }
 
                 StackLayout {
-                    id: tabPages
+                    id: pages
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    Layout.leftMargin: 25
-                    Layout.rightMargin: 25
-                    Layout.bottomMargin: 15
-                    currentIndex: app.tab
+                    Layout.leftMargin: 27
+                    Layout.rightMargin: 27
+                    Layout.bottomMargin: 16
+                    Layout.topMargin: 12
+                    currentIndex: app.section
 
-                    // Overview — macOS "About" inspired editorial layout.
+                    // Elegant product introduction, not a dashboard.
                     Item {
                         Flickable {
                             anchors.fill: parent
                             contentWidth: width
-                            contentHeight: overviewColumn.height + 14
+                            contentHeight: overview.height + 18
                             boundsBehavior: Flickable.StopAtBounds
                             clip: true
                             ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
                             Column {
-                                id: overviewColumn
+                                id: overview
                                 width: parent.width - 7
                                 spacing: 13
 
                                 Rectangle {
-                                    id: introduction
+                                    id: hero
                                     width: parent.width
-                                    height: 216
+                                    height: 252
                                     radius: 23
+                                    antialiasing: true
                                     clip: true
                                     gradient: Gradient {
-                                        GradientStop { position: 0; color: "#F5EAF5FF" }
-                                        GradientStop { position: 0.6; color: "#DFE6FB" }
-                                        GradientStop { position: 1; color: "#E1D9F5" }
+                                        GradientStop { position: 0; color: "#EBF5FF" }
+                                        GradientStop { position: 0.55; color: "#DDEAFB" }
+                                        GradientStop { position: 1; color: "#E3DAF3" }
                                     }
-                                    border.color: "#E9FFFFFF"
                                     border.width: 1
+                                    border.color: "#F1FFFFFF"
                                     Rectangle {
-                                        width: 235; height: 235; radius: 118
-                                        x: parent.width - 177; y: -92
-                                        color: "#50FFFFFF"
-                                        border.width: 1; border.color: "#8FFFFFFF"
+                                        width: 245; height: 245; radius: 123
+                                        x: hero.width - 171
+                                        y: -89
+                                        color: "#60FFFFFF"
+                                        border.width: 1
+                                        border.color: "#96FFFFFF"
                                     }
                                     Rectangle {
-                                        width: 168; height: 168; radius: 84
-                                        x: parent.width - 134; y: 18
-                                        color: "#43B3B7ED"
-                                        border.width: 1; border.color: "#9FFFFFFF"
+                                        width: 160; height: 160; radius: 80
+                                        x: hero.width - 129
+                                        y: 27
+                                        color: "#50A0C7FF"
+                                        border.color: "#A4FFFFFF"
                                     }
                                     CreosMark {
-                                        size: 90
-                                        x: introduction.width - 132
-                                        y: 59
+                                        size: 101
+                                        x: hero.width - 137
+                                        y: 63
                                     }
                                     Column {
-                                        x: 23
-                                        y: 23
-                                        spacing: 11
-                                        Rectangle {
-                                            width: 161; height: 25; radius: 12
-                                            color: "#A9FFFFFF"; border.color: "#FFFFFFFF"
-                                            Text {
-                                                anchors.centerIn: parent
-                                                text: "✦  HELLO, INNER UNIVERSE"
-                                                color: "#6D80A9"
-                                                font.pixelSize: 9
-                                                font.weight: Font.DemiBold
-                                            }
+                                        x: 25; y: 21; spacing: 11
+                                        Text {
+                                            text: "WELCOME TO THE INNER UNIVERSE"
+                                            color: "#8699B5"; font.pixelSize: 9
+                                            font.weight: Font.DemiBold; font.letterSpacing: 1.25
                                         }
                                         Text {
-                                            text: "Một thế giới nhỏ.\nTrong thế giới của bạn."
-                                            color: "#344264"
+                                            text: "CreOS."
+                                            color: "#304361"
+                                            font.pixelSize: 45
                                             font.family: System.Theme.fontFamily
-                                            font.pixelSize: 25
                                             font.weight: Font.DemiBold
-                                            lineHeight: 1.11
                                         }
                                         Text {
-                                            text: "CreOS — nền tảng cho những ý tưởng lớn lên thành ứng dụng."
-                                            color: "#7583A1"
-                                            width: Math.min(introduction.width - 170, 400)
+                                            width: Math.max(200, hero.width - 190)
                                             wrapMode: Text.Wrap
+                                            text: "Một không gian của riêng bạn."
+                                            color: "#536C8E"
+                                            font.pixelSize: 16
+                                            font.weight: Font.Medium
+                                        }
+                                        Text {
+                                            width: Math.max(210, hero.width - 190)
+                                            wrapMode: Text.Wrap
+                                            text: "Mỗi ý tưởng nhỏ, một ứng dụng mới.\nTất cả cùng sống trong CreOS."
+                                            color: "#8193AC"
                                             font.pixelSize: 11
+                                            lineHeight: 1.4
                                         }
                                     }
-                                    Text {
-                                        anchors.left: parent.left
-                                        anchors.leftMargin: 25
-                                        anchors.bottom: parent.bottom
-                                        anchors.bottomMargin: 13
-                                        text: "v" + releaseStore.latestVersion + "   ·   FIRST LIGHT"
-                                        color: "#7886A4"
-                                        font.pixelSize: 10
-                                        font.weight: Font.Medium
-                                    }
-                                }
-                                Row {
-                                    width: parent.width
-                                    spacing: 12
-                                    Repeater {
-                                        model: [
-                                            {label:"PHIÊN BẢN",value:releaseStore.latestVersion,foot:"Developer Preview",icon:"◇"},
-                                            {label:"NỀN TẢNG",value:"Ubuntu",foot:"Chạy trong một cửa sổ",icon:"▧"},
-                                            {label:"THIẾT KẾ",value:"System UI",foot:"Bộ giao diện chung",icon:"✧"}
-                                        ]
-                                        delegate: Rectangle {
-                                            required property var modelData
-                                            width: (overviewColumn.width - 24) / 3
-                                            height: 113
-                                            radius: 19
-                                            color: "#ECFFFFFF"
-                                            border.color: "#FFFFFFFF"
-                                            Text {
-                                                x: 15; y: 12
-                                                text: modelData.icon + "   " + modelData.label
-                                                color: "#8797AF"
-                                                font.pixelSize: 9
-                                                font.weight: Font.DemiBold
-                                            }
-                                            Text {
-                                                x: 15; y: 42
-                                                text: modelData.value
-                                                color: "#334565"
-                                                font.pixelSize: 18
-                                                font.weight: Font.DemiBold
-                                            }
-                                            Text {
-                                                x: 15; y: 82
-                                                text: modelData.foot
-                                                color: "#8493A9"
-                                                font.pixelSize: 10
-                                            }
+                                    Rectangle {
+                                        x: 25; y: hero.height - 41
+                                        width: 154; height: 25; radius: 12
+                                        color: "#8CFFFFFF"
+                                        border.color: "#CDFFFFFF"
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: "VERSION  " + releaseStore.latestVersion
+                                            color: "#6A7FA3"
+                                            font.pixelSize: 10
+                                            font.weight: Font.DemiBold
                                         }
                                     }
                                 }
+
                                 Rectangle {
-                                    width: parent.width
-                                    height: 116
-                                    radius: 19
-                                    color: "#E7FFFFFF"
-                                    border.color: "#F8FFFFFF"
+                                    width: parent.width; height: 102; radius: 19
+                                    color: "#D6FFFFFF"
+                                    border.width: 1
+                                    border.color: "#FFFFFFFF"
+                                    Row {
+                                        anchors.fill: parent
+                                        anchors.margins: 17
+                                        spacing: 0
+                                        Repeater {
+                                            model: [
+                                                { title:"PHIÊN BẢN", value:releaseStore.latestVersion, sub:"Developer Preview" },
+                                                { title:"HỆ ĐIỀU HÀNH", value:"Ubuntu", sub:"Một cửa sổ độc lập" },
+                                                { title:"PHONG CÁCH", value:"Glass UI", sub:"Thiết kế CreOS" }
+                                            ]
+                                            delegate: Item {
+                                                required property var modelData
+                                                width: (parent.width) / 3
+                                                height: parent.height
+                                                Column {
+                                                    spacing: 6
+                                                    Text { text: modelData.title; font.pixelSize: 9; font.weight: Font.Bold; color: "#99A8BA"; font.letterSpacing: 0.9 }
+                                                    Text { text: modelData.value; font.pixelSize: 17; font.weight: Font.DemiBold; color: "#334663" }
+                                                    Text { text: modelData.sub; font.pixelSize: 10; color: "#8D9DB4" }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Rectangle {
+                                    width: parent.width; height: 121; radius: 19
+                                    color: "#C9FFFFFF"
+                                    border.color: "#EBFFFFFF"
                                     Text {
-                                        x: 18; y: 15
-                                        text: "Hành trình của CreOS"
-                                        font.pixelSize: 14
+                                        x: 20; y: 17
+                                        text: "Bắt đầu một hành trình mới."
+                                        color: "#334765"
+                                        font.pixelSize: 15
                                         font.weight: Font.DemiBold
-                                        color: app.ink
                                     }
                                     Text {
-                                        x: 18; y: 39
-                                        width: parent.width - 36
+                                        x: 20; y: 46
+                                        width: parent.width - 40
                                         wrapMode: Text.Wrap
-                                        text: "Khởi đầu từ giao diện • Kế tiếp là desktop và các ứng dụng sống cùng nhau."
-                                        color: app.secondary
+                                        text: "CreOS sẽ phát triển từ một ứng dụng giới thiệu thành hệ sinh thái nhiều ứng dụng bên trong Ubuntu."
+                                        color: "#8190A7"
                                         font.pixelSize: 11
                                     }
                                     SystemButton {
-                                        x: 18; y: 73
-                                        implicitHeight: 31
-                                        implicitWidth: 153
-                                        text: "Xem các bản dựng"
+                                        x: 20; y: 80
+                                        height: 30; width: 159
+                                        text: "Bản phát hành"
                                         symbol: "→"
-                                        onClicked: app.tab = 1
+                                        onClicked: app.goTo(1)
                                     }
                                 }
                             }
                         }
                     }
 
-                    // Releases — clearly separate the real preview from plans.
+                    // Release timeline with compact list and readable notes.
                     Item {
-                        Column {
+                        ColumnLayout {
                             anchors.fill: parent
                             spacing: 13
                             Rectangle {
-                                width: parent.width; height: 86; radius: 19
-                                gradient: Gradient {
-                                    GradientStop { position: 0; color: "#E8EDFDFE" }
-                                    GradientStop { position: 1; color: "#EEE4F7" }
-                                }
-                                border.color: "#FFFFFF"
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 91
+                                radius: 18
+                                color: "#D3FFFFFF"
+                                border.width: 1; border.color: "#FFFFFFFF"
                                 Text {
-                                    x: 19; y: 17
-                                    text: "Release Notes"
-                                    font.family: System.Theme.fontFamily
+                                    x: 21; y: 17
+                                    text: "Lịch sử & lộ trình"
                                     font.pixelSize: 22
                                     font.weight: Font.DemiBold
                                     color: app.ink
                                 }
                                 Text {
-                                    x: 19; y: 52
-                                    text: "Phiên bản hiện tại và lộ trình phát triển"
+                                    x: 21; y: 52
+                                    text: "Theo dõi những gì đã có và những gì CreOS đang hướng tới."
                                     font.pixelSize: 11
-                                    color: app.secondary
+                                    color: app.softText
                                 }
                             }
-                            Row {
-                                width: parent.width
-                                height: parent.height - 99
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
                                 spacing: 12
-                                Flickable {
-                                    id: releaseScroll
-                                    width: Math.max(187, parent.width * 0.39)
-                                    height: parent.height
+
+                                ListView {
+                                    id: releaseList
+                                    Layout.preferredWidth: Math.max(204, parent.width * 0.38)
+                                    Layout.fillHeight: true
                                     clip: true
-                                    contentWidth: width
-                                    contentHeight: releaseColumn.height
-                                    boundsBehavior: Flickable.StopAtBounds
+                                    spacing: 9
+                                    model: releaseStore.releases
                                     ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
-                                    Column {
-                                        id: releaseColumn
-                                        width: releaseScroll.width - 6
-                                        spacing: 9
-                                        Repeater {
-                                            model: releaseStore.releases
-                                            delegate: Rectangle {
-                                                required property var modelData
-                                                required property int index
-                                                width: releaseColumn.width
-                                                height: 107
-                                                radius: 18
-                                                color: app.selectedRelease === index ? "#D5E2F9" : (releaseHit.containsMouse ? "#F9FFFFFF" : "#D6FFFFFF")
-                                                border.width: 1
-                                                border.color: app.selectedRelease === index ? "#A1B8EC" : "#FAFFFFFF"
-                                                Behavior on color { ColorAnimation { duration: System.Theme.durationQuick } }
-                                                MouseArea {
-                                                    id: releaseHit
-                                                    anchors.fill: parent
-                                                    hoverEnabled: true
-                                                    cursorShape: Qt.PointingHandCursor
-                                                    onClicked: app.selectedRelease = index
-                                                }
-                                                Text {
-                                                    x: 14; y: 12
-                                                    text: "v" + modelData.version
-                                                    font.pixelSize: 17
-                                                    font.weight: Font.DemiBold
-                                                    color: app.ink
-                                                }
-                                                Rectangle {
-                                                    x: 14; y: 42
-                                                    width: modelData.type === "current" ? 75 : 65
-                                                    height: 20; radius: 10
-                                                    color: modelData.type === "current" ? "#D5F1E9" : "#E9EDF4"
-                                                    Text {
-                                                        anchors.centerIn: parent
-                                                        text: modelData.type === "current" ? "BẢN HIỆN TẠI" : "DỰ KIẾN"
-                                                        font.pixelSize: 8
-                                                        font.weight: Font.DemiBold
-                                                        color: modelData.type === "current" ? "#238569" : "#8190A5"
-                                                    }
-                                                }
-                                                Text {
-                                                    x: 14; y: 77
-                                                    width: parent.width - 28
-                                                    elide: Text.ElideRight
-                                                    text: modelData.name
-                                                    font.pixelSize: 11
-                                                    color: app.secondary
-                                                }
-                                            }
+                                    delegate: Rectangle {
+                                        required property var modelData
+                                        required property int index
+                                        width: releaseList.width - 7
+                                        height: 104
+                                        radius: 17
+                                        color: app.selectedRelease === index ? "#D3E0F7" : (selectionArea.containsMouse ? "#E9FFFFFF" : "#BFFFFFFF")
+                                        border.width: 1
+                                        border.color: app.selectedRelease === index ? "#A9C2F0" : "#E7FFFFFF"
+                                        Behavior on color { ColorAnimation { duration: 180 } }
+                                        MouseArea {
+                                            id: selectionArea
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: app.selectedRelease = index
+                                        }
+                                        Text {
+                                            x: 15; y: 14
+                                            text: "v" + modelData.version
+                                            color: app.ink
+                                            font.pixelSize: 16
+                                            font.weight: Font.DemiBold
+                                        }
+                                        Text {
+                                            x: 15; y: 42
+                                            text: modelData.type === "current" ? "●  PHIÊN BẢN HIỆN TẠI" : "○  DỰ KIẾN"
+                                            color: modelData.type === "current" ? "#288E7B" : "#8899B4"
+                                            font.pixelSize: 9
+                                            font.weight: Font.Bold
+                                        }
+                                        Text {
+                                            x: 15; y: 74
+                                            width: parent.width - 27
+                                            elide: Text.ElideRight
+                                            text: modelData.name
+                                            color: "#8394AF"
+                                            font.pixelSize: 11
                                         }
                                     }
                                 }
 
                                 Rectangle {
-                                    width: parent.width - releaseScroll.width - parent.spacing
-                                    height: parent.height
-                                    radius: 19
-                                    color: "#EDFFFFFF"
-                                    border.color: "#FFFFFFFF"
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    radius: 18
+                                    color: "#DDFFFFFF"
+                                    border.width: 1
+                                    border.color: "#F5FFFFFF"
                                     Flickable {
                                         anchors.fill: parent
-                                        anchors.margins: 18
+                                        anchors.margins: 21
                                         contentWidth: width
-                                        contentHeight: releaseDetail.height + 12
+                                        contentHeight: detail.height + 18
                                         clip: true
                                         boundsBehavior: Flickable.StopAtBounds
                                         ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
                                         Column {
-                                            id: releaseDetail
+                                            id: detail
                                             width: parent.width
-                                            spacing: 11
-                                            Rectangle {
-                                                width: 88; height: 25; radius: 12
-                                                color: app.release.type === "current" ? "#D7F2E9" : "#EEF0F6"
-                                                Text {
-                                                    anchors.centerIn: parent
-                                                    text: app.release.type === "current" ? "DEVELOPER" : "ROADMAP"
-                                                    font.pixelSize: 9
-                                                    font.weight: Font.Bold
-                                                    color: app.release.type === "current" ? "#249375" : "#8089A4"
-                                                }
+                                            spacing: 12
+                                            Text {
+                                                text: app.release.type === "current" ? "●  DEVELOPER PREVIEW" : "○  KẾ HOẠCH"
+                                                color: app.release.type === "current" ? "#32957D" : "#8B9CB3"
+                                                font.pixelSize: 10; font.weight: Font.Bold; font.letterSpacing: 0.6
                                             }
                                             Text {
-                                                text: "v" + app.release.version
-                                                color: app.ink
-                                                font.pixelSize: 27
+                                                text: app.release.version
+                                                color: "#354A6B"
+                                                font.pixelSize: 35
                                                 font.weight: Font.DemiBold
                                             }
+                                            Text { text: app.release.name; font.pixelSize: 14; color: "#69809F" }
+                                            Rectangle { width: parent.width; height: 1; color: "#D7E4F0" }
                                             Text {
-                                                text: app.release.name
-                                                font.pixelSize: 13
-                                                color: app.secondary
-                                            }
-                                            Rectangle {
-                                                width: parent.width; height: 1
-                                                color: "#DDE6F0"
-                                            }
-                                            Text {
-                                                width: parent.width
-                                                wrapMode: Text.Wrap
                                                 text: app.release.description
-                                                color: app.secondary
-                                                font.pixelSize: 11
-                                                lineHeight: 1.4
+                                                width: parent.width; wrapMode: Text.Wrap
+                                                font.pixelSize: 12; lineHeight: 1.43
+                                                color: "#7488A4"
                                             }
                                             Text {
-                                                text: "ĐIỂM NỔI BẬT"
-                                                topPadding: 8
-                                                bottomPadding: 1
-                                                color: System.Theme.muted
-                                                font.pixelSize: 9
-                                                font.weight: Font.Bold
-                                                font.letterSpacing: 0.8
+                                                text: "NỘI DUNG"
+                                                topPadding: 7
+                                                font.pixelSize: 9; font.weight: Font.Bold; font.letterSpacing: 1
+                                                color: "#A2ACC2"
                                             }
                                             Repeater {
                                                 model: app.release.highlights
                                                 delegate: Row {
                                                     required property string modelData
-                                                    width: releaseDetail.width
+                                                    width: detail.width
                                                     spacing: 9
                                                     Rectangle {
-                                                        width: 6; height: 6; radius: 3
-                                                        y: 5
-                                                        color: "#8BA5E8"
+                                                        y: 6; width: 6; height: 6; radius: 3
+                                                        color: "#91B0EF"
                                                     }
                                                     Text {
-                                                        width: releaseDetail.width - 15
+                                                        width: detail.width - 18
                                                         text: modelData
                                                         wrapMode: Text.Wrap
-                                                        color: app.ink
+                                                        color: "#536B8D"
                                                         font.pixelSize: 11
-                                                        lineHeight: 1.3
+                                                        lineHeight: 1.4
                                                     }
                                                 }
                                             }
                                             Text {
-                                                text: "Trạng thái: " + app.release.status
-                                                color: System.Theme.muted
+                                                text: app.release.status + "  ·  " + app.release.date
+                                                color: "#9CAFC3"
                                                 font.pixelSize: 10
-                                                topPadding: 7
+                                                topPadding: 8
                                             }
                                         }
                                     }
@@ -527,136 +474,126 @@ Item {
                         }
                     }
 
-                    // Contract between the operating shell and independent apps.
+                    // Show how the future app ecosystem inherits CreOS styling.
                     Item {
                         Flickable {
                             anchors.fill: parent
                             contentWidth: width
-                            contentHeight: designColumn.height + 12
+                            contentHeight: design.height + 8
                             clip: true
                             boundsBehavior: Flickable.StopAtBounds
-                            ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
                             Column {
-                                id: designColumn
+                                id: design
                                 width: parent.width - 7
                                 spacing: 13
                                 Rectangle {
-                                    width: parent.width; height: 120; radius: 21
+                                    width: parent.width; height: 144; radius: 20
                                     gradient: Gradient {
-                                        GradientStop { position: 0; color: "#F0E9FB" }
-                                        GradientStop { position: 1; color: "#E3EFFD" }
+                                        GradientStop { position: 0; color: "#E2EBFD" }
+                                        GradientStop { position: 1; color: "#E4DCF5" }
                                     }
                                     border.color: "#FFFFFFFF"
                                     Text {
-                                        x: 20; y: 18
-                                        text: "CreOS Human Interface"
-                                        font.pixelSize: 21
+                                        x: 20; y: 21
+                                        text: "The CreOS language."
+                                        color: "#364B6A"
+                                        font.pixelSize: 24
                                         font.weight: Font.DemiBold
-                                        color: app.ink
                                     }
                                     Text {
-                                        x: 20; y: 57
-                                        width: parent.width - 42
+                                        x: 20; y: 65
+                                        width: parent.width - 40
                                         wrapMode: Text.Wrap
-                                        text: "Một ngôn ngữ thị giác thống nhất cho mọi ứng dụng — nhưng vẫn dành chỗ cho sáng tạo."
-                                        font.pixelSize: 11
-                                        color: app.secondary
+                                        text: "Một hệ giao diện nền tảng. Nhiều ứng dụng với cá tính khác nhau."
+                                        font.pixelSize: 12; color: "#7486A4"
+                                    }
+                                    Text {
+                                        x: 20; y: 111
+                                        text: "MATERIALS   ·   MOTION   ·   COMPONENTS"
+                                        font.pixelSize: 9; font.letterSpacing: 1.5
+                                        color: "#93A3BC"
                                     }
                                 }
                                 Row {
-                                    width: parent.width; spacing: 12
+                                    spacing: 13
                                     Repeater {
                                         model: [
-                                            {glyph:"◩",title:"CreOS quản lý",body:"Dock, menu bar, cửa sổ, chuyển động và hành vi hệ thống."},
-                                            {glyph:"✦",title:"Ứng dụng lựa chọn",body:"Theo giao diện CreOS hoặc tự thiết kế phần nội dung."}
+                                            {title:"System Style",body:"Kế thừa màu, kính, bo góc, typography và các điều khiển CreOS.",icon:"◈"},
+                                            {title:"Custom Style",body:"Sáng tạo nội dung riêng, giữ nguyên khung và hành vi cửa sổ.",icon:"✧"}
                                         ]
                                         delegate: Rectangle {
                                             required property var modelData
-                                            width: (designColumn.width - 12) / 2
-                                            height: 109; radius: 18
-                                            color: "#EDFFFFFF"; border.color: "#FFFFFF"
+                                            width: (design.width - 13) / 2
+                                            height: 129; radius: 19
+                                            color: "#D2FFFFFF"; border.color: "#FFFFFFFF"
+                                            Text { x: 16; y: 15; text: modelData.icon; font.pixelSize: 19; color: "#738DDD" }
+                                            Text { x: 16; y: 49; text: modelData.title; font.pixelSize: 14; font.weight: Font.DemiBold; color: app.ink }
                                             Text {
-                                                x: 15; y: 12; text: modelData.glyph + "  " + modelData.title
-                                                font.pixelSize: 13; font.weight: Font.DemiBold
-                                                color: app.ink
-                                            }
-                                            Text {
-                                                x: 15; y: 43
-                                                width: parent.width - 30
+                                                x: 16; y: 78
+                                                width: parent.width - 32
                                                 wrapMode: Text.Wrap
                                                 text: modelData.body
                                                 font.pixelSize: 11
-                                                color: app.secondary
+                                                color: app.softText
                                             }
                                         }
                                     }
                                 }
                                 Rectangle {
-                                    width: parent.width; height: 128; radius: 18
-                                    color: "#EDFFFFFF"; border.color: "#FFFFFFFF"
-                                    Text {
-                                        x: 16; y: 15
-                                        text: "Chất liệu · Glass"
-                                        color: app.ink
-                                        font.pixelSize: 13
-                                        font.weight: Font.DemiBold
-                                    }
+                                    width: parent.width; height: 141; radius: 18
+                                    color: "#DBFFFFFF"; border.color: "#FFFFFF"
+                                    Text { x: 17; y: 15; text: "Vật liệu · Color & Glass"; font.pixelSize: 13; font.weight: Font.DemiBold; color: app.ink }
                                     Row {
-                                        x: 16; y: 47; spacing: 13
+                                        x: 17; y: 50; spacing: 13
                                         Repeater {
                                             model: [
-                                                {label:"Frost", color:"#C9FFFFFF"},
-                                                {label:"Pearl", color:"#F9FFFFFF"},
-                                                {label:"Lavender", color:"#C5D0F6"},
-                                                {label:"Sky", color:"#C3E5F8"}
+                                                { name:"Pearl", c:"#F6FAFF" }, { name:"Ice", c:"#CAE9FA" },
+                                                { name:"Lilac", c:"#C4BCE9" }, { name:"Accent", c:"#7083DE" }
                                             ]
                                             delegate: Column {
                                                 required property var modelData
-                                                spacing: 5
+                                                spacing: 6
                                                 Rectangle {
-                                                    width: 70; height: 40; radius: 12
-                                                    color: modelData.color
-                                                    border.color: "#FFFFFF"
-                                                    border.width: 1
+                                                    width: 75; height: 49; radius: 13
+                                                    color: modelData.c
+                                                    border.color: "#FFFFFFFF"
                                                 }
                                                 Text {
-                                                    width: 70
-                                                    text: modelData.label
+                                                    text: modelData.name
+                                                    width: 75
                                                     horizontalAlignment: Text.AlignHCenter
-                                                    color: "#8899AE"
-                                                    font.pixelSize: 9
+                                                    font.pixelSize: 10
+                                                    color: "#8999AF"
                                                 }
                                             }
                                         }
                                     }
                                 }
                                 Rectangle {
-                                    width: parent.width; height: 106; radius: 18
-                                    color: "#EBFFFFFF"; border.color: "#FFFFFF"
-                                    Text {
-                                        x: 16; y: 15
-                                        text: "Nút bấm · System components"
-                                        color: app.ink; font.pixelSize: 13; font.weight: Font.DemiBold
-                                    }
+                                    width: parent.width; height: 104; radius: 18
+                                    color: "#D4FFFFFF"; border.color: "#FFFFFF"
+                                    Text { x: 17; y: 14; text: "Các điều khiển chuẩn"; font.pixelSize: 13; font.weight: Font.DemiBold; color: app.ink }
                                     Row {
-                                        x: 16; y: 50; spacing: 10
+                                        x: 17; y: 50; spacing: 10
                                         SystemButton {
-                                            text: "Xem GitHub"; symbol: "↗"; primary: true
+                                            text: "Mã nguồn"
+                                            primary: true
+                                            symbol: "↗"
                                             onClicked: Qt.openUrlExternally(releaseStore.repository)
                                         }
                                         SystemButton {
-                                            text: "Bản phát hành"; symbol: "→"
-                                            onClicked: app.tab = 1
+                                            text: "Bản phát hành"
+                                            symbol: "→"
+                                            onClicked: app.goTo(1)
                                         }
                                     }
                                 }
                                 Text {
                                     width: parent.width
                                     wrapMode: Text.Wrap
-                                    text: "Dành cho lập trình viên: thiết kế chung trong ui/system/Theme.qml, đăng ký app tại ui/system/Apps.qml."
-                                    color: "#899AAF"
+                                    text: "System tokens: ui/system/Theme.qml   •   Registry: ui/system/Apps.qml"
                                     font.pixelSize: 10
-                                    bottomPadding: 5
+                                    color: "#97A8BE"
                                 }
                             }
                         }
