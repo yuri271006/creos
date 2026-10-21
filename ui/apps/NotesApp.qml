@@ -132,7 +132,7 @@ Item {
                             Text {
                                 width: parent.width
                                 elide: Text.ElideRight
-                                text: modelData.body.replace(/\\s+/g, " ").trim() || "Chưa có nội dung"
+                                text: modelData.body.replace(/\s+/g, " ").trim() || "Chưa có nội dung"
                                 color: notesApp.muted
                                 font.pixelSize: 10
                             }
