@@ -1,13 +1,29 @@
 {
-  "version": "0.1.1-dev",
+  "version": "0.1.2-dev",
   "channel": "Developer Preview",
   "repository": "https://github.com/yuri271006/creos",
   "releases": [
     {
-      "version": "0.1.1-dev",
-      "name": "Glass Reborn",
+      "version": "0.1.2-dev",
+      "name": "Everyday Apps",
       "status": "Bản dựng thử nghiệm",
       "type": "current",
+      "date": "22.10.2026",
+      "description": "CreOS có những ứng dụng tích hợp đầu tiên, cùng dùng chung khung cửa sổ và ngôn ngữ thiết kế hệ thống.",
+      "highlights": [
+        "Ghi chú: tạo, chỉnh sửa, xóa và lưu tự động vào dữ liệu cục bộ.",
+        "Máy tính: cộng, trừ, nhân, chia, phần trăm, đổi dấu và xóa ký tự.",
+        "Đồng hồ: xem giờ địa phương, bấm giờ và ghi vòng.",
+        "Cài đặt: chọn hình nền Aurora, Sunrise hoặc Midnight và lưu lựa chọn.",
+        "Dock và Launchpad hiển thị từng app bằng biểu tượng riêng.",
+        "Lưu dữ liệu ứng dụng độc lập trong thư mục XDG của người dùng."
+      ]
+    },
+    {
+      "version": "0.1.1-dev",
+      "name": "Glass Reborn",
+      "status": "Bản dựng trước",
+      "type": "previous",
       "date": "22.10.2026",
       "description": "Thiết kế lại CreOS theo ngôn ngữ hệ điều hành: bố cục sáng, cửa sổ bo tròn bằng mask, dock kính mờ lấy mẫu nền và chuyển động tương tác.",
       "highlights": [
