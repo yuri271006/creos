@@ -58,8 +58,13 @@ def main():
         return 1
 
     if smoke_test:
-        # Run the scene graph briefly, catching runtime errors (not only parsing).
-        QTimer.singleShot(1600, app.quit)
+        # Exercise every registered application, not just the first screen.
+        window = engine.rootObjects()[0]
+        app_count = 5  # must match the registry for this developer preview
+        for index in range(app_count):
+            QTimer.singleShot(250 + index * 470,
+                              lambda current=index: window.setProperty("activeAppIndex", current))
+        QTimer.singleShot(2900, app.quit)
         code = app.exec()
         if messages:
             print(f"CreOS: {len(messages)} QML warning(s) detected.", file=sys.stderr)
