@@ -1,29 +1,25 @@
-# CreOS Human Interface — App Contract
+# CreOS Human Interface · Application contract
 
-## System shell là tài sản của CreOS
+## CreOS owns the operating-system layer
 
-CreOS quản lý wallpaper, top menu, dock, launcher, khung cửa sổ, close/minimize/maximize, kéo và thay đổi kích thước, animation nhập/xuất. App không tự vẽ lại khung cửa sổ hệ thống.
+The CreOS shell (`ui/Main.qml`) provides wallpaper, global menu, dock, launcher, app registry and application transitions. `ui/components/AppWindow.qml` provides the **same** window chrome for every app: close, minimize, maximize, drag, resize, alpha-masked rounded corners and frosted backdrop.
 
-Mỗi app chỉ triển khai nội dung bên trong `ui/apps/<AppName>.qml` với root `Item`.
+Built-in apps **must not recreate window controls**. Apps only supply QML content.
 
-## Tokens và thành phần
+## Shared design language
 
-- `ui/system/Theme.qml`: màu, bán kính, khoảng cách, typography, thời lượng animation.
-- `ui/components/AppWindow.qml`: window chrome, GPU blur qua ShaderEffectSource/MultiEffect, alpha-mask tròn, resize.
-- `ui/components/CreosMark.qml`: nhận diện CreOS.
-- `ui/components/SidebarItem.qml` và `SystemButton.qml`: điều hướng và button.
-- `ui/components/GlassPanel.qml`: container glass cơ bản.
-- `ui/system/Apps.qml`: danh sách app, id, tên, đường dẫn QML, appearance.
+- `ui/system/Theme.qml`: typography, colors, radii, durations and spacing.
+- `ui/components/SystemButton.qml`, `SidebarItem.qml`, `GlassPanel.qml`: controls.
+- `ui/components/AppIcon.qml`: dock/launcher icons.
+- `ui/system/Apps.qml`: id, display name, source component, icon tint/glyph and appearance.
 
-## Hai phong cách
+Apps may use:
+- **system** appearance, inheriting the common style.
+- **custom** appearance for its content (CreOS still controls the surrounding window).
 
-**System Style**: kế thừa màu, khoảng cách, chất liệu và component UI chuẩn.
+## Adding an app
 
-**Custom Style**: tự thiết kế bên trong ứng dụng, vẫn dùng shell/window controls CreOS. Trường `appearance` ở registry cho phép chọn `"system"` hoặc `"custom"`.
-
-## Đăng ký app
-
-Tạo `ui/apps/NotesApp.qml`:
+Create `ui/apps/ExampleApp.qml`:
 
 ```qml
 import QtQuick
@@ -37,21 +33,34 @@ Item {
 }
 ```
 
-Sau đó thêm vào mảng `applications` trong `ui/system/Apps.qml`:
+Register an entry in `ui/system/Apps.qml`:
 
 ```js
-{ "id": "notes", "name": "Notes", "subtitle": "Ghi chú",
-  "component": "NotesApp.qml", "appearance": "system" }
+{
+  "id": "example",
+  "name": "Example",
+  "subtitle": "My CreOS app",
+  "component": "ExampleApp.qml",
+  "appearance": "system",
+  "glyph": "✦",
+  "tint": "#819BD8"
+}
 ```
 
-App xuất hiện trong launcher và được nạp vào AppWindow. Hiện tại một app window hiển thị cùng lúc; chưa hỗ trợ đa cửa sổ thực hoặc sandbox cho các app của bên thứ ba.
+The same registry populates **Dock** and **Launchpad**; clicking loads the component inside the CreOS-owned AppWindow.
 
-## Motion standards
+## Data
 
-- Hover/focus: 120–220ms.
-- Chuyển nội dung: 260–340ms (OutCubic).
-- Mở/thu nhỏ cửa sổ: scale/opacity 250–450ms (OutBack hoặc InCubic).
-- Không áp đặt `Behavior on x/y` cho cửa sổ đang kéo, tránh cảm giác trễ theo chuột.
-- Blur sử dụng trên các vùng có giới hạn; tránh hiệu ứng nặng với toàn bộ màn hình.
+Built-in apps needing persistent data should add carefully scoped, validated methods to `state_store.py`. Its data is written to the user's XDG data directory outside the repo. **Never store user notes within Git-tracked project files.** No app sandbox exists yet, so only run trusted application code.
 
-Các app tùy biến có thể sáng tạo nội dung, nhưng phải tôn trọng khả năng sử dụng, focus, contrast và chính sách chuyển động của CreOS.
+## Motion principles
+
+- Interactive hover feedback: 140–220 ms.
+- Navigation: 260–340 ms, OutCubic.
+- Window enter/exit: ~250–450 ms (scale and opacity).
+- Do not introduce dragging delay by attaching generic `Behavior on x/y` to moving windows.
+- Keep blur regions bounded, and test performance with GPU and software fallback.
+
+## Current boundaries
+
+CreOS 0.1.2-dev currently shows **one app window at a time**. Real multiwindow z-order/focus and app-process isolation are future work; do not market them as implemented.
