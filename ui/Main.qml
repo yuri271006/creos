@@ -20,7 +20,8 @@ ApplicationWindow {
     property bool appMinimized: false
     property bool launcherOpen: false
     property string clockText: Qt.formatDateTime(new Date(), "HH:mm")
-    readonly property var firstApp: System.Apps.applications[0]
+    property int activeAppIndex: 0
+    readonly property var activeApp: System.Apps.applications[activeAppIndex]
 
     Timer {
         interval: 60000
@@ -28,12 +29,16 @@ ApplicationWindow {
         repeat: true
         onTriggered: root.clockText = Qt.formatDateTime(new Date(), "HH:mm")
     }
-    function openCreos() {
+    function openApp(index) {
+        if (index < 0 || index >= System.Apps.applications.length)
+            return
+        activeAppIndex = index
         launcherOpen = false
         appOpen = true
         appMinimized = false
         windowIntro.restart()
     }
+    function openCreos() { openApp(0) }
 
     Item {
         id: desktop
@@ -277,8 +282,8 @@ ApplicationWindow {
                 height: Math.min(555, workspace.height - 28)
                 x: (workspace.width - width) / 2
                 y: Math.max(11, (workspace.height - height) / 2)
-                appTitle: root.firstApp.name
-                componentSource: Qt.resolvedUrl("apps/" + root.firstApp.component)
+                appTitle: root.activeApp.name
+                componentSource: Qt.resolvedUrl("apps/" + root.activeApp.component)
                 onCloseRequested: root.appOpen = false
                 onMinimizeRequested: root.appMinimized = true
             }
@@ -414,6 +419,7 @@ ApplicationWindow {
                         model: System.Apps.applications
                         delegate: Item {
                             required property var modelData
+                            required property int index
                             width: 84; height: 100
                             Column {
                                 anchors.centerIn: parent
@@ -433,7 +439,7 @@ ApplicationWindow {
                             MouseArea {
                                 anchors.fill: parent
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: root.openCreos()
+                                onClicked: root.openApp(index)
                             }
                         }
                     }
