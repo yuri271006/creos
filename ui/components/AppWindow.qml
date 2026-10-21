@@ -64,13 +64,22 @@ Item {
     // to the same rounded silhouette. Rectangle.clip alone is rectangular.
     Rectangle {
         id: alphaMask
-        x: -20000
+        x: 0
+        y: 0
         width: host.width
         height: host.height
         radius: 24
         color: "white"
-        layer.enabled: true
         antialiasing: true
+    }
+    ShaderEffectSource {
+        id: maskTexture
+        width: host.width
+        height: host.height
+        sourceItem: alphaMask
+        hideSource: true
+        live: true
+        visible: false
     }
 
     // Subtle, multi-layer shadow outside the masked window.
@@ -98,7 +107,7 @@ Item {
         layer.smooth: true
         layer.effect: MultiEffect {
             maskEnabled: true
-            maskSource: alphaMask
+            maskSource: maskTexture
             maskThresholdMin: 0.46
             maskThresholdMax: 0.54
             autoPaddingEnabled: false
