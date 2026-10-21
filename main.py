@@ -7,6 +7,7 @@ from pathlib import Path
 from PySide6.QtCore import QObject, Property, QTimer, QUrl
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
+from state_store import CreosData
 
 BASE = Path(__file__).resolve().parent
 
@@ -47,7 +48,10 @@ def main():
 
     engine.warnings.connect(on_warnings)
     store = ReleaseStore()
+    creos_data = CreosData()
+    creos_data.dataError.connect(lambda message: print("CreOS data:", message, file=sys.stderr))
     engine.rootContext().setContextProperty("releaseStore", store)
+    engine.rootContext().setContextProperty("creosData", creos_data)
     engine.load(QUrl.fromLocalFile(str(BASE / "ui" / "Main.qml")))
     if not engine.rootObjects():
         print("CreOS: không tải được giao diện QML.", file=sys.stderr)
