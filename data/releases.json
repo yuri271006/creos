@@ -1,0 +1,47 @@
+{
+  "version": "0.1.0-dev",
+  "channel": "Developer Preview",
+  "repository": "https://github.com/yuri271006/creos",
+  "releases": [
+    {
+      "version": "0.1.0-dev",
+      "name": "The Beginning",
+      "status": "Đang phát triển",
+      "type": "current",
+      "date": "22.10.2026",
+      "description": "Bản dựng đầu tiên của CreOS, tập trung vào giao diện và trung tâm thông tin phiên bản.",
+      "highlights": [
+        "Cửa sổ CreOS có thể thay đổi kích thước trên Ubuntu.",
+        "Giao diện kính mờ và chuyển cảnh bằng Qt Quick.",
+        "Trung tâm phiên bản, ghi chú phát hành và lộ trình.",
+        "Dữ liệu phát hành tách riêng để cập nhật dễ dàng."
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "name": "Living Desktop",
+      "status": "Dự kiến",
+      "type": "planned",
+      "date": "Chưa ấn định",
+      "description": "Bước tiếp theo hướng tới một desktop thu nhỏ ở bên trong cửa sổ CreOS.",
+      "highlights": [
+        "Không gian Desktop cùng dock ứng dụng.",
+        "Hệ thống mở và đóng các ứng dụng con.",
+        "Hiệu ứng chuyển động thống nhất."
+      ]
+    },
+    {
+      "version": "0.3.0",
+      "name": "Little Universe",
+      "status": "Ý tưởng",
+      "type": "planned",
+      "date": "Chưa ấn định",
+      "description": "Định hướng biến CreOS thành một không gian ứng dụng nhỏ có thể mở rộng.",
+      "highlights": [
+        "Quản lý nhiều cửa sổ bên trong CreOS.",
+        "Cơ chế module để bổ sung ứng dụng mới.",
+        "Lưu thiết lập và trạng thái không gian."
+      ]
+    }
+  ]
+}
