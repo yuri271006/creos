@@ -19,6 +19,7 @@ ApplicationWindow {
     property bool appMinimized: false
     property bool launcherOpen: false
     property int activeAppIndex: 0
+    readonly property int registeredAppCount: System.Apps.applications.length
     property string clockText: Qt.formatDateTime(new Date(), "HH:mm")
     readonly property var activeApp: System.Apps.applications[activeAppIndex]
 
