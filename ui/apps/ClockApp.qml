@@ -31,6 +31,7 @@ Item {
         if (running) {
             elapsed = currentMs()
             running = false
+            stopwatchText = formatted(elapsed)
         } else {
             startedAt = Date.now()
             running = true
