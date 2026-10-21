@@ -8,6 +8,7 @@ Rectangle {
     id: frame
     property string appTitle: "CreOS"
     property url componentSource
+    property string appAppearance: "system"
     property bool maximized: false
     property real oldX: 0
     property real oldY: 0
@@ -19,7 +20,7 @@ Rectangle {
     property int minimumPanelHeight: 400
 
     radius: System.Theme.radiusWindow
-    color: "#EBF9FBFF"
+    color: frame.appAppearance === "custom" ? "#FFFFFFFF" : "#EBF9FBFF"
     border.color: "#E5FFFFFF"
     border.width: 1
     clip: true
