@@ -60,7 +60,7 @@ def main():
     if smoke_test:
         # Exercise every registered application, not just the first screen.
         window = engine.rootObjects()[0]
-        app_count = 5  # must match the registry for this developer preview
+        app_count = int(window.property("registeredAppCount"))
         for index in range(app_count):
             QTimer.singleShot(250 + index * 470,
                               lambda current=index: window.setProperty("activeAppIndex", current))
