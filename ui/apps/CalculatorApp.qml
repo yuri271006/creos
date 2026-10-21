@@ -5,6 +5,7 @@ import "../system" as System
 Item {
     id: calculator
     clip: true
+    focus: true
     property string display: "0"
     property real stored: 0
     property string operation: ""
