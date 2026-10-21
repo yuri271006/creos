@@ -14,6 +14,16 @@ Item {
     readonly property color secondary: System.Theme.secondary
     readonly property var release: releaseStore.releases[selectedRelease]
     clip: true
+    onTabChanged: tabTransition.restart()
+    NumberAnimation {
+        id: tabTransition
+        target: tabPages
+        property: "opacity"
+        from: 0.15
+        to: 1
+        duration: System.Theme.durationNormal
+        easing.type: Easing.OutCubic
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -159,6 +169,7 @@ Item {
                 }
 
                 StackLayout {
+                    id: tabPages
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Layout.leftMargin: 25
