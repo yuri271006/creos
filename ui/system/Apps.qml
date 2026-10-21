@@ -1,16 +1,38 @@
 pragma Singleton
 import QtQuick
 
-// Register new applications here. All apps run in the CreOS window shell.
-// "system" inherits the shared tokens; "custom" may style its content.
+// Registry for built-in CreOS applications. The system owns all window chrome.
 QtObject {
     readonly property var applications: [
         {
-            "id": "about-creos",
-            "name": "CreOS",
-            "subtitle": "Phiên bản & bản phát hành",
-            "component": "CreosApp.qml",
-            "appearance": "system"
+            "id": "about-creos", "name": "CreOS",
+            "subtitle": "Hệ thống & phiên bản",
+            "component": "CreosApp.qml", "appearance": "system",
+            "glyph": "C", "tint": "#778EDB"
+        },
+        {
+            "id": "notes", "name": "Ghi chú",
+            "subtitle": "Lưu ý tưởng của bạn",
+            "component": "NotesApp.qml", "appearance": "system",
+            "glyph": "✎", "tint": "#EEB35D"
+        },
+        {
+            "id": "calculator", "name": "Máy tính",
+            "subtitle": "Tính toán cơ bản",
+            "component": "CalculatorApp.qml", "appearance": "system",
+            "glyph": "＋", "tint": "#7B8BDC"
+        },
+        {
+            "id": "clock", "name": "Đồng hồ",
+            "subtitle": "Giờ địa phương & bấm giờ",
+            "component": "ClockApp.qml", "appearance": "system",
+            "glyph": "◷", "tint": "#6BA6C6"
+        },
+        {
+            "id": "settings", "name": "Cài đặt",
+            "subtitle": "Cá nhân hóa CreOS",
+            "component": "SettingsApp.qml", "appearance": "system",
+            "glyph": "⚙", "tint": "#8995B6"
         }
     ]
 
