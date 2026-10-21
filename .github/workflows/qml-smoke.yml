@@ -26,6 +26,8 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Parse app configuration
         run: python -m json.tool data/releases.json > /dev/null
+      - name: Run data persistence unit tests
+        run: python -m unittest discover -s tests -v
       - name: Load QML scene with desktop OpenGL on virtual X display
         env:
           QSG_RHI_BACKEND: opengl
