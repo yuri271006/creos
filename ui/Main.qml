@@ -284,6 +284,7 @@ ApplicationWindow {
                 y: Math.max(11, (workspace.height - height) / 2)
                 appTitle: root.activeApp.name
                 componentSource: Qt.resolvedUrl("apps/" + root.activeApp.component)
+                appAppearance: root.activeApp.appearance || "system"
                 onCloseRequested: root.appOpen = false
                 onMinimizeRequested: root.appMinimized = true
             }
