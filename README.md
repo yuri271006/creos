@@ -56,6 +56,6 @@ Close an existing CreOS window before relaunching. The source update isn't live 
 
 ### Preview limitations
 
-This is **developer preview**, not a real new operating system. The preview can display only one embedded app window at a time (switching is available from Dock and Launchpad). The frosted glass visual uses Qt Quick; it is not pixel-identical to Apple's Liquid Glass. Graphics quality/performance vary by Qt installation and GPU/driver. The outer Ubuntu window frame is controlled by the Ubuntu window manager; CreOS-owned inner windows use the shared rounded shell.
+This is **developer preview**, not a real new operating system. The preview can display only one embedded app window at a time (switching is available from Dock and Launchpad). The frosted glass visual uses Qt Quick; it is not pixel-identical to Apple's Liquid Glass. Graphics quality/performance vary by Qt installation and GPU/driver. The outer Ubuntu window frame is controlled by the Ubuntu window manager; CreOS-owned inner windows use the shared rounded shell. In 0.1.3-dev the fragile full-window shader mask was removed because it could make the entire app disappear.
 
 The GitHub Actions workflow contains a virtual-display QML smoke test and data-store unit tests. **Until CI and real Ubuntu screenshots are verified, full visual/runtime compatibility is not guaranteed.**
