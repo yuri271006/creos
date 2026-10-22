@@ -2,7 +2,7 @@
 
 ## CreOS owns the operating-system layer
 
-The CreOS shell (`ui/Main.qml`) provides wallpaper, global menu, dock, launcher, app registry and application transitions. `ui/components/AppWindow.qml` provides the **same** window chrome for every app: close, minimize, maximize, drag, resize, alpha-masked rounded corners and frosted backdrop.
+The CreOS shell (`ui/Main.qml`) provides wallpaper, global menu, dock, launcher, app registry and application transitions. `ui/components/AppWindow.qml` provides the **same** window chrome for every app: close, minimize, maximize, drag, resize, rounded corners and frosted backdrop (without a full-window GPU mask).
 
 Built-in apps **must not recreate window controls**. Apps only supply QML content.
 
