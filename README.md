@@ -44,7 +44,7 @@ Close an existing CreOS window before relaunching. The source update isn't live 
 ### UI & architecture
 
 - `ui/Main.qml` — desktop, application switching, menu, wallpaper, Dock and Launchpad.
-- `ui/components/AppWindow.qml` — shared window chrome, rounded alpha-mask, animations and backdrop.
+- `ui/components/AppWindow.qml` — reliable rounded window shell, direct rendering of app content, animations and backdrop.
 - `ui/components/AppIcon.qml` — reusable application icon.
 - `ui/system/Theme.qml` — CreOS UI tokens.
 - `ui/system/Apps.qml` — centralized application registry.
