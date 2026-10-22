@@ -2,7 +2,7 @@
 
 CreOS is an experimental **desktop-within-a-desktop** running as one Ubuntu application. Its own menu bar, Dock, Launchpad and app windows use a shared CreOS interface, inspired by macOS/iOS but independently designed.
 
-## 0.1.2-dev · Everyday Apps
+## 0.1.3-dev · Window Visibility Fix
 
 The first built-in applications are now accessible from **Dock** and **Launchpad**:
 
