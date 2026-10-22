@@ -60,27 +60,9 @@ Item {
         NumberAnimation { target: host; property: "height"; to: geometryAnimation.toH; duration: 350; easing.type: Easing.OutCubic }
     }
 
-    // Layer alpha mask clips *all child pixels*, including sidebar and content,
-    // to the same rounded silhouette. Rectangle.clip alone is rectangular.
-    Rectangle {
-        id: alphaMask
-        x: 0
-        y: 0
-        width: host.width
-        height: host.height
-        radius: 24
-        color: "white"
-        antialiasing: true
-    }
-    ShaderEffectSource {
-        id: maskTexture
-        width: host.width
-        height: host.height
-        sourceItem: alphaMask
-        hideSource: true
-        live: true
-        visible: false
-    }
+    // Stability-first render: keep controls interactive and always visible.
+    // A layered mask could make the *entire* app invisible on some Qt/GPU
+    // combinations, so we use native rounded Rectangle surfaces here.
 
     // Subtle, multi-layer shadow outside the masked window.
     Rectangle {
@@ -100,18 +82,13 @@ Item {
         opacity: 0.28
     }
 
-    Item {
+    Rectangle {
         id: panel
         anchors.fill: parent
-        layer.enabled: true
-        layer.smooth: true
-        layer.effect: MultiEffect {
-            maskEnabled: true
-            maskSource: maskTexture
-            maskThresholdMin: 0.46
-            maskThresholdMax: 0.54
-            autoPaddingEnabled: false
-        }
+        radius: 24
+        antialiasing: true
+        clip: true
+        color: host.appAppearance === "custom" ? "#F2F7FD" : "#E9F4FA"
 
         ShaderEffectSource {
             id: backgroundGrab
@@ -131,16 +108,26 @@ Item {
             blur: 0.92
             autoPaddingEnabled: false
         }
+        // Frosted overlay with an opaque fallback. Never use a whole-panel
+        // layer mask: it can blank out every child including titlebar.
         Rectangle {
             anchors.fill: parent
-            color: host.appAppearance === "custom" ? "#D9FFFFFF" : "#CFF9FBFF"
+            color: host.appAppearance === "custom" ? "#F2FFFFFF" : "#E5F9FBFF"
         }
 
         Rectangle {
             id: titlebar
             width: parent.width
             height: 52
-            color: "#9FFFFFFF"
+            radius: 24
+            color: "#B9FFFFFF"
+            antialiasing: true
+            Rectangle {
+                anchors.bottom: parent.bottom
+                width: parent.width
+                height: 27
+                color: "#B9FFFFFF"
+            }
             Rectangle {
                 anchors.bottom: parent.bottom
                 width: parent.width
@@ -227,16 +214,71 @@ Item {
             }
         }
 
+        // Apps stop above the curved bottom strip. The outer silhouette is
+        // produced by native rounded rectangles, with no brittle GPU mask.
         Loader {
             id: appLoader
             anchors.top: titlebar.bottom
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.bottom: parent.bottom
+            anchors.bottom: bottomBar.top
             source: host.componentSource
             onStatusChanged: {
                 if (status === Loader.Error)
                     console.error("CreOS: unable to load", host.componentSource)
+            }
+        }
+        Rectangle {
+            id: bottomBar
+            width: parent.width
+            height: 25
+            anchors.bottom: parent.bottom
+            radius: 24
+            color: "#DFF8FBFF"
+            antialiasing: true
+            Rectangle {
+                anchors.top: parent.top
+                anchors.topMargin: -1
+                width: parent.width
+                height: 13
+                color: "#DFF8FBFF"
+            }
+            Rectangle {
+                width: parent.width
+                height: 1
+                color: "#A3FFFFFF"
+            }
+            Text {
+                anchors.left: parent.left
+                anchors.leftMargin: 17
+                anchors.verticalCenter: parent.verticalCenter
+                text: "◈  CREOS"
+                font.pixelSize: 9
+                font.weight: Font.DemiBold
+                font.letterSpacing: 1
+                color: "#8294AF"
+            }
+        }
+        Rectangle {
+            visible: appLoader.status === Loader.Error
+            anchors.fill: appLoader
+            color: "#F6F8FD"
+            Column {
+                anchors.centerIn: parent
+                spacing: 12
+                Text {
+                    text: "Không tải được ứng dụng"
+                    font.pixelSize: 22
+                    font.weight: Font.DemiBold
+                    color: "#8D4355"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+                Text {
+                    text: "Kiểm tra Terminal trong VS Code để xem lỗi QML."
+                    font.pixelSize: 12
+                    color: "#73849A"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
             }
         }
     }
