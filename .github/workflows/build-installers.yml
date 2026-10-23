@@ -3,8 +3,14 @@ name: Build CreOS Installers
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
+
+concurrency:
+  group: creos-installers-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
