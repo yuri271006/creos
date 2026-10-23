@@ -389,27 +389,13 @@ ApplicationWindow {
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 9
 
-            ShaderEffectSource {
-                id: dockCapture
-                anchors.fill: parent
-                sourceItem: wallpaper
-                sourceRect: Qt.rect(dock.x, dock.y, dock.width, dock.height)
-                visible: false
-            }
-            MultiEffect {
-                anchors.fill: parent
-                source: dockCapture
-                blurEnabled: true
-                blurMax: 24
-                blur: 1
-                autoPaddingEnabled: false
-            }
             Rectangle {
                 anchors.fill: parent
                 radius: 19
-                color: "#C3FFFFFF"
+                color: "#EAF5FC"
+                antialiasing: true
                 border.width: 1
-                border.color: "#F6FFFFFF"
+                border.color: "#D2FFFFFF"
             }
             Rectangle {
                 anchors.left: parent.left
@@ -432,8 +418,7 @@ ApplicationWindow {
                             anchors.horizontalCenter: parent.horizontalCenter
                             y: dockHit.containsMouse ? 0 : 5
                             size: dockHit.containsMouse ? 42 : 36
-                            glyph: pinnedItem.modelData.glyph
-                            tint: pinnedItem.modelData.tint
+                            appId: pinnedItem.modelData.id
                             Behavior on y { NumberAnimation { duration: 215; easing.type: Easing.OutBack } }
                             Behavior on size { NumberAnimation { duration: 215; easing.type: Easing.OutBack } }
                         }
@@ -471,11 +456,19 @@ ApplicationWindow {
                         border.color: "#FFFFFF"
                         Behavior on y { NumberAnimation { duration: 215; easing.type: Easing.OutBack } }
                         Behavior on width { NumberAnimation { duration: 215; easing.type: Easing.OutBack } }
-                        Text {
+                        Grid {
                             anchors.centerIn: parent
-                            text: "▦"
-                            font.pixelSize: 22
-                            color: "#6876AB"
+                            columns: 3
+                            spacing: 3.3
+                            Repeater {
+                                model: 9
+                                delegate: Rectangle {
+                                    width: 6.2
+                                    height: 6.2
+                                    radius: 1.7
+                                    color: index % 3 === 1 ? "#5776B5" : "#849ACC"
+                                }
+                            }
                         }
                     }
                     MouseArea {
@@ -509,25 +502,12 @@ ApplicationWindow {
                 NumberAnimation { duration: 290; easing.type: Easing.OutBack }
             }
 
-            ShaderEffectSource {
-                id: libraryCapture
-                anchors.fill: parent
-                sourceItem: wallpaper
-                sourceRect: Qt.rect(launcherLayer.x, launcherLayer.y,
-                                    launcherLayer.width, launcherLayer.height)
-                visible: false
-            }
-            MultiEffect {
-                anchors.fill: parent
-                source: libraryCapture
-                blurEnabled: true; blurMax: 24; blur: 1
-                autoPaddingEnabled: false
-            }
             Rectangle {
                 anchors.fill: parent
                 radius: 25
-                color: "#E2FFFFFF"
-                border.color: "#F6FFFFFF"
+                color: "#F0F6FD"
+                antialiasing: true
+                border.color: "#E8FFFFFF"
                 border.width: 1
             }
             Column {
@@ -560,8 +540,7 @@ ApplicationWindow {
                                 y: 10; spacing: 8
                                 AppIcon {
                                     size: 56
-                                    glyph: launcherItem.modelData.glyph
-                                    tint: launcherItem.modelData.tint
+                                    appId: launcherItem.modelData.id
                                     anchors.horizontalCenter: parent.horizontalCenter
                                 }
                                 Text {
