@@ -177,8 +177,7 @@ Item {
                     spacing: 18
                     AppIcon {
                         size: 75
-                        glyph: "◎"
-                        tint: "#6F99D6"
+                        appId: "browser"
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     Text {
