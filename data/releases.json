@@ -1,21 +1,21 @@
 {
-  "version": "1.2.0",
+  "version": "1.2.1",
   "channel": "Release",
   "repository": "https://github.com/yuri271006/creos",
   "releases": [
     {
-      "version": "1.2.0",
-      "name": "CreOS Island & Files",
+      "version": "1.2.1",
+      "name": "UI Consistency & Window Input",
       "type": "current",
-      "status": "Cập nhật hệ thống",
+      "status": "Cập nhật giao diện và tương tác",
       "date": "23.10.2026",
-      "description": "CreOS Island nhỏ gọn, icon không viền và ứng dụng Files quản lý sys/data.",
+      "description": "Icon không viền, hệ UI thống nhất và chặn tương tác xuyên cửa sổ.",
       "highlights": [
-        "Island nổi ở đỉnh màn hình và mở rộng mượt để hiện thao tác nhanh.",
-        "Icon vector tràn khung không còn đường viền ngoài.",
-        "sys: duyệt mã nguồn CreOS chỉ đọc.",
-        "data: thư mục dữ liệu riêng với tạo, sửa, lưu, đổi tên, xóa tệp.",
-        "Bảo vệ traversal, symlink và xóa thư mục không rỗng."
+        "Vẽ lại 7 icon nhận diện riêng: nền bo góc do CreOS quản lý, SVG chỉ vẽ hình biểu tượng.",
+        "Cửa sổ ở sau bị khóa các điều khiển, cuộn và nhập liệu; nhấp một lần để đưa lên trước.",
+        "Dùng chung PaneHeader và AppPage, tiêu đề và màu sắc từ CreOS Human Interface.",
+        "Dọn nội dung mẫu và thông điệp thừa, giữ lại nhãn có chức năng.",
+        "Files chuyển bố cục linh hoạt khi cửa sổ hẹp, có trạng thái trống rõ ràng."
       ]
     }
   ]
