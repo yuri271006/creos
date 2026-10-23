@@ -2,11 +2,13 @@
 <defs>
  <linearGradient id="base" x1="0" y1="0" x2=".85" y2="1"><stop offset="0" stop-color="#2D426D"/><stop offset=".56" stop-color="#536ED2"/><stop offset="1" stop-color="#879DEB"/></linearGradient>
  <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".36"/><stop offset=".48" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<clipPath id="tileclip"><rect x="0" y="0" width="96" height="96" rx="23"/></clipPath>
 </defs>
-<rect x="2" y="2" width="92" height="92" rx="24" fill="url(#base)"/>
+<rect x="0" y="0" width="96" height="96" rx="23" fill="url(#base)"/>
+<g clip-path="url(#tileclip)">
 <circle cx="85" cy="14" r="40" fill="#fff" opacity=".09"/>
 <circle cx="12" cy="99" r="41" fill="#1b2e67" opacity=".12"/>
-<rect x="3.5" y="3.5" width="89" height="89" rx="22.5" fill="url(#shine)"/>
+<rect x="0" y="0" width="96" height="96" rx="23" fill="url(#shine)"/>
 <rect x="25" y="17" width="46" height="64" rx="10" fill="#EAF3FF"/><rect x="31" y="25" width="34" height="15" rx="5" fill="#394C79"/><path d="M56 32h4" stroke="#B7E6FF" stroke-width="2.3" stroke-linecap="round"/><g fill="#B5C8F3"><rect x="31" y="47" width="9" height="9" rx="2.5"/><rect x="43" y="47" width="9" height="9" rx="2.5"/><rect x="31" y="59" width="9" height="9" rx="2.5"/><rect x="43" y="59" width="9" height="9" rx="2.5"/></g><rect x="55" y="47" width="10" height="21" rx="3" fill="#6386DA"/><path d="M58 57.5h4" stroke="#fff" stroke-width="2" stroke-linecap="round"/><rect x="31" y="71" width="34" height="4" rx="2" fill="#CCD8FA"/>
-<rect x="2.8" y="2.8" width="90.4" height="90.4" rx="23.3" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1.6"/>
+</g>
 </svg>
