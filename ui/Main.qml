@@ -274,6 +274,8 @@ ApplicationWindow {
 
                     visible: windowRecord.opened && !windowRecord.minimized
                     loaded: windowRecord.opened || windowRecord.minimized
+                    activeWindow: windowRecord.opened && !windowRecord.minimized
+                                  && root.activeAppIndex === index
                     z: windowRecord.order
                     width: Math.min(940, workspace.width - 80)
                     height: Math.min(635, workspace.height - 90)
