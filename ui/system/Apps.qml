@@ -1,51 +1,43 @@
 pragma Singleton
 import QtQuick
 
-// Registry for built-in CreOS applications. The system owns all window chrome.
+// One registration powers Dock, Launchpad and the system app list.
 QtObject {
     readonly property var applications: [
         {
             "id": "about-creos", "name": "CreOS",
-            "subtitle": "Hệ thống & phiên bản",
-            "component": "CreosApp.qml", "appearance": "system",
-            "glyph": "C", "tint": "#778EDB"
+            "subtitle": "Thông tin hệ thống",
+            "component": "CreosApp.qml", "appearance": "system"
         },
         {
             "id": "notes", "name": "Ghi chú",
-            "subtitle": "Lưu ý tưởng của bạn",
-            "component": "NotesApp.qml", "appearance": "system",
-            "glyph": "✎", "tint": "#EEB35D"
+            "subtitle": "Ghi lại ý tưởng",
+            "component": "NotesApp.qml", "appearance": "system"
         },
         {
             "id": "calculator", "name": "Máy tính",
-            "subtitle": "Tính toán cơ bản",
-            "component": "CalculatorApp.qml", "appearance": "system",
-            "glyph": "＋", "tint": "#7B8BDC"
+            "subtitle": "Tính toán nhanh",
+            "component": "CalculatorApp.qml", "appearance": "system"
         },
         {
             "id": "clock", "name": "Đồng hồ",
-            "subtitle": "Giờ địa phương & bấm giờ",
-            "component": "ClockApp.qml", "appearance": "system",
-            "glyph": "◷", "tint": "#6BA6C6"
+            "subtitle": "Giờ và bấm giờ",
+            "component": "ClockApp.qml", "appearance": "system"
         },
         {
             "id": "browser", "name": "Trình duyệt",
             "subtitle": "Duyệt web trong CreOS",
-            "component": "BrowserApp.qml", "appearance": "system",
-            "glyph": "◎", "tint": "#4E9BC6"
+            "component": "BrowserApp.qml", "appearance": "system"
         },
         {
             "id": "settings", "name": "Cài đặt",
-            "subtitle": "Cá nhân hóa CreOS",
-            "component": "SettingsApp.qml", "appearance": "system",
-            "glyph": "⚙", "tint": "#8995B6"
+            "subtitle": "Cá nhân hóa",
+            "component": "SettingsApp.qml", "appearance": "system"
         }
     ]
-
     function findIndex(appId) {
         for (var i = 0; i < applications.length; ++i) {
-            if (applications[i].id === appId)
-                return i
+            if (applications[i].id === appId) return i
         }
         return -1
     }
