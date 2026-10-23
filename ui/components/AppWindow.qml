@@ -1,27 +1,26 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Effects
 import "../system" as System
 
-// Every built-in application lives inside its own CreOS-managed window.
-// The window has ONE rounded outline, 8 resizable edges/corners and
-// independent enter/exit animations. Apps only provide Loader content.
+// Stable CreOS window chrome: one frame, one border, no nested GPU masks.
+// Per-app content is loaded underneath the shared title bar.
 Item {
     id: host
-    property string appTitle: "Ứng dụng"
+    property string appTitle: ""
     property url componentSource
     property string appAppearance: "system"
     property Item backgroundSource: null
     property real backgroundYOffset: 0
     property bool maximized: false
     property bool loaded: false
-    readonly property int minimumPanelWidth: 580
-    readonly property int minimumPanelHeight: 370
+    property int minimumPanelWidth: 500
+    property int minimumPanelHeight: 355
     property real restoreX: 0
     property real restoreY: 0
-    property real restoreWidth: 0
-    property real restoreHeight: 0
+    property real restoreWidth: 760
+    property real restoreHeight: 460
     property string exitKind: ""
+
     signal closeRequested()
     signal minimizeRequested()
     signal focused()
@@ -33,213 +32,169 @@ Item {
         leaveAnimation.stop()
         enterAnimation.stop()
         opacity = 0
-        scale = 0.92
-        enterAnimation.restart()
+        scale = 0.94
+        enterAnimation.start()
     }
     function animateOut(reason) {
+        if (leaveAnimation.running) return
         enterAnimation.stop()
         exitKind = reason
-        leaveAnimation.restart()
+        leaveAnimation.start()
     }
     function toggleMaximize() {
         if (!parent) return
         focused()
         geometryAnimation.stop()
         if (!maximized) {
-            restoreX = x
-            restoreY = y
-            restoreWidth = width
-            restoreHeight = height
+            restoreX = x; restoreY = y
+            restoreWidth = width; restoreHeight = height
             maximized = true
-            animateGeometry(7, 7, parent.width - 14, parent.height - 14)
+            animateGeometry(5, 5, parent.width - 10, parent.height - 10)
         } else {
             maximized = false
-            var targetWidth = Math.min(restoreWidth, parent.width - 18)
-            var targetHeight = Math.min(restoreHeight, parent.height - 18)
-            animateGeometry(Math.max(8, Math.min(restoreX, parent.width - targetWidth - 8)),
-                            Math.max(8, Math.min(restoreY, parent.height - targetHeight - 8)),
-                            targetWidth, targetHeight)
+            var w = Math.min(restoreWidth, parent.width - 12)
+            var h = Math.min(restoreHeight, parent.height - 12)
+            animateGeometry(Math.max(5, Math.min(restoreX, parent.width - w - 5)),
+                            Math.max(5, Math.min(restoreY, parent.height - h - 5)),
+                            w, h)
         }
     }
-    function animateGeometry(xValue, yValue, wValue, hValue) {
-        movingX.to = xValue
-        movingY.to = yValue
-        sizingW.to = wValue
-        sizingH.to = hValue
-        geometryAnimation.restart()
+    function animateGeometry(px, py, pw, ph) {
+        animationX.to = px
+        animationY.to = py
+        animationW.to = pw
+        animationH.to = ph
+        geometryAnimation.start()
     }
 
     ParallelAnimation {
         id: enterAnimation
         NumberAnimation {
-            target: host; property: "opacity"
-            from: 0; to: 1
-            duration: 280; easing.type: Easing.OutCubic
+            target: host; property: "opacity"; from: 0; to: 1
+            duration: 260; easing.type: Easing.OutCubic
         }
         NumberAnimation {
-            target: host; property: "scale"
-            from: 0.92; to: 1
-            duration: 370; easing.type: Easing.OutBack
+            target: host; property: "scale"; from: 0.94; to: 1
+            duration: 360; easing.type: Easing.OutCubic
         }
     }
     SequentialAnimation {
         id: leaveAnimation
         ParallelAnimation {
-            NumberAnimation {
-                target: host; property: "opacity"
-                to: 0; duration: 210; easing.type: Easing.InCubic
-            }
-            NumberAnimation {
-                target: host; property: "scale"
-                to: 0.94; duration: 230; easing.type: Easing.InCubic
-            }
+            NumberAnimation { target: host; property: "opacity"; to: 0; duration: 200; easing.type: Easing.InCubic }
+            NumberAnimation { target: host; property: "scale"; to: 0.95; duration: 210; easing.type: Easing.InCubic }
         }
-        ScriptAction {
-            script: {
-                host.exitFinished(host.exitKind)
-                host.opacity = 1
-                host.scale = 1
-            }
-        }
+        ScriptAction { script: host.exitFinished(host.exitKind) }
     }
     ParallelAnimation {
         id: geometryAnimation
         NumberAnimation {
-            id: movingX; target: host; property: "x"
-            duration: 315; easing.type: Easing.OutCubic
+            id: animationX; target: host; property: "x"
+            duration: 290; easing.type: Easing.OutCubic
         }
         NumberAnimation {
-            id: movingY; target: host; property: "y"
-            duration: 315; easing.type: Easing.OutCubic
+            id: animationY; target: host; property: "y"
+            duration: 290; easing.type: Easing.OutCubic
         }
         NumberAnimation {
-            id: sizingW; target: host; property: "width"
-            duration: 315; easing.type: Easing.OutCubic
+            id: animationW; target: host; property: "width"
+            duration: 290; easing.type: Easing.OutCubic
         }
         NumberAnimation {
-            id: sizingH; target: host; property: "height"
-            duration: 315; easing.type: Easing.OutCubic
+            id: animationH; target: host; property: "height"
+            duration: 290; easing.type: Easing.OutCubic
         }
     }
 
-    // A single soft shadow, with no extra outlined layer behind the frame.
+    // A single rounded rectangle is the *only* outside contour.
+    // The corners cannot double because there is no second border/shadow shape.
     Rectangle {
-        x: 3; y: 9
-        width: host.width; height: host.height
-        radius: 25
-        color: "#2C24364F"
-        opacity: 0.38
-    }
-    Rectangle {
-        id: panel
+        id: surface
         anchors.fill: parent
-        radius: 24
+        radius: 22
         antialiasing: true
-        clip: true
-        color: "#EFF7FC"
+        color: "#EEF6FD"
         border.width: 1
-        border.color: "#A6FFFFFF"
+        border.color: "#C4D0E4"
 
-        // Wallpaper texture is blurred behind the frosted material.
-        // The app content is NOT masked or placed behind a GPU layer.
-        ShaderEffectSource {
-            id: backgroundGrab
-            anchors.fill: parent
-            sourceItem: host.backgroundSource
-            sourceRect: Qt.rect(host.x, host.y + host.backgroundYOffset,
-                                host.width, host.height)
-            textureSize: Qt.size(Math.max(1, Math.round(host.width / 2)),
-                                 Math.max(1, Math.round(host.height / 2)))
-            live: true
-            visible: false
-        }
-        MultiEffect {
-            anchors.fill: parent
-            source: backgroundGrab
-            visible: host.backgroundSource !== null
-            blurEnabled: true
-            blurMax: 20
-            blur: 0.88
-            autoPaddingEnabled: false
-        }
+        // Top system bar: rounded top, squared bottom. No strokes on corners.
         Rectangle {
-            anchors.fill: parent
-            color: host.appAppearance === "custom" ? "#E9FFFFFF" : "#E9F8FBFF"
-        }
-
-        // The top material is rounded at the top and squared at the bottom.
-        Rectangle {
-            id: titleBar
-            width: panel.width - 2
+            id: bar
             x: 1
-            height: 50
-            radius: 23
+            y: 1
+            width: parent.width - 2
+            height: 49
+            radius: 21
             antialiasing: true
-            color: "#E3FFFFFF"
+            color: "#F5F9FD"
             Rectangle {
                 anchors.bottom: parent.bottom
-                width: parent.width; height: 23
+                width: parent.width
+                height: 24
                 color: parent.color
             }
             Rectangle {
                 anchors.bottom: parent.bottom
-                width: parent.width; height: 1
-                color: "#A4DBE4F2"
+                width: parent.width
+                height: 1
+                color: "#DCE5EF"
             }
 
+            // Only the background of title bar is a drag target.
+            // Buttons remain independently clickable.
             DragHandler {
-                id: moving
                 target: host
                 enabled: !host.maximized
-                xAxis.minimum: 6
-                xAxis.maximum: Math.max(6, host.parent ? host.parent.width - host.width - 6 : 6)
-                yAxis.minimum: 6
-                yAxis.maximum: Math.max(6, host.parent ? host.parent.height - host.height - 6 : 6)
+                snapMode: DragHandler.NoSnap
+                xAxis.minimum: 5
+                xAxis.maximum: host.parent ? Math.max(5, host.parent.width - host.width - 5) : 5
+                yAxis.minimum: 5
+                yAxis.maximum: host.parent ? Math.max(5, host.parent.height - host.height - 5) : 5
                 onActiveChanged: if (active) host.focused()
             }
             TapHandler {
-                gesturePolicy: TapHandler.ReleaseWithinBounds
-                onTapped: host.focused()
                 onDoubleTapped: host.toggleMaximize()
+                onTapped: host.focused()
             }
 
             Row {
-                anchors.left: parent.left
-                anchors.leftMargin: 18
+                x: 19
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 9
                 Repeater {
                     model: [
-                        { fill: "#FF615E", label: "×", operation: "close" },
-                        { fill: "#FFBD44", label: "−", operation: "min" },
-                        { fill: "#36CA58", label: "+", operation: "max" }
+                        {fill:"#FF605C", mark:"×", cmd:"close"},
+                        {fill:"#FFBD44", mark:"−", cmd:"min"},
+                        {fill:"#35C759", mark:"+", cmd:"maximize"}
                     ]
-                    delegate: Rectangle {
+                    delegate: Item {
                         required property var modelData
-                        width: 14; height: 14
-                        radius: 7
-                        color: modelData.fill
-                        border.color: "#36576163"
-                        border.width: 1
-                        Text {
-                            anchors.centerIn: parent
-                            text: modelData.label
-                            color: "#715E61"
-                            font.pixelSize: 9
-                            font.weight: Font.Bold
-                            opacity: buttonHit.containsMouse ? 1 : 0
-                            Behavior on opacity { NumberAnimation { duration: 110 } }
+                        width: 14
+                        height: 14
+                        Rectangle {
+                            anchors.fill: parent
+                            radius: 7
+                            color: modelData.fill
+                            border.width: 1
+                            border.color: "#3F000000"
+                            Text {
+                                anchors.centerIn: parent
+                                text: modelData.mark
+                                font.pixelSize: 10
+                                color: "#784856"
+                                opacity: hit.containsMouse ? 1 : 0
+                            }
                         }
                         MouseArea {
-                            id: buttonHit
+                            id: hit
                             anchors.fill: parent
                             anchors.margins: -3
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
                                 host.focused()
-                                if (modelData.operation === "close") host.closeRequested()
-                                else if (modelData.operation === "min") host.minimizeRequested()
+                                if (modelData.cmd === "close") host.closeRequested()
+                                else if (modelData.cmd === "min") host.minimizeRequested()
                                 else host.toggleMaximize()
                             }
                         }
@@ -249,140 +204,118 @@ Item {
             Text {
                 anchors.centerIn: parent
                 text: host.appTitle
-                font.family: System.Theme.fontFamily
                 font.pixelSize: 12
+                font.family: System.Theme.fontFamily
                 font.weight: Font.DemiBold
-                color: "#53617A"
-            }
-            Text {
-                anchors.right: parent.right
-                anchors.rightMargin: 20
-                anchors.verticalCenter: parent.verticalCenter
-                text: "◈  CreOS"
-                color: "#8494AD"
-                font.pixelSize: 10
+                color: "#566680"
             }
         }
 
         Loader {
-            id: appLoader
+            id: body
+            x: 1; y: bar.height
+            width: surface.width - 2
+            height: surface.height - bar.height - 22
             active: host.loaded
-            anchors.top: titleBar.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: footer.top
-            anchors.leftMargin: 1
-            anchors.rightMargin: 1
             source: host.componentSource
             onStatusChanged: {
                 if (status === Loader.Error)
-                    console.error("CreOS app loading error:", source)
+                    console.error("CreOS: QML app failed:", host.appTitle, source)
             }
         }
-
-        // One continuous bottom rounded surface, without a second contour.
         Rectangle {
-            id: footer
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.leftMargin: 1
-            anchors.rightMargin: 1
+            id: bottom
+            x: 1
+            y: surface.height - 22
+            width: surface.width - 2
             height: 21
-            radius: 22
-            color: "#E7F7FBFF"
+            radius: 21
             antialiasing: true
+            color: "#EFF7FD"
             Rectangle {
-                anchors.top: parent.top
                 width: parent.width
                 height: 11
                 color: parent.color
             }
             Text {
-                x: 17
+                x: 14
                 anchors.verticalCenter: parent.verticalCenter
-                text: "◈  CREOS"
-                color: "#8D9FB7"
-                font.pixelSize: 9
+                text: "CREOS · SYSTEM"
+                font.pixelSize: 8
                 font.letterSpacing: 1
+                color: "#93A4BA"
             }
         }
         Rectangle {
-            visible: appLoader.status === Loader.Error
-            anchors.fill: appLoader
-            color: "#F7F9FC"
+            visible: body.status === Loader.Error
+            x: 1
+            y: bar.height
+            width: surface.width - 2
+            height: surface.height - bar.height - 22
+            color: "#FFFFFF"
             Column {
                 anchors.centerIn: parent
-                spacing: 8
+                spacing: 10
                 Text {
+                    text: "Không tải được " + host.appTitle
                     anchors.horizontalCenter: parent.horizontalCenter
-                    text: "Không tải được ứng dụng"
-                    color: "#A25166"
                     font.pixelSize: 20
+                    color: "#A3485A"
                 }
                 Text {
+                    text: "Mở Terminal trong VS Code để xem chi tiết."
                     anchors.horizontalCenter: parent.horizontalCenter
-                    text: "Kiểm tra Terminal trong VS Code."
-                    color: "#7A8BA2"
                     font.pixelSize: 12
+                    color: "#6B7C94"
                 }
             }
         }
     }
 
-    // Passive focus detection does not obstruct app buttons or text fields.
+    // Passive tap to raise window, without blocking app control input.
     TapHandler {
         onTapped: host.focused()
-        gesturePolicy: TapHandler.ReleaseWithinBounds
+        gesturePolicy: TapHandler.DragThreshold
     }
 
-    // Eight independent resize hit zones; disabled while maximized.
     ResizeHandle {
-        windowItem: host
-        horizontal: -1; vertical: -1
+        windowItem: host; horizontal: -1; vertical: -1
         x: 0; y: 0; width: 16; height: 16
         onPressed: host.focused()
     }
     ResizeHandle {
-        windowItem: host
-        horizontal: 1; vertical: -1
-        x: host.width - width; y: 0; width: 16; height: 16
+        windowItem: host; horizontal: 1; vertical: -1
+        x: host.width - 16; y: 0; width: 16; height: 16
         onPressed: host.focused()
     }
     ResizeHandle {
-        windowItem: host
-        horizontal: -1; vertical: 1
-        x: 0; y: host.height - height; width: 16; height: 16
+        windowItem: host; horizontal: -1; vertical: 1
+        x: 0; y: host.height - 16; width: 16; height: 16
         onPressed: host.focused()
     }
     ResizeHandle {
-        windowItem: host
-        horizontal: 1; vertical: 1
-        x: host.width - width; y: host.height - height; width: 21; height: 21
+        windowItem: host; horizontal: 1; vertical: 1
+        x: host.width - 17; y: host.height - 17; width: 17; height: 17
         onPressed: host.focused()
     }
     ResizeHandle {
-        windowItem: host
-        horizontal: -1; vertical: 0
-        x: 0; y: 16; width: 8; height: host.height - 32
+        windowItem: host; horizontal: -1; vertical: 0
+        x: 0; y: 16; width: 9; height: host.height - 32
         onPressed: host.focused()
     }
     ResizeHandle {
-        windowItem: host
-        horizontal: 1; vertical: 0
-        x: host.width - width; y: 16; width: 8; height: host.height - 32
+        windowItem: host; horizontal: 1; vertical: 0
+        x: host.width - 9; y: 16; width: 9; height: host.height - 32
         onPressed: host.focused()
     }
     ResizeHandle {
-        windowItem: host
-        horizontal: 0; vertical: -1
-        x: 16; y: 0; width: host.width - 32; height: 8
+        windowItem: host; horizontal: 0; vertical: -1
+        x: 16; y: 0; width: host.width - 32; height: 9
         onPressed: host.focused()
     }
     ResizeHandle {
-        windowItem: host
-        horizontal: 0; vertical: 1
-        x: 16; y: host.height - height; width: host.width - 32; height: 8
+        windowItem: host; horizontal: 0; vertical: 1
+        x: 16; y: host.height - 9; width: host.width - 32; height: 9
         onPressed: host.focused()
     }
 }
