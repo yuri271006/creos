@@ -46,7 +46,7 @@ Không tự cài trong khi CreOS đang chạy, không tự thực thi git pull h
 
 ## Xuất hai installer từ GitHub
 
-Workflow `.github/workflows/build-installers.yml` có hai cách chạy:
+Workflow `.github/workflows/build-installers.yml` **tự build hai bộ cài khi nhánh `main` thay đổi**, nhưng chưa tự công bố bản thử nghiệm. Có thể sử dụng như sau:
 
 **1. Thử dựng mà chưa công bố:** mở GitHub → Actions → **Build CreOS Installers** → Run workflow. Sau khi cả hai job thành công, tải hai artifacts `CreOS-Ubuntu` và `CreOS-Windows` (GitHub tải xuống dưới dạng ZIP, giải nén để lấy `.deb` / `.exe`).
 
