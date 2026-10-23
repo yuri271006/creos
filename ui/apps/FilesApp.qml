@@ -20,19 +20,21 @@ Item {
             notice = "Hãy lưu hoặc bỏ thay đổi trước khi chuyển tệp."
             return
         }
-        if (item.directory) {
-            fileStore.enter(item.name)
-            selectedName = ""
-            updatingEditor = true
-            editor.text = ""
-            updatingEditor = false
-        } else {
-            selectedName = item.name
-            selectedFolder = false
-            updatingEditor = true
-            editor.text = fileStore.readText(item.name)
-            updatingEditor = false
-        }
+        selectedName = item.name
+        selectedFolder = item.directory
+        updatingEditor = true
+        editor.text = item.directory ? "" : fileStore.readText(item.name)
+        updatingEditor = false
+        dirty = false
+        notice = item.directory ? "Nhấp đúp vào thư mục để mở." : ""
+    }
+    function openFolder(item) {
+        if (!item.directory) return
+        if (dirty) { notice = "Hãy lưu hoặc bỏ thay đổi trước khi mở thư mục."; return }
+        fileStore.enter(item.name)
+        selectedName = ""
+        selectedFolder = false
+        updatingEditor = true; editor.text = ""; updatingEditor = false
         dirty = false
         notice = ""
     }
@@ -40,6 +42,7 @@ Item {
         if (dirty) { notice = "Hãy lưu hoặc bỏ thay đổi trước khi chuyển khu vực."; return }
         fileStore.selectArea(area)
         selectedName = ""
+        selectedFolder = false
         updatingEditor = true; editor.text = ""; updatingEditor = false
         notice = ""
     }
@@ -47,6 +50,7 @@ Item {
         if (dirty) { notice = "Hãy lưu hoặc bỏ thay đổi trước khi quay lại."; return }
         fileStore.goUp()
         selectedName = ""
+        selectedFolder = false
         updatingEditor = true; editor.text = ""; updatingEditor = false
     }
     function saveCurrent() {
@@ -278,6 +282,7 @@ Item {
                                         hoverEnabled: true
                                         cursorShape: Qt.PointingHandCursor
                                         onClicked: app.choose(fileRow.modelData)
+                                    onDoubleClicked: app.openFolder(fileRow.modelData)
                                     }
                                 }
                                 Text {
@@ -330,10 +335,10 @@ Item {
                                 clip: true
                                 TextArea {
                                     id: editor
-                                    visible: app.selectedName.length > 0
+                                    visible: app.selectedName.length > 0 && !app.selectedFolder
                                     wrapMode: TextEdit.Wrap
                                     selectByMouse: true
-                                    readOnly: fileStore.readOnly
+                                    readOnly: fileStore.readOnly || app.selectedFolder
                                     font.family: "monospace"
                                     font.pixelSize: 12
                                     color: System.Theme.ink
@@ -352,7 +357,7 @@ Item {
                                     text: "Lưu"
                                     primary: true
                                     implicitWidth: 68
-                                    enabled: app.selectedName !== "" && !fileStore.readOnly && app.dirty
+                                    enabled: app.selectedName !== "" && !app.selectedFolder && !fileStore.readOnly && app.dirty
                                     onClicked: app.saveCurrent()
                                 }
                                 SystemButton {
