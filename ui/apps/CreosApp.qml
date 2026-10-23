@@ -149,8 +149,7 @@ Item {
                             spacing: 12
                             AppIcon {
                                 size: 33
-                                glyph: modelData.glyph
-                                tint: modelData.tint
+                                appId: modelData.id
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                             Column {
