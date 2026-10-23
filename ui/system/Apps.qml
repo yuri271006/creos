@@ -29,6 +29,12 @@ QtObject {
             "glyph": "◷", "tint": "#6BA6C6"
         },
         {
+            "id": "browser", "name": "Trình duyệt",
+            "subtitle": "Duyệt web trong CreOS",
+            "component": "BrowserApp.qml", "appearance": "system",
+            "glyph": "◎", "tint": "#4E9BC6"
+        },
+        {
             "id": "settings", "name": "Cài đặt",
             "subtitle": "Cá nhân hóa CreOS",
             "component": "SettingsApp.qml", "appearance": "system",
