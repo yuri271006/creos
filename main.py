@@ -6,7 +6,9 @@ import sys
 from pathlib import Path
 from PySide6.QtCore import QObject, Property, QTimer, QUrl, QCoreApplication, Qt
 from PySide6.QtWebEngineQuick import QtWebEngineQuick
-from PySide6.QtGui import QGuiApplication
+from PySide6.QtWidgets import QApplication
+from setup_wizard import authenticate_desktop
+from creos_updater import UpdateManager
 from PySide6.QtQml import QQmlApplicationEngine
 from state_store import CreosData
 from files_store import CreosFiles
@@ -40,8 +42,10 @@ def main():
     # Qt WebEngine must share a rendering context with Qt Quick.
     QCoreApplication.setAttribute(Qt.AA_ShareOpenGLContexts)
     QtWebEngineQuick.initialize()
-    app = QGuiApplication(qt_args)
+    app = QApplication(qt_args)
     app.setApplicationName("CreOS")
+    if not smoke_test and not authenticate_desktop():
+        return 0
     engine = QQmlApplicationEngine()
     messages = []
 
@@ -55,10 +59,12 @@ def main():
     store = ReleaseStore()
     creos_data = CreosData()
     file_store = CreosFiles(BASE)
+    update_manager = UpdateManager(store.latestVersion) if not smoke_test else None
     creos_data.dataError.connect(lambda message: print("CreOS data:", message, file=sys.stderr))
     engine.rootContext().setContextProperty("releaseStore", store)
     engine.rootContext().setContextProperty("creosData", creos_data)
     engine.rootContext().setContextProperty("fileStore", file_store)
+    engine.rootContext().setContextProperty("updateManager", update_manager)
     engine.load(QUrl.fromLocalFile(str(BASE / "ui" / "Main.qml")))
     if not engine.rootObjects():
         print("CreOS: không tải được giao diện QML.", file=sys.stderr)
