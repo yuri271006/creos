@@ -184,14 +184,14 @@ Item {
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     Text {
-                        text: "Khám phá cùng CreOS"
+                        text: "Trình duyệt"
                         color: System.Theme.ink
                         font.pixelSize: 23
                         font.weight: Font.DemiBold
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     Text {
-                        text: "Một cửa sổ nhỏ dẫn đến cả thế giới."
+                        text: "Nhập địa chỉ web hoặc từ khóa tìm kiếm"
                         color: System.Theme.secondary
                         font.pixelSize: 12
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -202,7 +202,7 @@ Item {
                         TextField {
                             anchors.fill: parent
                             anchors.margins: 14
-                            placeholderText: "Bạn muốn tìm điều gì?"
+                            placeholderText: "Nhập địa chỉ hoặc tìm kiếm"
                             font.pixelSize: 14
                             color: System.Theme.ink
                             selectByMouse: true
