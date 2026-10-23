@@ -20,6 +20,7 @@ Item {
     DragHandler {
         id: resizing
         target: null
+        dragThreshold: 0
         acceptedButtons: Qt.LeftButton
         cursorShape: (handle.horizontal !== 0 && handle.vertical !== 0)
             ? (handle.horizontal === handle.vertical ? Qt.SizeFDiagCursor : Qt.SizeBDiagCursor)
@@ -33,7 +34,7 @@ Item {
                 handle.pressed()
             }
         }
-        onTranslationChanged: {
+        onActiveTranslationChanged: {
             if (!active || !handle.windowItem || !handle.windowItem.parent)
                 return
 
@@ -43,8 +44,8 @@ Item {
             var top = handle.originalY
             var right = left + handle.originalWidth
             var bottom = top + handle.originalHeight
-            var dx = translation.x
-            var dy = translation.y
+            var dx = activeTranslation.x
+            var dy = activeTranslation.y
 
             if (handle.horizontal < 0)
                 left = Math.max(6, Math.min(right - win.minimumPanelWidth, left + dx))
