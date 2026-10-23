@@ -41,7 +41,7 @@ Item {
                     color: tabs.selectedIndex === tab.index ? System.Theme.ink : System.Theme.secondary
                     font.family: System.Theme.fontFamily
                     font.weight: tabs.selectedIndex === tab.index ? Font.DemiBold : Font.Normal
-                    font.pixelSize: 11
+                    font.pixelSize: System.Theme.typeCaption
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
