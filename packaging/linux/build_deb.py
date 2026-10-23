@@ -27,7 +27,7 @@ Architecture: amd64
 Maintainer: CreOS Project <noreply@github.com>
 Section: utils
 Priority: optional
-Depends: libglib2.0-0, libx11-6, libxcb1, libnss3, libxkbcommon0, libasound2t64 | libasound2
+Depends: libglib2.0-0, libx11-6, libxcb1, libxcb-cursor0, libxcb-shape0, libxcb-xkb1, libxcb-xinerama0, libxcb-icccm4, libxcb-image0, libxcb-keysyms1, libxcb-render-util0, libxcb-randr0, libxcb-xfixes0, libx11-xcb1, libnss3, libxkbcommon0, libxkbcommon-x11-0, libpulse0, libasound2t64 | libasound2
 Description: CreOS desktop workspace for Ubuntu
  Full desktop-style workspace, file manager and in-app applications.
 """
