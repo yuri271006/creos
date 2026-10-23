@@ -2,11 +2,13 @@
 <defs>
  <linearGradient id="base" x1="0" y1="0" x2=".85" y2="1"><stop offset="0" stop-color="#27386E"/><stop offset=".56" stop-color="#6471D1"/><stop offset="1" stop-color="#65C5E0"/></linearGradient>
  <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".36"/><stop offset=".48" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<clipPath id="tileclip"><rect x="0" y="0" width="96" height="96" rx="23"/></clipPath>
 </defs>
-<rect x="2" y="2" width="92" height="92" rx="24" fill="url(#base)"/>
+<rect x="0" y="0" width="96" height="96" rx="23" fill="url(#base)"/>
+<g clip-path="url(#tileclip)">
 <circle cx="85" cy="14" r="40" fill="#fff" opacity=".09"/>
 <circle cx="12" cy="99" r="41" fill="#1b2e67" opacity=".12"/>
-<rect x="3.5" y="3.5" width="89" height="89" rx="22.5" fill="url(#shine)"/>
+<rect x="0" y="0" width="96" height="96" rx="23" fill="url(#shine)"/>
 <path d="M62 26c-7-5-19-6-28 0-13 8-18 21-13 35 4 12 16 19 29 18 8-.6 15-4 20-10" fill="none" stroke="#FFFFFF" stroke-width="9.5" stroke-linecap="round" opacity=".95"/><path d="M70 42c2 13-5 25-16 30" fill="none" stroke="#A9ECFF" stroke-width="7" stroke-linecap="round"/><path d="M69 18l3.4 7.8 7.8 3.4-7.8 3.4-3.4 7.8-3.4-7.8-7.8-3.4 7.8-3.4z" fill="#E5FCFF"/><circle cx="30" cy="31" r="3.2" fill="#C2EDFF" opacity=".8"/>
-<rect x="2.8" y="2.8" width="90.4" height="90.4" rx="23.3" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1.6"/>
+</g>
 </svg>
