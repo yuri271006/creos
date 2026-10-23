@@ -26,7 +26,8 @@ class HumanInterfaceTests(unittest.TestCase):
         for token in [
             "readonly property color canvas", "readonly property color surface",
             "readonly property color accent", "readonly property color ink",
-            "readonly property int minimumTarget",
+            "readonly property int minimumTarget", "readonly property int typeTitle",
+            "readonly property int typeBody", "readonly property int typeAction",
             "readonly property int durationQuick",
             "readonly property int durationNormal",
             "readonly property int durationSlow",
