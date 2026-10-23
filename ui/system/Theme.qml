@@ -1,31 +1,44 @@
 pragma Singleton
 import QtQuick
 
-// CreOS System UI: one source of truth for all built-in apps.
+// CreOS Human Interface · v2. Tokens are the only approved source of app UI styling.
+// One design language, native-feeling controls, predictable sizes and short motion.
 QtObject {
-    readonly property color ink: "#243049"
-    readonly property color secondary: "#697990"
-    readonly property color muted: "#94A2B6"
-    readonly property color accent: "#526DDA"
-    readonly property color accentSoft: "#E9EDFF"
-    readonly property color positive: "#1B9674"
-    readonly property color line: "#66FFFFFF"
-    readonly property color subtleLine: "#D9E2ED"
-    readonly property color glass: "#BDEFF6FF"
-    readonly property color glassStrong: "#E4FFFFFF"
-    readonly property color sidebarGlass: "#A9F2F7FF"
-    readonly property color surface: "#F6FAFF"
+    readonly property color canvas: "#F3F5F9"
+    readonly property color surface: "#FFFFFF"
+    readonly property color inset: "#F0F2F7"
+    readonly property color sidebar: "#EEF1F7"
+    readonly property color ink: "#172337"
+    readonly property color secondary: "#65748A"
+    readonly property color muted: "#8A99AC"
+    readonly property color accent: "#3177F4"
+    readonly property color accentSoft: "#E6EFFD"
+    readonly property color positive: "#248D6C"
+    readonly property color danger: "#D9515A"
+    readonly property color line: "#DCE3ED"
+    readonly property color subtleLine: "#E9EDF3"
+    readonly property color glass: "#E6F9FBFF"
+    readonly property color glassStrong: "#F2FFFFFF"
+    readonly property color sidebarGlass: "#E9F3F8FF"
     readonly property color wallpaperTop: "#D7EAF6"
     readonly property color wallpaperBottom: "#CFCAE9"
-    readonly property color dockGlass: "#BCEFF6FF"
+    readonly property color dockGlass: "#F1FFFFFF"
     readonly property color shadow: "#241A305A"
-    readonly property int radiusSmall: 12
-    readonly property int radiusMedium: 17
-    readonly property int radiusLarge: 25
-    readonly property int radiusWindow: 21
+
+    readonly property int radiusSmall: 11
+    readonly property int radiusMedium: 16
+    readonly property int radiusLarge: 22
+    readonly property int radiusWindow: 22
     readonly property int space: 16
-    readonly property int durationQuick: 170
-    readonly property int durationNormal: 280
-    readonly property int durationSlow: 460
+    readonly property int gapSmall: 8
+    readonly property int gapMedium: 14
+    readonly property int gapLarge: 24
+    readonly property int minimumTarget: 42
+    readonly property int durationQuick: 120
+    readonly property int durationNormal: 220
+    readonly property int durationSlow: 320
     readonly property string fontFamily: "Noto Sans"
+
+    // Kept as an interface contract for future accessibility settings.
+    readonly property bool reduceMotion: false
 }
