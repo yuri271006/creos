@@ -71,7 +71,9 @@ jobs:
         shell: pwsh
         run: |
           $version = (Get-Content data/releases.json | ConvertFrom-Json).version
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "/DAppVersion=$version" "packaging\windows\CreOS.iss"
+          $bundle = (Resolve-Path "dist\CreOS").Path
+          $output = (Resolve-Path "dist").Path
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "/DAppVersion=$version" "/DBundleDir=$bundle" "/DOutputRoot=$output" "packaging\windows\CreOS.iss"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Upload Windows installer
         uses: actions/upload-artifact@v4
