@@ -63,7 +63,16 @@ def main():
         app_count = int(window.property("registeredAppCount"))
         for index in range(app_count):
             QTimer.singleShot(250 + index * 470,
-                              lambda current=index: window.setProperty("activeAppIndex", current))
+                              lambda current=index: window.setProperty("smokeAppIndex", current))
+
+        def verify_multiwindow():
+            visible = int(window.property("visibleAppCount"))
+            if visible != app_count:
+                messages.append(
+                    f"Expected {app_count} app windows concurrently, got {visible}"
+                )
+
+        QTimer.singleShot(2750, verify_multiwindow)
         QTimer.singleShot(2900, app.quit)
         code = app.exec()
         if messages:
