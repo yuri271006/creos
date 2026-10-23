@@ -27,18 +27,22 @@ Item {
     signal exitFinished(string kind)
 
     transformOrigin: Item.Center
+    transform: Translate { id: motionOffset; y: 0 }
 
     function animateIn() {
         leaveAnimation.stop()
         enterAnimation.stop()
         opacity = 0
         scale = 0.94
+        motionOffset.y = 48
         enterAnimation.start()
     }
     function animateOut(reason) {
         if (leaveAnimation.running) return
         enterAnimation.stop()
         exitKind = reason
+        leaveSlide.to = reason === "minimize" ? 90 : 22
+        leaveScale.to = reason === "minimize" ? 0.86 : 0.96
         leaveAnimation.start()
     }
     function toggleMaximize() {
@@ -69,22 +73,25 @@ Item {
 
     ParallelAnimation {
         id: enterAnimation
-        NumberAnimation {
-            target: host; property: "opacity"; from: 0; to: 1
-            duration: 260; easing.type: Easing.OutCubic
-        }
-        NumberAnimation {
-            target: host; property: "scale"; from: 0.94; to: 1
-            duration: 360; easing.type: Easing.OutCubic
-        }
+        NumberAnimation { target: host; property: "opacity"; from: 0; to: 1; duration: 280; easing.type: Easing.OutCubic }
+        NumberAnimation { target: host; property: "scale"; from: 0.94; to: 1; duration: 370; easing.type: Easing.OutCubic }
+        NumberAnimation { target: motionOffset; property: "y"; from: 48; to: 0; duration: 370; easing.type: Easing.OutCubic }
     }
     SequentialAnimation {
         id: leaveAnimation
         ParallelAnimation {
-            NumberAnimation { target: host; property: "opacity"; to: 0; duration: 200; easing.type: Easing.InCubic }
-            NumberAnimation { target: host; property: "scale"; to: 0.95; duration: 210; easing.type: Easing.InCubic }
+            NumberAnimation { target: host; property: "opacity"; to: 0; duration: 260; easing.type: Easing.InCubic }
+            NumberAnimation { id: leaveScale; target: host; property: "scale"; to: 0.96; duration: 285; easing.type: Easing.InCubic }
+            NumberAnimation { id: leaveSlide; target: motionOffset; property: "y"; to: 22; duration: 290; easing.type: Easing.InCubic }
         }
-        ScriptAction { script: host.exitFinished(host.exitKind) }
+        ScriptAction {
+            script: {
+                host.exitFinished(host.exitKind)
+                host.opacity = 1
+                host.scale = 1
+                motionOffset.y = 0
+            }
+        }
     }
     ParallelAnimation {
         id: geometryAnimation
@@ -117,29 +124,19 @@ Item {
         border.width: 1
         border.color: "#C4D0E4"
 
-        // Top system bar: rounded top, squared bottom. No strokes on corners.
-        Rectangle {
+        // System buttons on the same single rounded panel: no second contour.
+        Item {
             id: bar
             x: 1
             y: 1
             width: parent.width - 2
             height: 49
-            radius: 21
-            antialiasing: true
-            color: "#F5F9FD"
-            Rectangle {
-                anchors.bottom: parent.bottom
-                width: parent.width
-                height: 24
-                color: parent.color
-            }
             Rectangle {
                 anchors.bottom: parent.bottom
                 width: parent.width
                 height: 1
                 color: "#DCE5EF"
             }
-
             // Only the background of title bar is a drag target.
             // Buttons remain independently clickable.
             DragHandler {
@@ -215,7 +212,7 @@ Item {
             id: body
             x: 1; y: bar.height
             width: surface.width - 2
-            height: surface.height - bar.height - 22
+            height: surface.height - bar.height - 17
             active: host.loaded
             source: host.componentSource
             onStatusChanged: {
@@ -223,35 +220,19 @@ Item {
                     console.error("CreOS: QML app failed:", host.appTitle, source)
             }
         }
-        Rectangle {
+        Item {
             id: bottom
             x: 1
-            y: surface.height - 22
+            y: surface.height - 17
             width: surface.width - 2
-            height: 21
-            radius: 21
-            antialiasing: true
-            color: "#EFF7FD"
-            Rectangle {
-                width: parent.width
-                height: 11
-                color: parent.color
-            }
-            Text {
-                x: 14
-                anchors.verticalCenter: parent.verticalCenter
-                text: "CREOS · SYSTEM"
-                font.pixelSize: 8
-                font.letterSpacing: 1
-                color: "#93A4BA"
-            }
+            height: 16
         }
         Rectangle {
             visible: body.status === Loader.Error
             x: 1
             y: bar.height
             width: surface.width - 2
-            height: surface.height - bar.height - 22
+            height: surface.height - bar.height - 17
             color: "#FFFFFF"
             Column {
                 anchors.centerIn: parent
