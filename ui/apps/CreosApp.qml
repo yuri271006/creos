@@ -1,190 +1,148 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
 import "../components"
 import "../system" as System
 
-// CreOS system information. No roadmap, sample content or preview panels.
 Item {
     id: about
     clip: true
-    Rectangle {
-        anchors.fill: parent
-        color: "#F1F7FC"
-    }
-    Flickable {
-        anchors.fill: parent
-        anchors.margins: 24
-        contentWidth: width
-        contentHeight: body.height + 16
-        boundsBehavior: Flickable.StopAtBounds
-        clip: true
-        ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
 
-        Column {
-            id: body
-            width: parent.width - 8
-            spacing: 17
-            Row {
-                width: parent.width
-                spacing: 15
-                CreosMark { size: 63 }
-                Column {
-                    spacing: 5
-                    Text {
-                        text: "CreOS"
-                        font.family: System.Theme.fontFamily
-                        font.pixelSize: 29
-                        font.weight: Font.DemiBold
-                        color: "#293950"
-                    }
-                    Text {
-                        text: "Không gian của riêng bạn."
-                        font.pixelSize: 12
-                        color: "#8193AB"
-                    }
-                }
-            }
+    AppPage {
+        heading: "CreOS"
+        caption: "Không gian của riêng bạn."
+        Flickable {
+            anchors.fill: parent
+            contentWidth: width
+            contentHeight: details.height + 22
+            boundsBehavior: Flickable.StopAtBounds
+            clip: true
+            ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
 
-            Rectangle {
-                width: parent.width
-                height: 125
-                radius: 18
-                color: "#E0ECF8"
-                border.color: "#F8FFFFFF"
-                Column {
-                    x: 19; y: 19
-                    spacing: 10
-                    Text {
-                        text: "THÔNG TIN HỆ THỐNG"
-                        font.pixelSize: 10
-                        font.letterSpacing: 1.4
-                        font.weight: Font.Bold
-                        color: "#899AB3"
-                    }
-                    Text {
-                        text: "CreOS  " + releaseStore.latestVersion
-                        font.pixelSize: 22
-                        font.weight: Font.DemiBold
-                        color: "#334763"
-                    }
-                    Text {
-                        text: "Ứng dụng desktop chạy trên Ubuntu · PySide6 / Qt Quick"
-                        font.pixelSize: 11
-                        color: "#778CA6"
-                    }
-                }
-            }
+            Column {
+                id: details
+                width: parent.width - 5
+                spacing: 16
 
-            Row {
-                width: parent.width
-                spacing: 12
-                Repeater {
-                    model: [
-                        {symbol:"▣", title:"Desktop", detail:"Cửa sổ, Dock và quản lý đa nhiệm"},
-                        {symbol:"✧", title:"CreOS UI", detail:"Giao diện chung cho mọi ứng dụng"}
-                    ]
-                    delegate: Rectangle {
-                        required property var modelData
-                        width: (body.width - 12) / 2
-                        height: 92
-                        radius: 17
-                        color: "#F8FFFFFF"
-                        border.width: 1
-                        border.color: "#FFFFFFFF"
-                        Row {
-                            x: 14
-                            y: 14
-                            spacing: 13
+                SurfaceCard {
+                    width: parent.width
+                    height: 120
+                    Row {
+                        anchors.verticalCenter: parent.verticalCenter
+                        x: 20
+                        spacing: 17
+                        CreosMark { size: 78 }
+                        Column {
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: 8
                             Text {
-                                text: modelData.symbol
-                                font.pixelSize: 28
-                                color: "#778FD0"
+                                text: "CreOS"
+                                font.pixelSize: 26
+                                font.weight: Font.DemiBold
+                                color: System.Theme.ink
                             }
-                            Column {
-                                spacing: 8
-                                Text {
-                                    text: modelData.title
-                                    font.pixelSize: 14
-                                    font.weight: Font.DemiBold
-                                    color: "#334763"
-                                }
-                                Text {
-                                    width: Math.max(90, (body.width - 12) / 2 - 68)
-                                    wrapMode: Text.Wrap
-                                    text: modelData.detail
-                                    font.pixelSize: 10
-                                    color: "#8192AC"
-                                }
+                            Text {
+                                text: "Phiên bản " + releaseStore.latestVersion
+                                color: System.Theme.secondary
+                                font.pixelSize: 13
+                            }
+                            Text {
+                                text: "The Inner Universe"
+                                color: System.Theme.muted
+                                font.pixelSize: 11
                             }
                         }
                     }
                 }
-            }
 
-            Text {
-                topPadding: 6
-                text: "ỨNG DỤNG ĐÃ CÀI ĐẶT"
-                color: "#8799B2"
-                font.pixelSize: 10
-                font.weight: Font.Bold
-                font.letterSpacing: 1.4
-            }
-
-            Rectangle {
-                width: parent.width
-                height: System.Apps.applications.length * 54 + 14
-                radius: 18
-                color: "#E9FFFFFF"
-                border.color: "#FFFFFFFF"
-                Column {
-                    anchors.fill: parent
-                    anchors.margins: 8
-                    Repeater {
-                        model: System.Apps.applications
-                        delegate: Row {
-                            required property var modelData
-                            width: parent.width
-                            height: 54
-                            spacing: 12
-                            AppIcon {
-                                size: 33
-                                appId: modelData.id
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                            Column {
-                                anchors.verticalCenter: parent.verticalCenter
-                                spacing: 4
+                SectionLabel { text: "THÔNG TIN HỆ THỐNG" }
+                SurfaceCard {
+                    width: parent.width
+                    height: 141
+                    Column {
+                        anchors.fill: parent
+                        anchors.margins: 17
+                        spacing: 12
+                        Repeater {
+                            model: [
+                                {heading:"Hệ thống", value:"CreOS Desktop"},
+                                {heading:"Nền tảng", value:"Ubuntu · Qt Quick"},
+                                {heading:"Phiên bản", value:releaseStore.latestVersion}
+                            ]
+                            delegate: Item {
+                                required property var modelData
+                                width: parent.width
+                                height: 29
                                 Text {
-                                    text: modelData.name
+                                    text: modelData.heading
+                                    color: System.Theme.secondary
                                     font.pixelSize: 12
-                                    color: "#394B67"
-                                    font.weight: Font.DemiBold
+                                    anchors.left: parent.left
                                 }
                                 Text {
-                                    text: modelData.subtitle
-                                    font.pixelSize: 10
-                                    color: "#8696AE"
+                                    text: modelData.value
+                                    color: System.Theme.ink
+                                    font.pixelSize: 12
+                                    font.weight: Font.DemiBold
+                                    anchors.right: parent.right
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            Row {
-                spacing: 12
+                SectionLabel { text: "ỨNG DỤNG CREOS" }
+                SurfaceCard {
+                    width: parent.width
+                    height: System.Apps.applications.length * 62 + 12
+                    Column {
+                        anchors.fill: parent
+                        anchors.margins: 7
+                        Repeater {
+                            model: System.Apps.applications
+                            delegate: Item {
+                                required property var modelData
+                                width: parent.width
+                                height: 62
+                                Row {
+                                    x: 12
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    spacing: 14
+                                    AppIcon {
+                                        size: 39
+                                        appId: modelData.id
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                    Column {
+                                        spacing: 5
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        Text {
+                                            text: modelData.name
+                                            font.pixelSize: 13
+                                            font.weight: Font.DemiBold
+                                            color: System.Theme.ink
+                                        }
+                                        Text {
+                                            text: modelData.subtitle
+                                            font.pixelSize: 11
+                                            color: System.Theme.secondary
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 SystemButton {
-                    text: "GitHub CreOS"
-                    symbol: "↗"
+                    text: "Mở GitHub CreOS"
                     primary: true
+                    implicitWidth: 170
                     onClicked: Qt.openUrlExternally(releaseStore.repository)
                 }
                 Text {
-                    anchors.verticalCenter: parent.verticalCenter
                     text: "© 2026 CreOS"
-                    font.pixelSize: 10
-                    color: "#95A6BB"
+                    color: System.Theme.muted
+                    font.pixelSize: 11
                 }
             }
         }
