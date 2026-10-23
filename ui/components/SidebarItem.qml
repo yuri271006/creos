@@ -30,7 +30,7 @@ Button {
             Text {
                 text: control.text
                 color: control.selected ? System.Theme.accent : System.Theme.ink
-                font.pixelSize: 12
+                font.pixelSize: System.Theme.typeAction
                 font.weight: control.selected ? Font.DemiBold : Font.Medium
                 font.family: System.Theme.fontFamily
             }
