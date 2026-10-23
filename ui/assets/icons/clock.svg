@@ -2,11 +2,13 @@
 <defs>
  <linearGradient id="base" x1="0" y1="0" x2=".85" y2="1"><stop offset="0" stop-color="#187A93"/><stop offset=".56" stop-color="#42B5CB"/><stop offset="1" stop-color="#87DCD1"/></linearGradient>
  <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".36"/><stop offset=".48" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<clipPath id="tileclip"><rect x="0" y="0" width="96" height="96" rx="23"/></clipPath>
 </defs>
-<rect x="2" y="2" width="92" height="92" rx="24" fill="url(#base)"/>
+<rect x="0" y="0" width="96" height="96" rx="23" fill="url(#base)"/>
+<g clip-path="url(#tileclip)">
 <circle cx="85" cy="14" r="40" fill="#fff" opacity=".09"/>
 <circle cx="12" cy="99" r="41" fill="#1b2e67" opacity=".12"/>
-<rect x="3.5" y="3.5" width="89" height="89" rx="22.5" fill="url(#shine)"/>
+<rect x="0" y="0" width="96" height="96" rx="23" fill="url(#shine)"/>
 <circle cx="48" cy="49" r="31" fill="#FFFFFF" opacity=".26"/><circle cx="48" cy="49" r="26" fill="#F4FDFF"/><circle cx="48" cy="49" r="23" fill="none" stroke="#BAE8ED" stroke-width="1.7"/><g stroke="#6BA6B6" stroke-width="2" stroke-linecap="round"><path d="M48 27v4M48 67v4M26 49h4M66 49h4"/></g><path d="M48 34v17l12 7" fill="none" stroke="#297C9B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M48 49l-8 10" fill="none" stroke="#F29F91" stroke-width="2.5" stroke-linecap="round"/><circle cx="48" cy="49" r="4.2" fill="#2D8BA6"/>
-<rect x="2.8" y="2.8" width="90.4" height="90.4" rx="23.3" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1.6"/>
+</g>
 </svg>
