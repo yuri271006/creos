@@ -2,6 +2,14 @@
 
 CreOS là một môi trường desktop với các ứng dụng riêng, hoạt động **bên trong Ubuntu**. Khung hệ thống, Dock và cửa sổ của tất cả ứng dụng đều do CreOS quản lý.
 
+## CreOS 1.3.0 — Setup & Auto Updates
+
+**Bộ cài Windows / Ubuntu:** quy trình GitHub Actions đã được thêm để tạo file `.exe` và `.deb` độc lập, không cần Python/VS Code trên máy cài. Xem [Hướng dẫn cài đặt và phát hành](INSTALLATION.md). Gói cài chỉ sẵn sàng tải xuống **sau khi workflow tạo thành công**.
+
+**Lần đầu mở:** thiết lập tên, mật khẩu, quota từ 2 đến 8 GB. Đây là hạn mức thư mục dữ liệu CreOS, **không chia ổ cứng hay giữ sẵn dung lượng**. Các lần sau đăng nhập bằng mật khẩu. Mật khẩu được lưu scrypt có muối; file cá nhân không được mã hóa.
+
+**Cập nhật:** tự kiểm tra GitHub Releases và tải gói đúng hệ điều hành khi có phiên bản mới; xác thực SHA-256, sau đó người dùng xác nhận chạy bộ cài. Không tự chạy commit GitHub; không thay thế file người dùng.
+
 ## CreOS 1.2.1 — Consistent UI & Window Focus
 
 CreOS được mở **toàn màn hình mặc định**. Nhấn **F11** (hoặc chọn **CreOS → Chế độ cửa sổ**) để trở lại cửa sổ Ubuntu có thể di chuyển/phóng to/thu nhỏ như bình thường.
@@ -24,7 +32,7 @@ Cửa sổ đang ở trước nhận sự kiện bình thường. Cửa sổ ở
 
 **CreOS quy định UI toàn hệ thống.** App mới không tự thiết kế từ đầu: dùng `Theme.qml` để lấy màu, typography, spacing và animation, kết hợp `AppPage`, `SurfaceCard`, `SystemButton`, `SegmentedTabs`, `SectionLabel` và `SidebarItem`. CreOS tiếp tục quản lý khung cửa sổ, Dock và Launchpad; app chỉ quản lý nội dung và chức năng của mình.
 
-Trong 1.1.0, toàn bộ app được chuyển sang phong cách sáng, ít lớp, tương tác rõ ràng lấy cảm hứng từ iOS:
+Từ 1.1.0, toàn bộ app được chuyển sang phong cách sáng, ít lớp, tương tác rõ ràng lấy cảm hứng từ iOS:
 - **Ghi chú:** split view, danh sách ghi chú, trình soạn thảo lớn, autosave 450 ms.
 - **Máy tính:** màn hình kết quả và bàn phím bốn cột, tối ưu nút bấm.
 - **Đồng hồ:** tab thời gian/bấm giờ, timer tiết kiệm CPU khi không chạy.
@@ -83,6 +91,10 @@ Ghi chú và lựa chọn hình nền được lưu bên ngoài repo tại `$XDG
 - `ui/components/AppPage.qml`, `SurfaceCard.qml`, `SystemButton.qml`, `SegmentedTabs.qml`, `SectionLabel.qml`: các thành phần UI chuẩn.
 - `ui/assets/icons/*.svg`: bộ icon vector chính thức, dùng qua `ui/components/AppIcon.qml`.
 - `ui/apps/*App.qml`: nội dung từng ứng dụng.
+- `creos_profile.py`: tài khoản local và dung lượng cấp cho CreOS/data.
+- `setup_wizard.py`: thiết lập/đăng nhập lần đầu bằng Qt.
+- `creos_updater.py`: nhận diện bản mới, tải installer đã xác thực SHA-256.
+- `packaging/`: công cụ xuất binary Ubuntu/Windows.
 - `state_store.py`: lưu ghi chú và lựa chọn hình nền.
 - `files_store.py`: quản lý tệp với quyền sys/data tách biệt.
 - `data/releases.json`: thông tin phiên bản.
