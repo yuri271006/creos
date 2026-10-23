@@ -16,9 +16,9 @@ WALLPAPERS = {"aurora", "peach", "midnight"}
 
 
 def data_directory() -> Path:
-    root = os.environ.get("XDG_DATA_HOME")
-    base = Path(root).expanduser() if root else Path.home() / ".local" / "share"
-    return base / "CreOS"
+    # Cross-platform profile path: Linux XDG or Windows LOCALAPPDATA.
+    from creos_profile import base_data_dir
+    return base_data_dir()
 
 
 class CreosData(QObject):
