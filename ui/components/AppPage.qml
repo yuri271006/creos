@@ -38,9 +38,9 @@ Item {
     Item {
         id: contentSlot
         x: 24
-        y: 100
+        y: root.headerHeight
         width: root.width - 48
-        height: Math.max(1, root.height - 120)
+        height: Math.max(1, root.height - root.headerHeight - 18)
         clip: true
     }
 }
