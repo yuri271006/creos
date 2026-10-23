@@ -1,21 +1,21 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "channel": "Release",
   "repository": "https://github.com/yuri271006/creos",
   "releases": [
     {
-      "version": "1.1.0",
-      "name": "Human Interface",
+      "version": "1.2.0",
+      "name": "CreOS Island & Files",
       "type": "current",
-      "status": "Cập nhật giao diện",
+      "status": "Cập nhật hệ thống",
       "date": "23.10.2026",
-      "description": "Thiết kế lại sáu ứng dụng cùng một bộ thành phần CreOS và ưu tiên hiệu năng đồ họa.",
+      "description": "CreOS Island nhỏ gọn, icon không viền và ứng dụng Files quản lý sys/data.",
       "highlights": [
-        "CreOS Human Interface: token màu sắc, bo góc, khoảng cách, kiểu chữ và motion.",
-        "AppPage, SurfaceCard, SystemButton, SegmentedTabs và SectionLabel dùng chung.",
-        "Ghi chú dạng split view, Máy tính phím lớn, Đồng hồ có tab giờ/bấm giờ, Cài đặt kiểu nhóm, Browser thanh tìm kiếm.",
-        "Giảm cập nhật thừa và trì hoãn khởi tạo WebEngine cho đến khi duyệt web.",
-        "Giữ các chức năng app cùng dữ liệu của người dùng."
+        "Island nổi ở đỉnh màn hình và mở rộng mượt để hiện thao tác nhanh.",
+        "Icon vector tràn khung không còn đường viền ngoài.",
+        "sys: duyệt mã nguồn CreOS chỉ đọc.",
+        "data: thư mục dữ liệu riêng với tạo, sửa, lưu, đổi tên, xóa tệp.",
+        "Bảo vệ traversal, symlink và xóa thư mục không rỗng."
       ]
     }
   ]
