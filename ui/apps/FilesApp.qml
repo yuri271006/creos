@@ -344,7 +344,36 @@ Item {
                                 Layout.preferredHeight: 1
                                 color: System.Theme.subtleLine
                             }
+                            Item {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                visible: app.selectedName === "" || app.selectedFolder
+                                Column {
+                                    anchors.centerIn: parent
+                                    spacing: 10
+                                    AppIcon {
+                                        size: 57
+                                        appId: "files"
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                    }
+                                    Text {
+                                        text: app.selectedFolder ? "Thư mục đã chọn" : "Chọn tệp để xem"
+                                        font.family: System.Theme.fontFamily
+                                        font.pixelSize: System.Theme.typeBody
+                                        font.weight: Font.DemiBold
+                                        color: System.Theme.ink
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                    }
+                                    Text {
+                                        text: app.selectedFolder ? "Nhấp đúp để mở thư mục" : "Tệp văn bản có thể xem và chỉnh sửa"
+                                        font.pixelSize: System.Theme.typeCaption
+                                        color: System.Theme.secondary
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                    }
+                                }
+                            }
                             ScrollView {
+                                visible: app.selectedName !== "" && !app.selectedFolder
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 clip: true
