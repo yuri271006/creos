@@ -36,15 +36,9 @@ Item {
                         x: 17
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: 14
-                        Rectangle {
-                            width: 44; height: 44; radius: 14
-                            color: System.Theme.accentSoft
-                            Text {
-                                anchors.centerIn: parent
-                                text: "◈"
-                                font.pixelSize: 22
-                                color: System.Theme.accent
-                            }
+                        AppIcon {
+                            size: 44
+                            appId: "settings"
                         }
                         Column {
                             anchors.verticalCenter: parent.verticalCenter
