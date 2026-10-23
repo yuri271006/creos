@@ -14,7 +14,7 @@ Button {
     focusPolicy: Qt.StrongFocus
     hoverEnabled: true
     font.family: System.Theme.fontFamily
-    font.pixelSize: 12
+    font.pixelSize: System.Theme.typeAction
     font.weight: Font.DemiBold
     background: Rectangle {
         radius: 13
@@ -33,7 +33,7 @@ Button {
                 color: control.primary ? "#FFFFFF" :
                        control.destructive ? System.Theme.danger : System.Theme.ink
                 font.family: System.Theme.fontFamily
-                font.pixelSize: 12
+                font.pixelSize: System.Theme.typeAction
                 font.weight: Font.DemiBold
             }
             Text {
