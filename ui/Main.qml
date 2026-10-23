@@ -15,37 +15,86 @@ ApplicationWindow {
     minimumHeight: 710
     color: "#CCD9EC"
 
-    property bool appOpen: true
-    property bool appMinimized: false
     property bool launcherOpen: false
     property int activeAppIndex: 0
+    property int nextWindowOrder: 1
     readonly property int registeredAppCount: System.Apps.applications.length
     property string clockText: Qt.formatDateTime(new Date(), "HH:mm")
-    readonly property var activeApp: System.Apps.applications[activeAppIndex]
+
+    // Each app has its own, independently managed window and z-order.
+    // Replacing the array ensures QML bindings react to state changes.
+    property var windowStates: System.Apps.applications.map(function(app, index) {
+        return { opened: index === 0, minimized: false, order: index === 0 ? 1 : 0 }
+    })
+
+    function windowState(index) {
+        if (index < 0 || index >= windowStates.length)
+            return { opened: false, minimized: false, order: 0 }
+        return windowStates[index]
+    }
+    function updateWindow(index, opened, minimized, bringForward) {
+        if (index < 0 || index >= windowStates.length) return
+        var updated = windowStates.slice()
+        var previous = updated[index]
+        updated[index] = {
+            opened: opened,
+            minimized: minimized,
+            order: bringForward ? ++nextWindowOrder : previous.order
+        }
+        windowStates = updated
+        if (bringForward) activeAppIndex = index
+    }
+    function openApp(index) {
+        if (index < 0 || index >= registeredAppCount) return
+        var previous = windowState(index)
+        launcherOpen = false
+        updateWindow(index, true, false, true)
+        if (!previous.opened || previous.minimized) {
+            Qt.callLater(function() {
+                var win = appWindows.itemAt(index)
+                if (win) win.animateIn()
+            })
+        }
+    }
+    function focusApp(index) {
+        if (windowState(index).opened && !windowState(index).minimized)
+            updateWindow(index, true, false, true)
+    }
+    function minimizeApp(index) {
+        var state = windowState(index)
+        if (!state.opened || state.minimized) return
+        var win = appWindows.itemAt(index)
+        if (win) win.animateOut("minimize")
+        else finishExit(index, "minimize")
+    }
+    function closeApp(index) {
+        var state = windowState(index)
+        if (!state.opened || state.minimized) return
+        var win = appWindows.itemAt(index)
+        if (win) win.animateOut("close")
+        else finishExit(index, "close")
+    }
+    function finishExit(index, kind) {
+        updateWindow(index, kind !== "close", kind === "minimize", false)
+        if (index === activeAppIndex) {
+            var best = -1
+            var top = -1
+            for (var i = 0; i < windowStates.length; i++) {
+                var state = windowStates[i]
+                if (state.opened && !state.minimized && state.order > top) {
+                    top = state.order
+                    best = i
+                }
+            }
+            if (best >= 0) activeAppIndex = best
+        }
+    }
 
     Timer {
         interval: 10000
         repeat: true
         running: true
         onTriggered: root.clockText = Qt.formatDateTime(new Date(), "HH:mm")
-    }
-    function openApp(index) {
-        if (index < 0 || index >= System.Apps.applications.length) return
-        closeAnimation.stop()
-        minimizeAnimation.stop()
-        launcherOpen = false
-        activeAppIndex = index
-        appOpen = true
-        appMinimized = false
-        Qt.callLater(function () { openAnimation.restart() })
-    }
-    function minimizeApp() {
-        if (!appOpen || appMinimized) return
-        minimizeAnimation.restart()
-    }
-    function closeApp() {
-        if (!appOpen) return
-        closeAnimation.restart()
     }
 
     Item {
@@ -206,7 +255,7 @@ ApplicationWindow {
                         onClicked: {
                             appMenu.close()
                             if (modelData.action === "about") root.openApp(0)
-                            else if (modelData.action === "minimize") root.minimizeApp()
+                            else if (modelData.action === "minimize") root.minimizeApp(root.activeAppIndex)
                             else Qt.quit()
                         }
                         background: Rectangle { radius: 9; color: parent.hovered ? "#E3EEFF" : "transparent" }
@@ -244,6 +293,8 @@ ApplicationWindow {
             }
         }
 
+        // CreOS Window Manager: one AppWindow per registered app.
+        // Windows can overlap, be dragged/resized, minimized and restored.
         Item {
             id: workspace
             anchors.left: parent.left
@@ -251,67 +302,61 @@ ApplicationWindow {
             anchors.top: bar.bottom
             anchors.bottom: dock.top
             anchors.bottomMargin: 6
-            clip: false
+            clip: true
 
-            function keepWindowVisible() {
-                if (appWindow.maximized) {
-                    appWindow.x = 10
-                    appWindow.y = 10
-                    appWindow.width = width - 20
-                    appWindow.height = height - 20
-                } else {
-                    appWindow.width = Math.min(appWindow.width, width - 22)
-                    appWindow.height = Math.min(appWindow.height, height - 22)
-                    appWindow.x = Math.max(8, Math.min(appWindow.x, width - appWindow.width - 8))
-                    appWindow.y = Math.max(8, Math.min(appWindow.y, height - appWindow.height - 8))
+            function keepAllVisible() {
+                for (var i = 0; i < appWindows.count; ++i) {
+                    var w = appWindows.itemAt(i)
+                    if (!w) continue
+                    if (w.maximized) {
+                        w.x = 7
+                        w.y = 7
+                        w.width = width - 14
+                        w.height = height - 14
+                    } else {
+                        w.width = Math.min(w.width, width - 18)
+                        w.height = Math.min(w.height, height - 18)
+                        w.x = Math.max(6, Math.min(w.x, width - w.width - 6))
+                        w.y = Math.max(6, Math.min(w.y, height - w.height - 6))
+                    }
                 }
             }
-            onWidthChanged: Qt.callLater(keepWindowVisible)
-            onHeightChanged: Qt.callLater(keepWindowVisible)
+            onWidthChanged: Qt.callLater(keepAllVisible)
+            onHeightChanged: Qt.callLater(keepAllVisible)
 
-            AppWindow {
-                id: appWindow
-                visible: root.appOpen && !root.appMinimized
-                width: Math.min(948, workspace.width - 65)
-                height: Math.min(578, workspace.height - 35)
-                x: (workspace.width - width) / 2
-                y: Math.max(13, (workspace.height - height) / 2)
-                appTitle: root.activeApp.name
-                appAppearance: root.activeApp.appearance || "system"
-                backgroundSource: wallpaper
-                backgroundYOffset: bar.height
-                componentSource: Qt.resolvedUrl("apps/" + root.activeApp.component)
-                onCloseRequested: root.closeApp()
-                onMinimizeRequested: root.minimizeApp()
-            }
-            ParallelAnimation {
-                id: openAnimation
-                NumberAnimation {
-                    target: appWindow; property: "opacity"
-                    from: 0; to: 1; duration: 340; easing.type: Easing.OutCubic
+            Repeater {
+                id: appWindows
+                model: System.Apps.applications
+                delegate: AppWindow {
+                    id: appFrame
+                    required property var modelData
+                    required property int index
+                    readonly property var state: root.windowState(index)
+
+                    visible: state.opened && !state.minimized
+                    loaded: state.opened || state.minimized
+                    z: state.order
+                    width: Math.min(840, workspace.width - 74)
+                    height: Math.min(525, workspace.height - 48)
+                    x: Math.max(9, (workspace.width - width) / 2 + index * 34 - 45)
+                    y: Math.max(8, (workspace.height - height) / 2 + index * 24 - 26)
+                    appTitle: modelData.name
+                    appAppearance: modelData.appearance || "system"
+                    backgroundSource: wallpaper
+                    backgroundYOffset: bar.height
+                    componentSource: Qt.resolvedUrl("apps/" + modelData.component)
+
+                    onFocused: root.focusApp(index)
+                    onCloseRequested: root.closeApp(index)
+                    onMinimizeRequested: root.minimizeApp(index)
+                    onExitFinished: function(kind) { root.finishExit(index, kind) }
+
+                    Component.onCompleted: {
+                        if (index === 0)
+                            Qt.callLater(function() { appFrame.animateIn() })
+                    }
                 }
-                NumberAnimation {
-                    target: appWindow; property: "scale"
-                    from: 0.90; to: 1; duration: 445; easing.type: Easing.OutBack
-                }
             }
-            SequentialAnimation {
-                id: minimizeAnimation
-                ParallelAnimation {
-                    NumberAnimation { target: appWindow; property: "opacity"; to: 0; duration: 280; easing.type: Easing.InCubic }
-                    NumberAnimation { target: appWindow; property: "scale"; to: 0.77; duration: 290; easing.type: Easing.InCubic }
-                }
-                ScriptAction { script: { root.appMinimized = true; appWindow.opacity = 1; appWindow.scale = 1 } }
-            }
-            SequentialAnimation {
-                id: closeAnimation
-                ParallelAnimation {
-                    NumberAnimation { target: appWindow; property: "opacity"; to: 0; duration: 210; easing.type: Easing.InCubic }
-                    NumberAnimation { target: appWindow; property: "scale"; to: 0.96; duration: 240; easing.type: Easing.InCubic }
-                }
-                ScriptAction { script: { root.appOpen = false; appWindow.opacity = 1; appWindow.scale = 1 } }
-            }
-            Component.onCompleted: openAnimation.start()
         }
 
         // Dynamic Dock — built from the same application registry as Launchpad.
@@ -377,7 +422,7 @@ ApplicationWindow {
                             anchors.bottom: parent.bottom
                             anchors.bottomMargin: 1
                             width: 4; height: 4; radius: 2
-                            color: root.appOpen && root.activeAppIndex === pinnedItem.index ?
+                            color: root.windowState(pinnedItem.index).opened ?
                                    "#4C587A" : "transparent"
                         }
                         MouseArea {
