@@ -41,6 +41,17 @@ class VisualSurfaceTests(unittest.TestCase):
         self.assertIn("../assets/icons/", self.app_icon)
         self.assertNotIn("font.pixelSize", self.app_icon)
         self.assertIn("appId", self.app_icon)
+        self.assertIn("border.width: 0", self.app_icon)
+        self.assertIn("mipmap: false", self.app_icon)
+
+    def test_svg_assets_only_paint_symbols(self):
+        for identity in IDS:
+            with self.subTest(icon=identity):
+                source = (UI / "assets" / "icons" / (identity + ".svg")).read_text(encoding="utf-8")
+                self.assertNotIn('fill="url(#base)"', source)
+                self.assertNotIn('stroke-opacity=".35"', source)
+                self.assertNotIn("clipPath", source)
+                self.assertIn('viewBox="0 0 96 96"', source)
 
     def test_app_window_has_only_one_round_outline(self):
         self.assertIn("id: surface", self.app_shell)
