@@ -1,66 +1,66 @@
-# CreOS — The Inner Universe
+# CreOS
 
-CreOS is an experimental **desktop-within-a-desktop** running as one Ubuntu application. Its own menu bar, Dock, Launchpad and app windows use a shared CreOS interface, inspired by macOS/iOS but independently designed.
+CreOS là một môi trường desktop với các ứng dụng riêng, hoạt động **bên trong Ubuntu**. Khung hệ thống, Dock và cửa sổ của tất cả ứng dụng đều do CreOS quản lý.
 
-## 0.1.5-dev · Window Core & Browser
+## CreOS 1.0.0 — Giao diện sử dụng
 
-The first built-in applications are now accessible from **Dock** and **Launchpad**:
+CreOS được mở **toàn màn hình mặc định**. Nhấn **F11** (hoặc chọn **CreOS → Chế độ cửa sổ**) để trở lại cửa sổ Ubuntu có thể di chuyển/phóng to/thu nhỏ như bình thường.
 
-| App | Works now |
+- **Desktop toàn màn hình**: hình nền và không gian làm việc mở rộng tới cả mép dưới.
+- **Dock kính nổi nhỏ gọn**: nằm trên một lớp giao diện riêng, **đè phía trên** cửa sổ thay vì giữ chỗ ở cuối màn hình.
+- **Đa cửa sổ**: mở nhiều app, bấm để đưa lên trên, kéo thanh tiêu đề để di chuyển.
+- **Điều khiển chuẩn CreOS**: đóng (đỏ), thu nhỏ (vàng), phóng to/khôi phục (xanh).
+- **Kéo thay đổi kích thước** ở 4 cạnh và 4 góc khi cửa sổ chưa phóng to.
+- **Chuyển động**: cửa sổ mở bằng fade + scale + dịch chuyển nhẹ; đóng và thu nhỏ có hiệu ứng riêng; dock icon phản hồi hover.
+- **CreOS System UI**: ứng dụng có thể kế thừa giao diện hệ thống hoặc tự tùy chỉnh nội dung riêng.
+
+### Ứng dụng tích hợp
+
+| Ứng dụng | Chức năng |
 |---|---|
-| CreOS | About, release history, system UI reference |
-| Ghi chú (Notes) | Create/edit/delete notes, autosave locally |
-| Máy tính (Calculator) | +, −, ×, ÷, %, change sign, delete, clear |
-| Đồng hồ (Clock) | Local time, stopwatch, lap list |
-| Cài đặt (Settings) | Switch between Aurora, Sunrise and Midnight desktop wallpaper |
-| Trình duyệt (Browser) | Open websites inside CreOS; address bar, search, Back/Forward, Reload and Home |
+| CreOS | Thông tin hệ thống, phiên bản và ứng dụng đã cài |
+| Ghi chú | Tạo, chỉnh sửa, xóa; lưu tự động |
+| Máy tính | Tính toán cơ bản |
+| Đồng hồ | Giờ hiện tại, bấm giờ và vòng |
+| Trình duyệt | Duyệt web bằng Qt WebEngine ngay trong CreOS |
+| Cài đặt | Đổi hình nền desktop và lưu lựa chọn |
 
-**Notes and wallpaper settings survive restarts.** Data is saved under `$XDG_DATA_HOME/CreOS/state.json` (usually `~/.local/share/CreOS/state.json`), outside the repository. Git pull doesn't overwrite it.
+## Chạy trên Ubuntu
 
-**You can open multiple app windows at once.** Apps keep independent window state; click any window to bring it forward. Drag the title bar to move it, drag any of 4 sides or 4 corners to resize it, and use the three colored buttons to close/minimize/maximize. Double-click the title bar to maximize/restore. All apps still share CreOS-owned window controls.
-
-### Running on Ubuntu
-
-Requires Python 3.10+, `python3-venv`, and Internet for web browsing. Browser is built on Qt WebEngine; first startup will install the additional `PySide6-WebEngine` dependency, which is substantially larger than the other apps.
-
-Open the cloned repo in VS Code. In the integrated terminal:
+Yêu cầu Python 3.10+ và `python3-venv`. Mở repository trong VS Code rồi chạy:
 
 ```bash
 bash run.sh
 ```
 
-The script creates `.venv`, installs PySide6 and starts CreOS. Internet is needed for the first dependency installation. If Ubuntu reports a missing Qt xcb platform plugin, try `sudo apt install libxcb-cursor0 libxkbcommon-x11-0`.
+Lần đầu cần Internet để tải PySide6 và PySide6-WebEngine. Nếu Ubuntu báo lỗi Qt xcb:
 
-### Updating from GitHub
+```bash
+sudo apt install libxcb-cursor0 libxkbcommon-x11-0
+```
 
-Use **Fetch origin → Pull origin** in GitHub Desktop or run:
+**Lấy mã mới từ GitHub**: đóng CreOS đang chạy, chọn **Fetch origin → Pull origin** trong GitHub Desktop hoặc chạy:
 
 ```bash
 git pull
 bash run.sh
 ```
 
-Close an existing CreOS window before relaunching. The source update isn't live hot-reload.
+Ghi chú và lựa chọn hình nền được lưu bên ngoài repo tại `$XDG_DATA_HOME/CreOS/state.json` (mặc định `~/.local/share/CreOS/state.json`), nên `git pull` không xóa chúng.
 
-### UI & architecture
+## Mã nguồn
 
-- `ui/Main.qml` — desktop, application switching, menu, wallpaper, Dock and Launchpad.
-- `ui/components/AppWindow.qml` — single-contour rounded window, independent animations, maximize and window chrome.\n- `ui/components/ResizeHandle.qml` — 8 resize directions using Qt 6 `activeTranslation`.
-- `ui/components/AppIcon.qml` — reusable application icon.
-- `ui/system/Theme.qml` — CreOS UI tokens.
-- `ui/system/Apps.qml` — centralized application registry.
-- `ui/apps/*App.qml` — app content, **without its own OS window controls**.
-- `state_store.py` — local persistent notes and wallpaper state.
-- `data/releases.json` — release versions and roadmap.
-- `tests/test_state_store.py` — persistence tests.
-- `ui/system/APP_GUIDE.md` — how to build the next CreOS app.
+- `ui/Main.qml`: desktop, quản lý đa cửa sổ, menu bar, dock và launchpad.
+- `ui/components/AppWindow.qml`: một khung cửa sổ dùng chung, animation, các điều khiển.
+- `ui/components/ResizeHandle.qml`: vùng resize 8 hướng.
+- `ui/system/Theme.qml`: token thiết kế toàn hệ thống.
+- `ui/system/Apps.qml`: registry ứng dụng.
+- `ui/apps/*App.qml`: nội dung từng ứng dụng.
+- `state_store.py`: lưu dữ liệu cục bộ.
+- `data/releases.json`: thông tin phiên bản.
 
-### Preview limitations
+Dữ liệu người dùng lưu tại máy và không được đưa lên GitHub. Trình duyệt tích hợp chỉ là chức năng tiện ích; không thay thế một trình duyệt chuyên dụng cho các tác vụ nhạy cảm. Các app cùng chạy trong một tiến trình, **chưa có sandbox riêng cho app bên thứ ba**.
 
-This is **developer preview**, not a real new operating system. This developer preview aims to support multiple independent app windows with z-order, focus, minimize, maximize and 8-direction resizing, but it is not yet validated on the user's Ubuntu desktop. Browser requires a network connection and may not support all modern sites, downloads, media DRM, popups or browser extensions; it is not security-hardened for untrusted local apps. The frosted glass visual uses Qt Quick; it is not pixel-identical to Apple's Liquid Glass. Graphics quality/performance vary by Qt installation and GPU/driver. The outer Ubuntu window frame is controlled by the Ubuntu window manager; CreOS-owned inner windows use the shared rounded shell. One native rounded panel contour replaces the previous overlapping double-border treatment. The 0.1.5 code removes unnecessary nested shadows/borders from the application window. The fragile full-window shader mask remains disabled because it hid app contents on some GPUs.
+### Kiểm thử
 
-The GitHub Actions workflow contains a virtual-display QML smoke test and data-store unit tests. **Until CI and real Ubuntu screenshots are verified, full visual/runtime compatibility is not guaranteed.**
-
-### Browser caveats
-
-Web browsing uses Chromium-based Qt WebEngine and loads remote pages. The embedded browser is a simple prototype, **not a hardened replacement for a mainstream browser**. Do not rely on it for sensitive accounts or financial services. Site compatibility, video codecs, WebRTC and file downloads vary by environment. In an Ubuntu desktop session Qt WebEngine should run without bypassing its sandbox. The CI-only virtual display disables Chromium sandbox because tests run as an isolated automated job.
+Repository có unit tests cho lưu trữ và GitHub Actions QML smoke test. Các hiệu ứng đồ họa cần được kiểm chứng thêm trên GPU, driver và phiên làm việc Ubuntu thực tế trước khi coi là ổn định trên mọi máy.
