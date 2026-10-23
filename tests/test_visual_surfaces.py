@@ -9,7 +9,7 @@ from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 UI = ROOT / "ui"
-IDS = ["about-creos", "notes", "calculator", "clock", "browser", "settings"]
+IDS = ["about-creos", "notes", "calculator", "clock", "browser", "settings", "files"]
 
 
 class VisualSurfaceTests(unittest.TestCase):
