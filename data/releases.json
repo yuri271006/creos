@@ -1,13 +1,29 @@
 {
-  "version": "0.1.3-dev",
+  "version": "0.1.4-dev",
   "channel": "Developer Preview",
   "repository": "https://github.com/yuri271006/creos",
   "releases": [
     {
+      "version": "0.1.4-dev",
+      "name": "Windows Everywhere",
+      "type": "current",
+      "status": "Bản sửa thử nghiệm",
+      "date": "23.10.2026",
+      "description": "Sửa giao diện bo góc bị hai lớp, thay trình quản lý một cửa sổ bằng quản lý nhiều cửa sổ độc lập và thêm kéo thay đổi kích thước từ cả tám hướng.",
+      "highlights": [
+        "Mở đồng thời nhiều app; chuyển focus/z-order bằng Dock, Launchpad hoặc nhấp cửa sổ.",
+        "Mỗi ứng dụng có riêng cửa sổ, trạng thái đóng/thu nhỏ và animation vào/ra.",
+        "Kéo cạnh trái, phải, trên, dưới hoặc bốn góc để resize; thanh tiêu đề để di chuyển.",
+        "Phóng to/khôi phục bằng nút xanh hoặc nhấp đúp thanh tiêu đề.",
+        "Bỏ đường viền phủ bên ngoài gây hiện tượng hai viền ở góc bo tròn.",
+        "Kiểm tra khởi động được mở rộng để thử tải tất cả app cùng lúc."
+      ]
+    },
+    {
       "version": "0.1.3-dev",
       "name": "Window Visibility Fix",
-      "status": "Bản sửa lỗi đang thử nghiệm",
-      "type": "current",
+      "status": "Bản dựng trước",
+      "type": "previous",
       "date": "22.10.2026",
       "description": "Sửa lỗi cửa sổ ứng dụng bên trong CreOS chỉ hiện nền kính và viền nhưng biến mất toàn bộ thanh tiêu đề và nội dung.",
       "highlights": [
