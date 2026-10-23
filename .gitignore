@@ -4,3 +4,10 @@ __pycache__/
 .vscode/
 *.log
 .DS_Store
+
+# Generated installers and PyInstaller outputs
+/build/
+/dist/
+*.spec
+*.deb
+CreOS-Setup-*.exe
