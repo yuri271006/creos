@@ -73,16 +73,16 @@ Item {
 
     ParallelAnimation {
         id: enterAnimation
-        NumberAnimation { target: host; property: "opacity"; from: 0; to: 1; duration: 280; easing.type: Easing.OutCubic }
-        NumberAnimation { target: host; property: "scale"; from: 0.94; to: 1; duration: 370; easing.type: Easing.OutCubic }
-        NumberAnimation { target: motionOffset; property: "y"; from: 48; to: 0; duration: 370; easing.type: Easing.OutCubic }
+        NumberAnimation { target: host; property: "opacity"; from: 0; to: 1; duration: System.Theme.durationNormal; easing.type: Easing.OutCubic }
+        NumberAnimation { target: host; property: "scale"; from: 0.94; to: 1; duration: System.Theme.durationSlow; easing.type: Easing.OutCubic }
+        NumberAnimation { target: motionOffset; property: "y"; from: 48; to: 0; duration: System.Theme.durationSlow; easing.type: Easing.OutCubic }
     }
     SequentialAnimation {
         id: leaveAnimation
         ParallelAnimation {
-            NumberAnimation { target: host; property: "opacity"; to: 0; duration: 260; easing.type: Easing.InCubic }
-            NumberAnimation { id: leaveScale; target: host; property: "scale"; to: 0.96; duration: 285; easing.type: Easing.InCubic }
-            NumberAnimation { id: leaveSlide; target: motionOffset; property: "y"; to: 22; duration: 290; easing.type: Easing.InCubic }
+            NumberAnimation { target: host; property: "opacity"; to: 0; duration: System.Theme.durationNormal; easing.type: Easing.InCubic }
+            NumberAnimation { id: leaveScale; target: host; property: "scale"; to: 0.96; duration: System.Theme.durationNormal; easing.type: Easing.InCubic }
+            NumberAnimation { id: leaveSlide; target: motionOffset; property: "y"; to: 22; duration: System.Theme.durationNormal; easing.type: Easing.InCubic }
         }
         ScriptAction {
             script: {
@@ -97,19 +97,19 @@ Item {
         id: geometryAnimation
         NumberAnimation {
             id: animationX; target: host; property: "x"
-            duration: 290; easing.type: Easing.OutCubic
+            duration: System.Theme.durationSlow; easing.type: Easing.OutCubic
         }
         NumberAnimation {
             id: animationY; target: host; property: "y"
-            duration: 290; easing.type: Easing.OutCubic
+            duration: System.Theme.durationSlow; easing.type: Easing.OutCubic
         }
         NumberAnimation {
             id: animationW; target: host; property: "width"
-            duration: 290; easing.type: Easing.OutCubic
+            duration: System.Theme.durationSlow; easing.type: Easing.OutCubic
         }
         NumberAnimation {
             id: animationH; target: host; property: "height"
-            duration: 290; easing.type: Easing.OutCubic
+            duration: System.Theme.durationSlow; easing.type: Easing.OutCubic
         }
     }
 
