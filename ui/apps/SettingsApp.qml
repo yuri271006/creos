@@ -138,6 +138,46 @@ Item {
                     color: System.Theme.muted
                 }
 
+                SectionLabel { text: "CẬP NHẬT PHẦN MỀM" }
+                SurfaceCard {
+                    width: parent.width
+                    height: 137
+                    Column {
+                        anchors.fill: parent
+                        anchors.margins: 16
+                        spacing: 12
+                        Text {
+                            text: "CreOS " + releaseStore.latestVersion
+                            font.pixelSize: 14
+                            font.weight: Font.DemiBold
+                            color: System.Theme.ink
+                        }
+                        Text {
+                            width: parent.width
+                            text: updateManager.status
+                            wrapMode: Text.Wrap
+                            font.pixelSize: 11
+                            color: System.Theme.secondary
+                        }
+                        Row {
+                            spacing: 10
+                            SystemButton {
+                                text: updateManager.busy ? "Đang xử lý..." : "Kiểm tra cập nhật"
+                                implicitWidth: 170
+                                enabled: !updateManager.busy
+                                onClicked: updateManager.checkNow()
+                            }
+                            SystemButton {
+                                visible: updateManager.ready
+                                text: "Cài đặt bản mới"
+                                primary: true
+                                implicitWidth: 162
+                                onClicked: updateManager.installUpdate()
+                            }
+                        }
+                    }
+                }
+
                 SectionLabel {
                     topPadding: 7
                     text: "VỀ THIẾT BỊ"
