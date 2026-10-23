@@ -59,7 +59,7 @@ def main():
     store = ReleaseStore()
     creos_data = CreosData()
     file_store = CreosFiles(BASE)
-    update_manager = UpdateManager(store.latestVersion) if not smoke_test else None
+    update_manager = UpdateManager(store.latestVersion, auto_check=not smoke_test)
     creos_data.dataError.connect(lambda message: print("CreOS data:", message, file=sys.stderr))
     engine.rootContext().setContextProperty("releaseStore", store)
     engine.rootContext().setContextProperty("creosData", creos_data)
