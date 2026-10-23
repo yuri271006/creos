@@ -7,6 +7,7 @@ Item {
     property string heading: ""
     property string caption: ""
     default property alias pageContent: contentSlot.data
+    readonly property int headerHeight: root.caption.length > 0 ? 100 : 79
     anchors.fill: parent
 
     Rectangle {
