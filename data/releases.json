@@ -1,21 +1,21 @@
 {
-  "version": "1.2.1",
-  "channel": "Release",
+  "version": "1.3.0",
+  "channel": "Installer Source",
   "repository": "https://github.com/yuri271006/creos",
   "releases": [
     {
-      "version": "1.2.1",
-      "name": "UI Consistency & Window Input",
+      "version": "1.3.0",
+      "name": "Installer & Updates",
       "type": "current",
-      "status": "Cập nhật giao diện và tương tác",
+      "status": "Chờ đóng gói",
       "date": "23.10.2026",
-      "description": "Icon không viền, hệ UI thống nhất và chặn tương tác xuyên cửa sổ.",
+      "description": "Bộ cài Ubuntu/Windows, thiết lập tài khoản CreOS, hạn mức data và cập nhật từ GitHub Releases.",
       "highlights": [
-        "Vẽ lại 7 icon nhận diện riêng: nền bo góc do CreOS quản lý, SVG chỉ vẽ hình biểu tượng.",
-        "Cửa sổ ở sau bị khóa các điều khiển, cuộn và nhập liệu; nhấp một lần để đưa lên trước.",
-        "Dùng chung PaneHeader và AppPage, tiêu đề và màu sắc từ CreOS Human Interface.",
-        "Dọn nội dung mẫu và thông điệp thừa, giữ lại nhãn có chức năng.",
-        "Files chuyển bố cục linh hoạt khi cửa sổ hẹp, có trạng thái trống rõ ràng."
+        "Lần mở đầu: tạo tên người dùng, mật khẩu và dung lượng CreOS/data từ 2 đến 8 GB.",
+        "Lần mở sau: xác minh mật khẩu cục bộ trước khi hiện Desktop.",
+        "Windows: chương trình cài đặt .exe, Ubuntu: gói .deb và shortcut Desktop.",
+        "Cập nhật: kiểm tra GitHub Releases, tự tải gói mới, kiểm tra SHA-256, người dùng xác nhận cài.",
+        "Các tệp người dùng lưu ngoài chương trình, không bị xóa khi cài đè."
       ]
     }
   ]
