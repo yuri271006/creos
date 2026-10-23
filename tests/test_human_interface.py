@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 UI = ROOT / "ui"
 APPS = ["CreosApp", "NotesApp", "CalculatorApp", "ClockApp", "SettingsApp", "BrowserApp", "FilesApp"]
-COMPONENTS = ["AppPage", "SurfaceCard", "SystemButton", "SegmentedTabs", "SectionLabel"]
+COMPONENTS = ["AppPage", "PaneHeader", "SurfaceCard", "SystemButton", "SegmentedTabs", "SectionLabel"]
 
 
 class HumanInterfaceTests(unittest.TestCase):
