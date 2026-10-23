@@ -81,7 +81,8 @@ def main():
     engine.rootContext().setContextProperty("creosData", creos_data)
     engine.rootContext().setContextProperty("fileStore", file_store)
     engine.rootContext().setContextProperty("updateManager", update_manager)
-    engine.rootContext().setContextProperty("accountInfo", AccountInfo())
+    account_info = AccountInfo()
+    engine.rootContext().setContextProperty("accountInfo", account_info)
     engine.load(QUrl.fromLocalFile(str(BASE / "ui" / "Main.qml")))
     if not engine.rootObjects():
         print("CreOS: không tải được giao diện QML.", file=sys.stderr)
