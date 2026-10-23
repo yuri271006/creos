@@ -2,7 +2,7 @@
 
 CreOS là một môi trường desktop với các ứng dụng riêng, hoạt động **bên trong Ubuntu**. Khung hệ thống, Dock và cửa sổ của tất cả ứng dụng đều do CreOS quản lý.
 
-## CreOS 1.0.1 — Icons & Rounded Surfaces
+## CreOS 1.1.0 — Human Interface
 
 CreOS được mở **toàn màn hình mặc định**. Nhấn **F11** (hoặc chọn **CreOS → Chế độ cửa sổ**) để trở lại cửa sổ Ubuntu có thể di chuyển/phóng to/thu nhỏ như bình thường.
 
@@ -14,6 +14,22 @@ CreOS được mở **toàn màn hình mặc định**. Nhấn **F11** (hoặc c
 - **Chuyển động**: cửa sổ mở bằng fade + scale + dịch chuyển nhẹ; đóng và thu nhỏ có hiệu ứng riêng; dock icon phản hồi hover.
 - **Icon CreOS mới**: sáu biểu tượng SVG vector có hình minh họa riêng; dùng chung ở Desktop, Dock, Launchpad và trong ứng dụng. Không sử dụng glyph font làm icon.
 - **CreOS System UI**: ứng dụng có thể kế thừa giao diện hệ thống hoặc tự tùy chỉnh nội dung riêng.
+
+### Bộ thiết kế CreOS Human Interface
+
+**CreOS quy định UI toàn hệ thống.** App mới không tự thiết kế từ đầu: dùng `Theme.qml` để lấy màu, typography, spacing và animation, kết hợp `AppPage`, `SurfaceCard`, `SystemButton`, `SegmentedTabs`, `SectionLabel` và `SidebarItem`. CreOS tiếp tục quản lý khung cửa sổ, Dock và Launchpad; app chỉ quản lý nội dung và chức năng của mình.
+
+Trong 1.1.0, toàn bộ app được chuyển sang phong cách sáng, ít lớp, tương tác rõ ràng lấy cảm hứng từ iOS:
+- **Ghi chú:** split view, danh sách ghi chú, trình soạn thảo lớn, autosave 450 ms.
+- **Máy tính:** màn hình kết quả và bàn phím bốn cột, tối ưu nút bấm.
+- **Đồng hồ:** tab thời gian/bấm giờ, timer tiết kiệm CPU khi không chạy.
+- **Trình duyệt:** thanh điều hướng gọn, URL/search, engine chỉ khởi tạo khi truy cập web.
+- **Cài đặt:** thẻ nhóm chuẩn CreOS, đổi hình nền ngay.
+- **CreOS:** thông tin hệ thống và danh sách ứng dụng có cùng bố cục.
+
+**Hiệu năng:** ưu tiên nền đặc bo tròn và animation thời gian ngắn; không sử dụng blur GPU live ở các app. Chưa có số đo FPS trên máy Ubuntu của người dùng, nên chưa xác nhận được mức độ mượt trong thực tế.
+
+Xem [quy chuẩn thiết kế và viết app](ui/system/APP_GUIDE.md).
 
 ### Ứng dụng tích hợp
 
@@ -56,6 +72,7 @@ Ghi chú và lựa chọn hình nền được lưu bên ngoài repo tại `$XDG
 - `ui/components/ResizeHandle.qml`: vùng resize 8 hướng.
 - `ui/system/Theme.qml`: token thiết kế toàn hệ thống.
 - `ui/system/Apps.qml`: registry ứng dụng.
+- `ui/components/AppPage.qml`, `SurfaceCard.qml`, `SystemButton.qml`, `SegmentedTabs.qml`, `SectionLabel.qml`: các thành phần UI chuẩn.
 - `ui/assets/icons/*.svg`: bộ icon vector chính thức, dùng qua `ui/components/AppIcon.qml`.
 - `ui/apps/*App.qml`: nội dung từng ứng dụng.
 - `state_store.py`: lưu dữ liệu cục bộ.
