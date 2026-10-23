@@ -86,3 +86,15 @@ Thêm icon vector ở `ui/assets/icons/tasks.svg`. Không dùng ký tự Unicode
 ## 6. Phạm vi hiện có
 
 Các app chuẩn: CreOS, Notes, Calculator, Clock, Browser, Settings. Cửa sổ dùng chung hệ thống; app có thể lựa chọn `appearance: "custom"` cho **nội dung**, nhưng Dock/chrome vẫn thuộc CreOS. Chưa có sandbox độc lập cho ứng dụng bên thứ ba.
+
+
+## CreOS 1.2.0 · Island và Files
+
+- CreOS không còn thanh trạng thái chiếm trọn chiều ngang. `ui/components/CreosIsland.qml` là lớp nổi ở phía trên desktop; nó hiển thị giờ/trạng thái, mở rộng với animation và phát ra `action(cmd)` tới shell để mở Files/Cài đặt/Thông tin.
+- Icon ứng dụng **không được có stroke/viền bao ngoài**. SVG phải phủ đầy viewBox `96×96`, toàn bộ hình trang trí phải cắt bởi `clipPath` bo góc. `AppIcon.qml` nạp tài nguyên SVG theo app id.
+- `ui/apps/FilesApp.qml` là giao diện Files; `files_store.py` mới là nơi quyết định quyền.
+- `sys`: ánh xạ tới mã nguồn/asset cài đặt CreOS trong repo, **chỉ đọc**, không phải `/sys` của Ubuntu.
+- `data`: thư mục `$XDG_DATA_HOME/CreOS/data` (mặc định `~/.local/share/CreOS/data`). Cho phép thư mục/tệp văn bản và các thao tác tạo/đổi tên/xóa có giới hạn.
+- Backend từ chối `../`, symlink, tên ẩn, tệp quá 512 KB, và không xóa thư mục chưa rỗng. Tất cả thao tác sửa phải đi qua phương thức kiểm tra quyền backend, tuyệt đối không tự mở `Path` trực tiếp trong QML.
+
+**Ưu tiên độ mượt:** Island chỉ animate kích thước và độ mờ khi có thao tác; không dùng hiệu ứng shader blur toàn màn hình. Kết quả FPS phải đo trên GPU Ubuntu thực tế.
