@@ -34,6 +34,17 @@ ApplicationWindow {
         return entry.opened && !entry.minimized
     }).length
     property string clockText: Qt.formatDateTime(new Date(), "HH:mm")
+    property string islandNotice: ""
+    function notifyIsland(text) {
+        islandNotice = text
+        islandNoticeTimer.restart()
+    }
+    Timer {
+        id: islandNoticeTimer
+        interval: 1900
+        repeat: false
+        onTriggered: root.islandNotice = ""
+    }
 
     // Each app has its own, independently managed window and z-order.
     // Replacing the array ensures QML bindings react to state changes.
@@ -63,6 +74,7 @@ ApplicationWindow {
         var previous = windowState(index)
         var win = appWindows.itemAt(index)
         launcherOpen = false
+        notifyIsland(System.Apps.applications[index].name)
         if (!previous.opened || previous.minimized) {
             // Set the initial pose *before* the window becomes visible.
             if (win) {
@@ -123,8 +135,7 @@ ApplicationWindow {
         anchors.fill: parent
         clip: true
 
-        // Wallpaper drawn once in CreOS and sampled as the backdrop
-        // for real GPU-blurred system surfaces.
+        // Wallpaper drawn once; app surfaces use lightweight system materials.
         Item {
             id: wallpaper
             anchors.fill: parent
@@ -180,117 +191,22 @@ ApplicationWindow {
             }
         }
 
-        // A thin macOS-inspired global menu bar.
-        Item {
-            id: bar
-            width: parent.width
-            height: 39
-            z: 10
-            ShaderEffectSource {
-                id: menuCapture
-                anchors.fill: parent
-                sourceItem: wallpaper
-                sourceRect: Qt.rect(0, 0, bar.width, bar.height)
-                visible: false
-            }
-            MultiEffect {
-                anchors.fill: parent
-                source: menuCapture
-                blurEnabled: true
-                blurMax: 24
-                blur: 1
-                autoPaddingEnabled: false
-            }
-            Rectangle { anchors.fill: parent; color: "#A8FFFFFF" }
-            Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: 1; color: "#55FFFFFF" }
-            Row {
-                x: 16; anchors.verticalCenter: parent.verticalCenter
-                spacing: 17
-                Button {
-                    id: logoButton
-                    width: 89; height: 28
-                    hoverEnabled: true
-                    onClicked: appMenu.open()
-                    background: Rectangle { radius: 8; color: logoButton.hovered || appMenu.opened ? "#98FFFFFF" : "transparent" }
-                    contentItem: Text {
-                        text: "◈  CreOS"
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        font.family: System.Theme.fontFamily
-                        font.weight: Font.Bold
-                        font.pixelSize: 12
-                        color: "#2D3B59"
-                    }
-                }
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: "CreOS"
-                    font.pixelSize: 11
-                    color: "#455674"
-                }
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: root.visibleAppCount + " cửa sổ"
-                    font.pixelSize: 11
-                    color: "#455674"
-                }
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: "Hệ thống"
-                    font.pixelSize: 11
-                    color: "#7888A3"
-                }
-            }
-            Row {
-                anchors.right: parent.right
-                anchors.rightMargin: 22
-                anchors.verticalCenter: parent.verticalCenter
-                spacing: 19
-                Text { text: "◈"; font.pixelSize: 14; color: "#556987" }
-                Text { text: "●  CREOS"; font.pixelSize: 10; font.weight: Font.DemiBold; color: "#657794"; anchors.verticalCenter: parent.verticalCenter }
-                Text { text: clockText; font.pixelSize: 11; font.weight: Font.DemiBold; color: "#354863"; anchors.verticalCenter: parent.verticalCenter }
-            }
-        }
-        Popup {
-            id: appMenu
-            x: 16; y: 35
-            width: 224
-            height: 181
-            padding: 7
-            z: 20
-            closePolicy: Popup.CloseOnPressOutside | Popup.CloseOnEscape
-            background: Rectangle { radius: 15; color: "#F2F9FF"; border.color: "#FFFFFFFF" }
-            Column {
-                anchors.fill: parent; spacing: 4
-                Repeater {
-                    model: [
-                        {label:"Giới thiệu CreOS", action:"about"},
-                        {label:"Cài đặt CreOS", action:"settings"},
-                        {label:"Chế độ cửa sổ  ·  F11", action:"screen"},
-                        {label:"Thoát CreOS", action:"quit"}
-                    ]
-                    delegate: Button {
-                        required property var modelData
-                        width: parent.width
-                        height: 37
-                        hoverEnabled: true
-                        onClicked: {
-                            appMenu.close()
-                            if (modelData.action === "about") root.openApp(0)
-                            else if (modelData.action === "settings") root.openApp(System.Apps.findIndex("settings"))
-                            else if (modelData.action === "screen") root.toggleFullscreen()
-                            else Qt.quit()
-                        }
-                        background: Rectangle { radius: 9; color: parent.hovered ? "#E3EEFF" : "transparent" }
-                        contentItem: Text {
-                            text: modelData.label
-                            verticalAlignment: Text.AlignVCenter
-                            leftPadding: 12
-                            font.pixelSize: 12
-                            color: "#3C4B65"
-                        }
-                    }
-                }
+        // CreOS Island replaces the full-width system strip.
+        // It floats above windows and uses one rounded surface, no GPU mask.
+        CreosIsland {
+            id: systemIsland
+            z: 40
+            anchors.top: parent.top
+            anchors.topMargin: 10
+            anchors.horizontalCenter: parent.horizontalCenter
+            openWindows: root.visibleAppCount
+            clockText: root.clockText
+            message: root.islandNotice
+            onAction: function(cmd) {
+                if (cmd === "files") root.openApp(System.Apps.findIndex("files"))
+                else if (cmd === "settings") root.openApp(System.Apps.findIndex("settings"))
+                else if (cmd === "about") root.openApp(System.Apps.findIndex("about-creos"))
+                else if (cmd === "fullscreen") root.toggleFullscreen()
             }
         }
 
@@ -322,7 +238,7 @@ ApplicationWindow {
             id: workspace
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.top: bar.bottom
+            anchors.top: scene.top
             // Dock floats above workspace; maximized apps use the full height.
             anchors.bottom: scene.bottom
             clip: true
@@ -366,7 +282,7 @@ ApplicationWindow {
                     appTitle: modelData.name
                     appAppearance: modelData.appearance || "system"
                     backgroundSource: wallpaper
-                    backgroundYOffset: bar.height
+                    backgroundYOffset: 0
                     componentSource: Qt.resolvedUrl("apps/" + modelData.component)
 
                     onFocused: root.focusApp(index)
