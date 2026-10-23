@@ -21,7 +21,7 @@ Item {
         Text {
             text: root.heading
             font.family: System.Theme.fontFamily
-            font.pixelSize: 25
+            font.pixelSize: System.Theme.typeTitle
             font.weight: Font.DemiBold
             color: System.Theme.ink
         }
@@ -31,7 +31,7 @@ Item {
             elide: Text.ElideRight
             text: root.caption
             font.family: System.Theme.fontFamily
-            font.pixelSize: 12
+            font.pixelSize: System.Theme.typeAction
             color: System.Theme.secondary
         }
     }
