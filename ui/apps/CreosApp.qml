@@ -9,7 +9,7 @@ Item {
 
     AppPage {
         heading: "CreOS"
-        caption: "Không gian của riêng bạn."
+        caption: "Phiên bản và ứng dụng hệ thống"
         Flickable {
             anchors.fill: parent
             contentWidth: width
@@ -46,7 +46,7 @@ Item {
                                 font.pixelSize: 13
                             }
                             Text {
-                                text: "The Inner Universe"
+                                text: "Thông tin thiết bị"
                                 color: System.Theme.muted
                                 font.pixelSize: 11
                             }
