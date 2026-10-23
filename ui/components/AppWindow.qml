@@ -128,9 +128,9 @@ Item {
         anchors.fill: parent
         radius: 22
         antialiasing: true
-        color: "#EEF6FD"
+        color: System.Theme.surface
         border.width: 1
-        border.color: "#C4D0E4"
+        border.color: host.activeWindow ? "#C3D4EE" : System.Theme.line
 
         // Backstop catches otherwise-unhandled clicks/wheel events in the
         // topmost window so they cannot reach applications behind it.
@@ -156,7 +156,7 @@ Item {
                 anchors.bottom: parent.bottom
                 width: parent.width
                 height: 1
-                color: "#DCE5EF"
+                color: System.Theme.subtleLine
             }
             // Only the background of title bar is a drag target.
             // Buttons remain independently clickable.
@@ -222,10 +222,10 @@ Item {
             Text {
                 anchors.centerIn: parent
                 text: host.appTitle
-                font.pixelSize: 12
+                font.pixelSize: System.Theme.typeAction
                 font.family: System.Theme.fontFamily
                 font.weight: Font.DemiBold
-                color: "#566680"
+                color: System.Theme.ink
             }
         }
 
