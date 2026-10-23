@@ -1,4 +1,4 @@
-"""CreOS Developer Preview launcher."""
+"""CreOS application launcher."""
 from __future__ import annotations
 
 import json
@@ -9,6 +9,7 @@ from PySide6.QtWebEngineQuick import QtWebEngineQuick
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 from state_store import CreosData
+from files_store import CreosFiles
 
 BASE = Path(__file__).resolve().parent
 
@@ -53,9 +54,11 @@ def main():
     engine.warnings.connect(on_warnings)
     store = ReleaseStore()
     creos_data = CreosData()
+    file_store = CreosFiles(BASE)
     creos_data.dataError.connect(lambda message: print("CreOS data:", message, file=sys.stderr))
     engine.rootContext().setContextProperty("releaseStore", store)
     engine.rootContext().setContextProperty("creosData", creos_data)
+    engine.rootContext().setContextProperty("fileStore", file_store)
     engine.load(QUrl.fromLocalFile(str(BASE / "ui" / "Main.qml")))
     if not engine.rootObjects():
         print("CreOS: không tải được giao diện QML.", file=sys.stderr)
