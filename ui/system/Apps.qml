@@ -30,6 +30,11 @@ QtObject {
             "component": "BrowserApp.qml", "appearance": "system"
         },
         {
+            "id": "files", "name": "Tệp",
+            "subtitle": "Quản lý sys và data",
+            "component": "FilesApp.qml", "appearance": "system"
+        },
+        {
             "id": "settings", "name": "Cài đặt",
             "subtitle": "Cá nhân hóa",
             "component": "SettingsApp.qml", "appearance": "system"
