@@ -45,7 +45,7 @@ class ShellContractTests(unittest.TestCase):
         self.assertNotIn("Developer Preview", self.desktop)
         self.assertNotIn("ROADMAP", self.about)
         self.assertNotIn("Bản phát hành", self.about)
-        self.assertEqual("1.0.0", self.release["version"])
+        self.assertEqual("1.0.1", self.release["version"])
 
 
 if __name__ == "__main__":
