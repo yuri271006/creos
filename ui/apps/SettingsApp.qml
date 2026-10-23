@@ -184,7 +184,7 @@ Item {
                 }
                 SurfaceCard {
                     width: parent.width
-                    height: 150
+                    height: 203
                     Column {
                         anchors.fill: parent
                         anchors.margins: 18
@@ -193,6 +193,8 @@ Item {
                             model: [
                                 {name:"Phiên bản CreOS", value:releaseStore.latestVersion},
                                 {name:"Ứng dụng đã cài", value:System.Apps.applications.length + " ứng dụng"},
+                                {name:"Người dùng", value:accountInfo.username},
+                                {name:"Ổ data CreOS", value:accountInfo.quotaGiB + " GB"},
                                 {name:"Ghi chú đã lưu", value:creosData.notes.length + " ghi chú"}
                             ]
                             delegate: Item {
