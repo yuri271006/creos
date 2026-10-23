@@ -77,11 +77,10 @@ Item {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    Column {
+                    PaneHeader {
                         Layout.fillWidth: true
-                        spacing: 4
-                        Text { text: "Ghi chú"; font.pixelSize: 22; font.weight: Font.DemiBold; color: System.Theme.ink }
-                        Text { text: creosData.notes.length + " ghi chú"; font.pixelSize: 11; color: System.Theme.secondary }
+                        heading: "Ghi chú"
+                        detail: creosData.notes.length + " ghi chú"
                     }
                     SystemButton {
                         text: "+"
