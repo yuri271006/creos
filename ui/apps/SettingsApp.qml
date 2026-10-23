@@ -14,7 +14,7 @@ Item {
 
     AppPage {
         heading: "Cài đặt"
-        caption: "Cá nhân hóa không gian CreOS."
+        caption: "Hình nền và thông tin hệ thống"
         Flickable {
             anchors.fill: parent
             clip: true
@@ -56,7 +56,7 @@ Item {
                                 color: System.Theme.ink
                             }
                             Text {
-                                text: "Chọn hình nền, thay đổi được áp dụng ngay."
+                                text: "Thay đổi hình nền Desktop"
                                 font.pixelSize: 11
                                 color: System.Theme.secondary
                             }
@@ -139,7 +139,7 @@ Item {
                     }
                 }
                 Text {
-                    text: "Lựa chọn được lưu tự động trên máy Ubuntu."
+                    text: "Thay đổi được lưu tự động"
                     font.pixelSize: 11
                     color: System.Theme.muted
                 }
