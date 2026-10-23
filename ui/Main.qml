@@ -255,7 +255,7 @@ ApplicationWindow {
             id: appMenu
             x: 16; y: 35
             width: 224
-            height: 139
+            height: 181
             padding: 7
             z: 20
             closePolicy: Popup.CloseOnPressOutside | Popup.CloseOnEscape
@@ -266,6 +266,7 @@ ApplicationWindow {
                     model: [
                         {label:"Giới thiệu CreOS", action:"about"},
                         {label:"Cài đặt CreOS", action:"settings"},
+                        {label:"Chế độ cửa sổ  ·  F11", action:"screen"},
                         {label:"Thoát CreOS", action:"quit"}
                     ]
                     delegate: Button {
@@ -277,6 +278,7 @@ ApplicationWindow {
                             appMenu.close()
                             if (modelData.action === "about") root.openApp(0)
                             else if (modelData.action === "settings") root.openApp(System.Apps.findIndex("settings"))
+                            else if (modelData.action === "screen") root.toggleFullscreen()
                             else Qt.quit()
                         }
                         background: Rectangle { radius: 9; color: parent.hovered ? "#E3EEFF" : "transparent" }
