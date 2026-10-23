@@ -1,13 +1,28 @@
 {
-  "version": "0.1.4-dev",
+  "version": "0.1.5-dev",
   "channel": "Developer Preview",
   "repository": "https://github.com/yuri271006/creos",
   "releases": [
     {
+      "version": "0.1.5-dev",
+      "name": "Window Core & Browser",
+      "status": "Bản dựng thử nghiệm",
+      "type": "current",
+      "date": "23.10.2026",
+      "description": "Làm lại lớp cửa sổ theo hướng ổn định và bổ sung trình duyệt web tích hợp vào CreOS.",
+      "highlights": [
+        "Thay lớp khung cửa sổ bằng một bề mặt có một viền bo góc, bỏ các lớp viền và mask phụ.",
+        "Sửa xử lý kéo giãn 8 hướng theo activeTranslation của Qt Quick DragHandler.",
+        "Giữ cửa sổ riêng cho từng ứng dụng, có Dock, Launchpad, focus, thu nhỏ và phóng to.",
+        "Thêm CreOS Browser với trang chủ, thanh địa chỉ, tìm kiếm, quay lại, tiến tới và tải lại.",
+        "Tích hợp Qt WebEngine và kiểm tra khởi động cho sáu ứng dụng."
+      ]
+    },
+    {
       "version": "0.1.4-dev",
       "name": "Windows Everywhere",
-      "type": "current",
-      "status": "Bản sửa thử nghiệm",
+      "type": "previous",
+      "status": "Bản dựng trước",
       "date": "23.10.2026",
       "description": "Sửa giao diện bo góc bị hai lớp, thay trình quản lý một cửa sổ bằng quản lý nhiều cửa sổ độc lập và thêm kéo thay đổi kích thước từ cả tám hướng.",
       "highlights": [
