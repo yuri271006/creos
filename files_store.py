@@ -14,6 +14,7 @@ import tempfile
 from PySide6.QtCore import QObject, Property, Signal, Slot
 
 from state_store import data_directory
+from creos_profile import within_quota, quota_bytes, volume_usage
 
 MAX_TEXT_BYTES = 512 * 1024
 VISIBLE_LIMIT = 500
@@ -182,6 +183,8 @@ class CreosFiles(QObject):
             path = self._child(name, missing=True)
             if path.suffix.lower() not in ALLOWED_TEXT:
                 raise ValueError("Chỉ hỗ trợ tạo tệp văn bản (.txt, .md, .json...).")
+            if volume_usage(self._data_root) >= quota_bytes():
+                raise ValueError("Dung lượng CreOS/data đã đầy.")
             with path.open("x", encoding="utf-8"):
                 pass
             self.refresh()
@@ -215,6 +218,10 @@ class CreosFiles(QObject):
             encoded = content.encode("utf-8")
             if len(encoded) > MAX_TEXT_BYTES:
                 raise ValueError("Tệp vượt giới hạn 512 KB.")
+            # Enforce the configured 2–8 GiB data volume without preallocating.
+            previous = path.stat().st_size
+            if not within_quota(self._data_root, previous, len(encoded)):
+                raise ValueError("CreOS/data đã vượt dung lượng được cấp.")
             # Atomic save with a unique temporary file in the same directory.
             # No stale .tmp file can prevent the next save.
             tmp_name = None
