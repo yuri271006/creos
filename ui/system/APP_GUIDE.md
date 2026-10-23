@@ -1,64 +1,88 @@
-# CreOS Human Interface · Application contract
+# CreOS Human Interface · v2
 
-## CreOS owns the operating-system layer
+CreOS quyết định ngôn ngữ giao diện và hành vi của mọi ứng dụng tích hợp, lấy cảm hứng từ tính nhất quán và sự rõ ràng của iOS/macOS nhưng không sao chép nội dung/nhận diện Apple.
 
-The CreOS shell (`ui/Main.qml`) provides a fullscreen desktop, global menu, a compact dock that overlays maximized app windows, launcher, app registry and application transitions. `ui/components/AppWindow.qml` provides the **same** window chrome for every app: close, minimize, maximize, drag, resize, single-contour rounded corners and a stable window background (without fragile full-window GPU masks).
+## 1. Kiến trúc bắt buộc
 
-Built-in apps **must not recreate window controls**. Apps only supply QML content.
+**System-owned:** `ui/Main.qml` quản lý desktop, top bar, Dock, Launchpad, cửa sổ, focus và z-order. `ui/components/AppWindow.qml` quản lý thanh tiêu đề và kéo/phóng to/thu nhỏ/đóng. Không ứng dụng nào tự vẽ hệ thống cửa sổ.
 
-## Shared design language
+**App-owned:** Mỗi ứng dụng chỉ cung cấp QML bên trong `ui/apps/*App.qml`, lưu trạng thái và xử lý logic nghiệp vụ.
 
-- `ui/system/Theme.qml`: typography, colors, radii, durations and spacing.
-- `ui/components/SystemButton.qml`, `SidebarItem.qml`, `GlassPanel.qml`: controls.
-- `ui/components/AppIcon.qml`: shared SVG icon renderer for Desktop, Dock and Launchpad.
-- `ui/system/Apps.qml`: id, display name, component and appearance. Icon SVG asset filenames correspond to application ids.
+**Single source of truth:** `ui/system/Theme.qml` là nguồn duy nhất định nghĩa màu, typography, spacing, radius, kích cỡ tương tác và duration. Các app không tự lựa chọn màu/nút/card mới trừ khi có lý do sản phẩm và được đăng ký thành component CreOS.
 
-Apps may use:
-- **system** appearance, inheriting the common style.
-- **custom** appearance for its content (CreOS still controls the surrounding window).
+## 2. Thành phần CreOS UI được cung cấp
 
-## Adding an app
+| Component | Mục đích |
+|---|---|
+| `AppPage.qml` | Bố cục trang, tiêu đề lớn, caption, vùng nội dung |
+| `SurfaceCard.qml` | Thẻ/nhóm nội dung với một đường viền bo tròn |
+| `SystemButton.qml` | Button chuẩn: primary, destructive, quiet |
+| `SegmentedTabs.qml` | Chuyển tab trong app |
+| `SectionLabel.qml` | Nhãn nhóm theo hệ thống |
+| `SidebarItem.qml` | Điều hướng sidebar chuẩn |
+| `AppIcon.qml` | Icon vector SVG theo id đăng ký app |
+| `AppWindow.qml` | System chrome (không import/vẽ trong nội dung app) |
 
-Create `ui/apps/ExampleApp.qml`:
+## 3. Ví dụ app đúng chuẩn
+
+Tạo `ui/apps/TasksApp.qml`:
 
 ```qml
 import QtQuick
+import "../components"
 import "../system" as System
 
 Item {
-    Rectangle {
-        anchors.fill: parent
-        color: System.Theme.surface
+    AppPage {
+        heading: "Công việc"
+        caption: "Những điều quan trọng trong ngày."
+        SurfaceCard {
+            anchors.fill: parent
+            SystemButton {
+                anchors.centerIn: parent
+                text: "Thêm công việc"
+                primary: true
+                onClicked: console.log("New task")
+            }
+        }
     }
 }
 ```
 
-Register an entry in `ui/system/Apps.qml`:
+Đăng ký trong `ui/system/Apps.qml`:
 
 ```js
 {
-  "id": "example",
-  "name": "Example",
-  "subtitle": "My CreOS app",
-  "component": "ExampleApp.qml",
-  "appearance": "system"
+    "id": "tasks",
+    "name": "Công việc",
+    "subtitle": "Quản lý danh sách việc làm",
+    "component": "TasksApp.qml",
+    "appearance": "system"
 }
 ```
 
-Add the vector asset \`ui/assets/icons/example.svg\` (96 × 96, rounded background with transparent outside corners). \`AppIcon.qml\` resolves it using the application's \`id\`. Avoid font glyph icons. The same registry populates **Dock** and **Launchpad**. Each registered app gets its **own CreOS AppWindow** with independent visibility, z-order, minimize/maximize and 8-way resizing. Clicking its icon opens or focuses that window.
+Thêm icon vector ở `ui/assets/icons/tasks.svg`. Không dùng ký tự Unicode làm icon hệ thống.
 
-## Data
+## 4. Quy tắc tương tác
 
-Built-in apps needing persistent data should add carefully scoped, validated methods to `state_store.py`. Its data is written to the user's XDG data directory outside the repo. **Never store user notes within Git-tracked project files.** No app sandbox exists yet, so only run trusted application code.
+- Chữ chính rõ ràng trên nền `Theme.canvas`; nhóm nội dung vào `SurfaceCard`.
+- Các nút nên có chiều cao tối thiểu `Theme.minimumTarget` (42 px).
+- Dùng `primary` cho hành động chính, `destructive` cho hành động xóa.
+- Không đặt nhiều lớp bo góc/mask/blur chồng nhau.
+- Sidebar/segmented tabs phải giữ trạng thái chọn rõ ràng.
+- Tách trạng thái UI và dữ liệu: Notes/Settings dùng `state_store.py` trong thư mục XDG; không ghi trực tiếp vào repo.
 
-## Motion principles
+## 5. Motion & Performance — ưu tiên số một
 
-- Interactive hover feedback: 140–220 ms.
-- Navigation: 260–340 ms, OutCubic.
-- Window enter/exit: ~250–450 ms (scale and opacity).
-- Do not introduce dragging delay by attaching generic `Behavior on x/y` to moving windows.
-- Never place rectangular ShaderEffect/MultiEffect surfaces behind rounded Dock or Launchpad panels; this caused visible square corners. Blur must be properly masked or replaced by a single rounded translucent surface. Test with GPU and software rendering.
+- Hover/press 120 ms; chuyển nội dung 220 ms; chuyển động lớn 320 ms (`Theme.durationQuick/Normal/Slow`).
+- Ưu tiên `opacity`, `scale`, translate cho các animation ngắn. Không gắn `Behavior on x/y` vào cửa sổ đang drag vì tạo độ trễ dưới chuột.
+- **Không** chạy animation vô hạn hoặc blur live trên các danh sách/thẻ nội dung.
+- App muốn cập nhật theo thời gian phải dùng Timer chạy đúng khi cần (đồng hồ thường 1 Hz; stopwatch chỉ 20 Hz khi đang chạy).
+- List dài phải dùng `ListView`/lazy delegates; tránh tạo tất cả phần tử bằng `Repeater` nếu dữ liệu lớn.
+- Qt WebEngine chỉ được khởi tạo khi người dùng thực sự mở website (lazy Loader).
+- Không hy sinh thao tác nhập liệu hay chức năng thực tế để lấy hiệu ứng hình ảnh.
+- Các cấu hình GPU/driver trên Ubuntu phải được kiểm thử, không cam kết 60 FPS trước khi đo thực tế.
 
-## Current boundaries
+## 6. Phạm vi hiện có
 
-CreOS 1.0.1 implements independent on-screen windows, z-order, focusing and 8-direction resizing for each registered app. App processes still run inside the same Qt/Python process; isolation, safe third-party sandboxing and task switching remain future work.
+Các app chuẩn: CreOS, Notes, Calculator, Clock, Browser, Settings. Cửa sổ dùng chung hệ thống; app có thể lựa chọn `appearance: "custom"` cho **nội dung**, nhưng Dock/chrome vẫn thuộc CreOS. Chưa có sandbox độc lập cho ứng dụng bên thứ ba.
