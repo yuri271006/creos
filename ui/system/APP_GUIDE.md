@@ -47,7 +47,7 @@ Register an entry in `ui/system/Apps.qml`:
 }
 ```
 
-The same registry populates **Dock** and **Launchpad**; clicking loads the component inside the CreOS-owned AppWindow.
+The same registry populates **Dock** and **Launchpad**. Each registered app gets its **own CreOS AppWindow** with independent visibility, z-order, minimize/maximize and 8-way resizing. Clicking its icon opens or focuses that window.
 
 ## Data
 
@@ -63,4 +63,4 @@ Built-in apps needing persistent data should add carefully scoped, validated met
 
 ## Current boundaries
 
-CreOS 0.1.2-dev currently shows **one app window at a time**. Real multiwindow z-order/focus and app-process isolation are future work; do not market them as implemented.
+CreOS 0.1.4-dev implements independent on-screen windows, z-order, focusing and 8-direction resizing for each registered app. App processes still run inside the same Qt/Python process; isolation, safe third-party sandboxing and task switching remain future work.
