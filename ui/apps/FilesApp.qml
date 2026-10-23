@@ -151,7 +151,7 @@ Item {
                     Layout.fillWidth: true
                     spacing: 9
                     Text {
-                        text: "Files"
+                        text: "Tệp"
                         font.pixelSize: 21
                         font.weight: Font.DemiBold
                         color: System.Theme.ink
@@ -288,7 +288,7 @@ Item {
                                 Text {
                                     anchors.centerIn: parent
                                     visible: fileList.count === 0
-                                    text: "Chưa có tệp nào."
+                                    text: "Thư mục trống"
                                     font.pixelSize: 12
                                     color: System.Theme.muted
                                 }
@@ -342,7 +342,7 @@ Item {
                                     font.family: "monospace"
                                     font.pixelSize: 12
                                     color: System.Theme.ink
-                                    placeholderText: "Chọn một tệp văn bản để xem nội dung."
+                                    placeholderText: "Chọn tệp để xem nội dung"
                                     background: Item {}
                                     onTextChanged: {
                                         if (!app.updatingEditor && app.selectedName.length && !fileStore.readOnly)
