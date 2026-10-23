@@ -331,11 +331,11 @@ ApplicationWindow {
                     id: appFrame
                     required property var modelData
                     required property int index
-                    readonly property var state: root.windowState(index)
+                    readonly property var windowRecord: root.windowState(index)
 
-                    visible: state.opened && !state.minimized
-                    loaded: state.opened || state.minimized
-                    z: state.order
+                    visible: windowRecord.opened && !windowRecord.minimized
+                    loaded: windowRecord.opened || windowRecord.minimized
+                    z: windowRecord.order
                     width: Math.min(840, workspace.width - 74)
                     height: Math.min(525, workspace.height - 48)
                     x: Math.max(9, (workspace.width - width) / 2 + index * 34 - 45)
