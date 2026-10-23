@@ -70,7 +70,7 @@ Item {
 
     AppPage {
         heading: "Máy tính"
-        caption: "Tính toán nhanh, tập trung vào điều quan trọng."
+        caption: "Các phép tính cơ bản"
         Flickable {
             anchors.fill: parent
             clip: true
