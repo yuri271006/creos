@@ -1,14 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">
-<defs>
- <linearGradient id="base" x1="0" y1="0" x2=".85" y2="1"><stop offset="0" stop-color="#F1BB74"/><stop offset=".56" stop-color="#E69071"/><stop offset="1" stop-color="#CF75A0"/></linearGradient>
- <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".36"/><stop offset=".48" stop-color="#fff" stop-opacity="0"/></linearGradient>
-<clipPath id="tileclip"><rect x="0" y="0" width="96" height="96" rx="23"/></clipPath>
-</defs>
-<rect x="0" y="0" width="96" height="96" rx="23" fill="url(#base)"/>
-<g clip-path="url(#tileclip)">
-<circle cx="85" cy="14" r="40" fill="#fff" opacity=".09"/>
-<circle cx="12" cy="99" r="41" fill="#1b2e67" opacity=".12"/>
-<rect x="0" y="0" width="96" height="96" rx="23" fill="url(#shine)"/>
-<rect x="26" y="18" width="47" height="61" rx="10" fill="#A24E6E" opacity=".24"/><rect x="23" y="17" width="48" height="62" rx="9" fill="#FFFAF3"/><rect x="23" y="17" width="48" height="13" rx="8" fill="#FDE7C5"/><path d="M35 41h23M35 50h23M35 59h16" stroke="#D6A7AB" stroke-width="3.2" stroke-linecap="round"/><path d="M59 73L75 44c1.2-2.2 3.8-3 6-1.7s3.1 3.8 1.8 6L66.4 77 57 81z" fill="#5769AC"/><path d="M59 73l7.4 4-9.4 4z" fill="#FFDEAE"/><path d="M77 43l5 3" stroke="#FFE8F4" stroke-width="3" stroke-linecap="round"/>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+<!-- CreOS symbol only; the rounded tile is drawn natively by AppIcon.qml. -->
+<path d="M26 16h36l10 11v51c0 3-2 5-5 5H26c-3 0-5-2-5-5V21c0-3 2-5 5-5Z" fill="#FFFFFF"/>
+<path d="M62 16v12h10Z" fill="#FFE8BC"/>
+<path d="M31 39h31M31 48h31M31 57h21" stroke="#E0AE66" stroke-width="3.2" stroke-linecap="round"/>
+<path d="M58 72L78 47a5 5 0 0 1 7 7L65 79L54 84Z" fill="#FFFFFF"/>
+<path d="M58 72l7 7-11 5Z" fill="#9B5A32"/>
+<path d="M78 47l7 7" stroke="#E8D7C4" stroke-width="2.5"/>
 </svg>
