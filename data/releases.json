@@ -1,121 +1,20 @@
 {
-  "version": "0.1.5-dev",
-  "channel": "Developer Preview",
+  "version": "1.0.0",
+  "channel": "Release",
   "repository": "https://github.com/yuri271006/creos",
   "releases": [
     {
-      "version": "0.1.5-dev",
-      "name": "Window Core & Browser",
-      "status": "Bản dựng thử nghiệm",
+      "version": "1.0.0",
+      "name": "CreOS",
       "type": "current",
+      "status": "Phát hành",
       "date": "23.10.2026",
-      "description": "Làm lại lớp cửa sổ theo hướng ổn định và bổ sung trình duyệt web tích hợp vào CreOS.",
+      "description": "Desktop toàn màn hình, Dock nổi và các ứng dụng tích hợp.",
       "highlights": [
-        "Thay lớp khung cửa sổ bằng một bề mặt có một viền bo góc, bỏ các lớp viền và mask phụ.",
-        "Sửa xử lý kéo giãn 8 hướng theo activeTranslation của Qt Quick DragHandler.",
-        "Giữ cửa sổ riêng cho từng ứng dụng, có Dock, Launchpad, focus, thu nhỏ và phóng to.",
-        "Thêm CreOS Browser với trang chủ, thanh địa chỉ, tìm kiếm, quay lại, tiến tới và tải lại.",
-        "Tích hợp Qt WebEngine và kiểm tra khởi động cho sáu ứng dụng."
-      ]
-    },
-    {
-      "version": "0.1.4-dev",
-      "name": "Windows Everywhere",
-      "type": "previous",
-      "status": "Bản dựng trước",
-      "date": "23.10.2026",
-      "description": "Sửa giao diện bo góc bị hai lớp, thay trình quản lý một cửa sổ bằng quản lý nhiều cửa sổ độc lập và thêm kéo thay đổi kích thước từ cả tám hướng.",
-      "highlights": [
-        "Mở đồng thời nhiều app; chuyển focus/z-order bằng Dock, Launchpad hoặc nhấp cửa sổ.",
-        "Mỗi ứng dụng có riêng cửa sổ, trạng thái đóng/thu nhỏ và animation vào/ra.",
-        "Kéo cạnh trái, phải, trên, dưới hoặc bốn góc để resize; thanh tiêu đề để di chuyển.",
-        "Phóng to/khôi phục bằng nút xanh hoặc nhấp đúp thanh tiêu đề.",
-        "Bỏ đường viền phủ bên ngoài gây hiện tượng hai viền ở góc bo tròn.",
-        "Kiểm tra khởi động được mở rộng để thử tải tất cả app cùng lúc."
-      ]
-    },
-    {
-      "version": "0.1.3-dev",
-      "name": "Window Visibility Fix",
-      "status": "Bản dựng trước",
-      "type": "previous",
-      "date": "22.10.2026",
-      "description": "Sửa lỗi cửa sổ ứng dụng bên trong CreOS chỉ hiện nền kính và viền nhưng biến mất toàn bộ thanh tiêu đề và nội dung.",
-      "highlights": [
-        "Bỏ layer mask GPU gây hiện tượng cửa sổ trống trên một số hệ thống Qt Quick.",
-        "Sử dụng cửa sổ bo góc vẽ trực tiếp để đảm bảo nội dung luôn hiển thị.",
-        "Giữ animation mở/đóng, nền kính và các nút điều khiển.",
-        "Thêm thông báo trực tiếp trong cửa sổ nếu một ứng dụng QML tải thất bại."
-      ]
-    },
-    {
-      "version": "0.1.2-dev",
-      "name": "Everyday Apps",
-      "status": "Bản dựng trước",
-      "type": "previous",
-      "date": "22.10.2026",
-      "description": "CreOS có những ứng dụng tích hợp đầu tiên, cùng dùng chung khung cửa sổ và ngôn ngữ thiết kế hệ thống.",
-      "highlights": [
-        "Ghi chú: tạo, chỉnh sửa, xóa và lưu tự động vào dữ liệu cục bộ.",
-        "Máy tính: cộng, trừ, nhân, chia, phần trăm, đổi dấu và xóa ký tự.",
-        "Đồng hồ: xem giờ địa phương, bấm giờ và ghi vòng.",
-        "Cài đặt: chọn hình nền Aurora, Sunrise hoặc Midnight và lưu lựa chọn.",
-        "Dock và Launchpad hiển thị từng app bằng biểu tượng riêng.",
-        "Lưu dữ liệu ứng dụng độc lập trong thư mục XDG của người dùng."
-      ]
-    },
-    {
-      "version": "0.1.1-dev",
-      "name": "Glass Reborn",
-      "status": "Bản dựng trước",
-      "type": "previous",
-      "date": "22.10.2026",
-      "description": "Thiết kế lại CreOS theo ngôn ngữ hệ điều hành: bố cục sáng, cửa sổ bo tròn bằng mask, dock kính mờ lấy mẫu nền và chuyển động tương tác.",
-      "highlights": [
-        "Cửa sổ con có bo góc cắt cả nội dung, bóng đổ và hiệu ứng mở/đóng.",
-        "Dock kính nổi cùng Launcher, phản hồi hover và animation.",
-        "Qt Quick Effects hỗ trợ làm mờ nền thực tế cho các bề mặt hệ thống.",
-        "Ứng dụng CreOS được thiết kế lại: Giới thiệu, Bản phát hành, Giao diện hệ thống.",
-        "Khung UI thuộc CreOS; app mới có thể theo System Style hoặc Custom Style."
-      ]
-    },
-    {
-      "version": "0.1.0-dev",
-      "name": "The Beginning",
-      "status": "Bản dựng trước",
-      "type": "previous",
-      "date": "22.10.2026",
-      "description": "Bản thử nghiệm giao diện đầu tiên và trung tâm thông tin phiên bản.",
-      "highlights": [
-        "Thiết lập repository CreOS và PySide6 / Qt Quick.",
-        "Tạo hệ thống dữ liệu bản phát hành.",
-        "Bước đầu có desktop, app frame và dock."
-      ]
-    },
-    {
-      "version": "0.2.0",
-      "name": "Living Desktop",
-      "status": "Dự kiến",
-      "type": "planned",
-      "date": "Chưa ấn định",
-      "description": "Bước tiếp theo hướng tới một desktop thu nhỏ ở bên trong cửa sổ CreOS.",
-      "highlights": [
-        "Không gian Desktop cùng dock ứng dụng.",
-        "Hệ thống mở và đóng các ứng dụng con.",
-        "Hiệu ứng chuyển động thống nhất."
-      ]
-    },
-    {
-      "version": "0.3.0",
-      "name": "Little Universe",
-      "status": "Ý tưởng",
-      "type": "planned",
-      "date": "Chưa ấn định",
-      "description": "Định hướng biến CreOS thành một không gian ứng dụng nhỏ có thể mở rộng.",
-      "highlights": [
-        "Quản lý nhiều cửa sổ bên trong CreOS.",
-        "Cơ chế module để bổ sung ứng dụng mới.",
-        "Lưu thiết lập và trạng thái không gian."
+        "Desktop toàn màn hình mặc định, phím F11 để trở về cửa sổ Ubuntu.",
+        "Dock nhỏ gọn nổi bên trên các cửa sổ.",
+        "Animation mở, đóng và thu nhỏ ứng dụng.",
+        "Ghi chú, Máy tính, Đồng hồ, Trình duyệt và Cài đặt."
       ]
     }
   ]
