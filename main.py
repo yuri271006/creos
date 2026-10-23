@@ -4,7 +4,8 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from PySide6.QtCore import QObject, Property, QTimer, QUrl
+from PySide6.QtCore import QObject, Property, QTimer, QUrl, QCoreApplication, Qt
+from PySide6.QtWebEngineQuick import QtWebEngineQuick
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 from state_store import CreosData
@@ -35,6 +36,9 @@ class ReleaseStore(QObject):
 def main():
     smoke_test = "--smoke-test" in sys.argv
     qt_args = [arg for arg in sys.argv if arg != "--smoke-test"]
+    # Qt WebEngine must share a rendering context with Qt Quick.
+    QCoreApplication.setAttribute(Qt.AA_ShareOpenGLContexts)
+    QtWebEngineQuick.initialize()
     app = QGuiApplication(qt_args)
     app.setApplicationName("CreOS")
     engine = QQmlApplicationEngine()
@@ -72,8 +76,8 @@ def main():
                     f"Expected {app_count} app windows concurrently, got {visible}"
                 )
 
-        QTimer.singleShot(2750, verify_multiwindow)
-        QTimer.singleShot(2900, app.quit)
+        QTimer.singleShot(4100, verify_multiwindow)
+        QTimer.singleShot(4500, app.quit)
         code = app.exec()
         if messages:
             print(f"CreOS: {len(messages)} QML warning(s) detected.", file=sys.stderr)
