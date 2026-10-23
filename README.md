@@ -2,7 +2,7 @@
 
 CreOS là một môi trường desktop với các ứng dụng riêng, hoạt động **bên trong Ubuntu**. Khung hệ thống, Dock và cửa sổ của tất cả ứng dụng đều do CreOS quản lý.
 
-## CreOS 1.2.0 — Island & Files
+## CreOS 1.2.1 — Consistent UI & Window Focus
 
 CreOS được mở **toàn màn hình mặc định**. Nhấn **F11** (hoặc chọn **CreOS → Chế độ cửa sổ**) để trở lại cửa sổ Ubuntu có thể di chuyển/phóng to/thu nhỏ như bình thường.
 
@@ -13,8 +13,12 @@ CreOS được mở **toàn màn hình mặc định**. Nhấn **F11** (hoặc c
 - **Điều khiển chuẩn CreOS**: đóng (đỏ), thu nhỏ (vàng), phóng to/khôi phục (xanh).
 - **Kéo thay đổi kích thước** ở 4 cạnh và 4 góc khi cửa sổ chưa phóng to.
 - **Chuyển động**: cửa sổ mở bằng fade + scale + dịch chuyển nhẹ; đóng và thu nhỏ có hiệu ứng riêng; dock icon phản hồi hover.
-- **Icon CreOS mới**: sáu biểu tượng SVG vector có hình minh họa riêng; dùng chung ở Desktop, Dock, Launchpad và trong ứng dụng. Không sử dụng glyph font làm icon.
+- **Bộ icon CreOS**: 7 hình biểu tượng SVG rõ nghĩa (giấy, máy tính, đồng hồ, địa cầu, thư mục, bánh răng và CreOS). Nền bo góc được Qt vẽ một lần duy nhất; không lồng các lớp icon vuông có viền.
 - **CreOS System UI**: ứng dụng có thể kế thừa giao diện hệ thống hoặc tự tùy chỉnh nội dung riêng.
+
+### Tương tác cửa sổ (1.2.1)
+
+Cửa sổ đang ở trước nhận sự kiện bình thường. Cửa sổ ở sau bị vô hiệu hóa nội dung nhập liệu và có lớp chặn sự kiện chuột/cuộn; nhấp vào vùng của cửa sổ ở sau sẽ đưa nó lên trước, sau đó mới thao tác trong app. Khung giao diện CreOS dùng cùng màu, typography, nút và khoảng cách, nhưng vẫn cho phép bố cục phù hợp với từng tác vụ.
 
 ### Bộ thiết kế CreOS Human Interface
 
@@ -87,7 +91,7 @@ Dữ liệu người dùng lưu tại máy và không được đưa lên GitHub
 
 ### Kiểm thử
 
-Repository có unit tests cho lưu trữ và GitHub Actions QML smoke test. Các hiệu ứng đồ họa cần được kiểm chứng thêm trên GPU, driver và phiên làm việc Ubuntu thực tế trước khi coi là ổn định trên mọi máy. Bản 1.0.1 thay các lớp blur chưa có mask bằng một bề mặt bo góc riêng để hạn chế lỗi hiển thị từ các GPU khác nhau.
+Repository có unit tests cho lưu trữ và GitHub Actions QML smoke test. Các hiệu ứng đồ họa và thao tác chồng cửa sổ cần được kiểm chứng thêm trên GPU, driver và phiên làm việc Ubuntu thực tế trước khi coi là ổn định trên mọi máy. Bản 1.0.1 thay các lớp blur chưa có mask bằng một bề mặt bo góc riêng để hạn chế lỗi hiển thị từ các GPU khác nhau.
 
 ### Quản lý tệp CreOS
 
@@ -95,4 +99,4 @@ Files sử dụng **hai không gian logic**: `sys` là những tệp trong thư 
 
 Trong `data`: tạo thư mục/tệp văn bản, lưu tệp, đổi tên và xóa tệp hay thư mục **rỗng**; nhấp một lần để chọn, nhấp đúp để vào thư mục. Chỉ chỉnh sửa trực tiếp tệp dạng văn bản UTF-8 kích thước tối đa **512 KB**. Không hỗ trợ xóa đệ quy, giải nén hoặc trình duyệt filesystem Ubuntu đầy đủ trong phiên bản này. Cơ chế ngăn đường dẫn `../` và symbolic link tránh vượt khỏi vùng dữ liệu cho phép.
 
-Icon SVG đã bỏ stroke viền ngoài và sử dụng clipPath bo góc để không lộ lớp trang trí hình vuông. CreOS vẫn chưa được xác nhận mượt trên mọi GPU Ubuntu; cần kiểm thử thực tế và phản hồi của người dùng.
+Icon SVG chỉ chứa hình biểu tượng trong suốt; nền và góc bo do AppIcon.qml vẽ bằng Rectangle. Không còn lớp nền/viền SVG tạo quầng đen ở mép. CreOS vẫn chưa được xác nhận mượt trên mọi GPU Ubuntu; cần kiểm thử thực tế và phản hồi của người dùng.
