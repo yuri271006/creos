@@ -66,7 +66,7 @@ Item {
 
     AppPage {
         heading: "Đồng hồ"
-        caption: "Thời gian ở ngay đây, cho mọi kế hoạch."
+        caption: "Giờ hiện tại và bấm giờ"
         ColumnLayout {
             anchors.fill: parent
             spacing: 15
@@ -114,7 +114,7 @@ Item {
                                 color: System.Theme.accentSoft
                                 Text {
                                     anchors.centerIn: parent
-                                    text: "●  CreOS Time"
+                                    text: "Giờ hệ thống"
                                     color: System.Theme.accent
                                     font.pixelSize: 10
                                     font.weight: Font.DemiBold
@@ -206,7 +206,7 @@ Item {
                                 Text {
                                     anchors.centerIn: parent
                                     visible: clock.laps.length === 0
-                                    text: "Các vòng bấm giờ sẽ xuất hiện ở đây."
+                                    text: "Chưa ghi vòng nào"
                                     font.pixelSize: 12
                                     color: System.Theme.muted
                                 }
