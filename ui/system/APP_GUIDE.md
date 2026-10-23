@@ -4,7 +4,7 @@ CreOS quyết định ngôn ngữ giao diện và hành vi của mọi ứng d�
 
 ## 1. Kiến trúc bắt buộc
 
-**System-owned:** `ui/Main.qml` quản lý desktop, top bar, Dock, Launchpad, cửa sổ, focus và z-order. `ui/components/AppWindow.qml` quản lý thanh tiêu đề và kéo/phóng to/thu nhỏ/đóng. Không ứng dụng nào tự vẽ hệ thống cửa sổ.
+**System-owned:** `ui/Main.qml` quản lý desktop, CreOS Island, Dock, Launchpad, cửa sổ, focus và z-order. `ui/components/AppWindow.qml` quản lý thanh tiêu đề và kéo/phóng to/thu nhỏ/đóng. Không ứng dụng nào tự vẽ hệ thống cửa sổ.
 
 **App-owned:** Mỗi ứng dụng chỉ cung cấp QML bên trong `ui/apps/*App.qml`, lưu trạng thái và xử lý logic nghiệp vụ.
 
@@ -15,6 +15,7 @@ CreOS quyết định ngôn ngữ giao diện và hành vi của mọi ứng d�
 | Component | Mục đích |
 |---|---|
 | `AppPage.qml` | Bố cục trang, tiêu đề lớn, caption, vùng nội dung |
+| `PaneHeader.qml` | Tiêu đề đồng nhất cho bố cục hai ngăn như Files và Ghi chú |
 | `SurfaceCard.qml` | Thẻ/nhóm nội dung với một đường viền bo tròn |
 | `SystemButton.qml` | Button chuẩn: primary, destructive, quiet |
 | `SegmentedTabs.qml` | Chuyển tab trong app |
@@ -61,7 +62,7 @@ Item {
 }
 ```
 
-Thêm icon vector ở `ui/assets/icons/tasks.svg`. Không dùng ký tự Unicode làm icon hệ thống.
+Thêm SVG **chỉ chứa biểu tượng** ở `ui/assets/icons/tasks.svg`; nền bo góc do `AppIcon.qml` tạo. Không dùng ký tự Unicode làm icon hệ thống.
 
 ## 4. Quy tắc tương tác
 
@@ -91,10 +92,20 @@ Các app chuẩn: CreOS, Notes, Calculator, Clock, Browser, Settings. Cửa sổ
 ## CreOS 1.2.0 · Island và Files
 
 - CreOS không còn thanh trạng thái chiếm trọn chiều ngang. `ui/components/CreosIsland.qml` là lớp nổi ở phía trên desktop; nó hiển thị giờ/trạng thái, mở rộng với animation và phát ra `action(cmd)` tới shell để mở Files/Cài đặt/Thông tin.
-- Icon ứng dụng **không được có stroke/viền bao ngoài**. SVG phải phủ đầy viewBox `96×96`, toàn bộ hình trang trí phải cắt bởi `clipPath` bo góc. `AppIcon.qml` nạp tài nguyên SVG theo app id.
+- Icon ứng dụng được vẽ thành **hai lớp**: `AppIcon.qml` tạo duy nhất một nền `Rectangle` bo góc, không border; SVG ở `ui/assets/icons/` chỉ chứa hình biểu tượng ở giữa (không có background/clipPath/mask/shadow). Chỉ dùng hình dễ nhận diện khi thu về 36 px. Không vẽ thêm viền/ô vuông trong SVG.
 - `ui/apps/FilesApp.qml` là giao diện Files; `files_store.py` mới là nơi quyết định quyền.
 - `sys`: ánh xạ tới mã nguồn/asset cài đặt CreOS trong repo, **chỉ đọc**, không phải `/sys` của Ubuntu.
 - `data`: thư mục `$XDG_DATA_HOME/CreOS/data` (mặc định `~/.local/share/CreOS/data`). Cho phép thư mục/tệp văn bản và các thao tác tạo/đổi tên/xóa có giới hạn.
 - Backend từ chối `../`, symlink, tên ẩn, tệp quá 512 KB, và không xóa thư mục chưa rỗng. Tất cả thao tác sửa phải đi qua phương thức kiểm tra quyền backend, tuyệt đối không tự mở `Path` trực tiếp trong QML.
 
 **Ưu tiên độ mượt:** Island chỉ animate kích thước và độ mờ khi có thao tác; không dùng hiệu ứng shader blur toàn màn hình. Kết quả FPS phải đo trên GPU Ubuntu thực tế.
+
+## 8. Quy tắc focus và chống tương tác chéo (1.2.1)
+
+- `Main.qml` tính `activeWindow` từ cửa sổ đang được focus và truyền xuống `AppWindow.qml`.
+- `AppWindow` đặt `body.item.enabled = activeWindow` để toàn bộ app phía sau vẫn nhìn thấy nhưng không thể cuộn, bấm, chỉnh sửa hoặc nhập liệu. Quy tắc áp dụng cả app dùng `WebEngineView`.
+- `inactiveInputBarrier` nhận nhấp để đưa cửa sổ lên trước nhưng nuốt wheel/click; `surface` có MouseArea làm backstop bắt các sự kiện không được app phía trước xử lý.
+- Không tự thêm PointerHandler trùm lên toàn bộ cửa sổ của app khác. Các sự kiện drag/resize chỉ hoạt động ở cửa sổ đang focus.
+- **AppPage** cho app dạng trang, **PaneHeader** cho ứng dụng hai ngăn. Các tiêu đề, nút, khoảng cách phải dùng Theme hoặc component CreOS. Mọi nội dung trống hoặc cảnh báo phải ngắn, rõ việc cần làm; không đặt khẩu hiệu hoặc lời dẫn quảng cáo trong UI hệ thống.
+
+Các kiểm thử `tests/test_window_input_isolation.py` và `tests/test_visual_surfaces.py` chỉ kiểm tra hợp đồng mã nguồn; cần kiểm thử thực tế sự kiện pointer/wheel trên Ubuntu để kết luận lỗi đã hết.
