@@ -8,7 +8,7 @@ CreOS quyết định ngôn ngữ giao diện và hành vi của mọi ứng d�
 
 **App-owned:** Mỗi ứng dụng chỉ cung cấp QML bên trong `ui/apps/*App.qml`, lưu trạng thái và xử lý logic nghiệp vụ.
 
-**Single source of truth:** `ui/system/Theme.qml` là nguồn duy nhất định nghĩa màu, typography, spacing, radius, kích cỡ tương tác và duration. Các app không tự lựa chọn màu/nút/card mới trừ khi có lý do sản phẩm và được đăng ký thành component CreOS.
+**Single source of truth:** `ui/system/Theme.qml` là nguồn duy nhất định nghĩa màu, typography (typeTitle/typeHeading/typeBody/typeAction/typeCaption/typeLabel), spacing, radius, kích cỡ tương tác và duration. Các app không tự lựa chọn màu/nút/card mới trừ khi có lý do sản phẩm và được đăng ký thành component CreOS.
 
 ## 2. Thành phần CreOS UI được cung cấp
 
