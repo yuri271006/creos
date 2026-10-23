@@ -38,6 +38,13 @@ QtObject {
     readonly property int durationNormal: 220
     readonly property int durationSlow: 320
     readonly property string fontFamily: "Noto Sans"
+    // System type scale: all components use the same visual hierarchy.
+    readonly property int typeTitle: 25
+    readonly property int typeHeading: 20
+    readonly property int typeBody: 13
+    readonly property int typeAction: 12
+    readonly property int typeCaption: 11
+    readonly property int typeLabel: 10
 
     // Kept as an interface contract for future accessibility settings.
     readonly property bool reduceMotion: false
