@@ -49,7 +49,7 @@ class UpdateManager(QObject):
     _downloaded = Signal(object)
     _progress = Signal(int)
 
-    def __init__(self, current_version: str, parent=None):
+    def __init__(self, current_version: str, parent=None, auto_check: bool = True):
         super().__init__(parent)
         self._current = current_version
         self._available = ""
@@ -63,8 +63,9 @@ class UpdateManager(QObject):
         self._timer = QTimer(self)
         self._timer.setInterval(6 * 60 * 60 * 1000)
         self._timer.timeout.connect(self.checkNow)
-        self._timer.start()
-        QTimer.singleShot(9000, self.checkNow)
+        if auto_check:
+            self._timer.start()
+            QTimer.singleShot(9000, self.checkNow)
 
     @Property(str, constant=True)
     def currentVersion(self) -> str:
