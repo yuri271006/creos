@@ -19,6 +19,12 @@ ApplicationWindow {
     property int activeAppIndex: 0
     property int nextWindowOrder: 1
     readonly property int registeredAppCount: System.Apps.applications.length
+    // Test hook also proves multiple windows stay open simultaneously.
+    property int smokeAppIndex: -1
+    onSmokeAppIndexChanged: if (smokeAppIndex >= 0) openApp(smokeAppIndex)
+    readonly property int visibleAppCount: windowStates.filter(function(entry) {
+        return entry.opened && !entry.minimized
+    }).length
     property string clockText: Qt.formatDateTime(new Date(), "HH:mm")
 
     // Each app has its own, independently managed window and z-order.
