@@ -8,16 +8,23 @@ import "system" as System
 ApplicationWindow {
     id: root
     visible: true
-    title: "CreOS  ·  The Inner Universe"
+    title: "CreOS"
     width: 1260
     height: 820
-    minimumWidth: 1020
-    minimumHeight: 710
+    minimumWidth: 900
+    minimumHeight: 600
+    // Fullscreen inside Ubuntu by default; F11 restores a resizable window.
+    visibility: Window.FullScreen
+    function toggleFullscreen() {
+        if (visibility === Window.FullScreen) showNormal()
+        else showFullScreen()
+    }
+    Shortcut { sequence: "F11"; onActivated: root.toggleFullscreen() }
     color: "#CCD9EC"
 
     property bool launcherOpen: false
     property int activeAppIndex: 0
-    property int nextWindowOrder: 1
+    property int nextWindowOrder: 0
     readonly property int registeredAppCount: System.Apps.applications.length
     // Test hook also proves multiple windows stay open simultaneously.
     property int smokeAppIndex: -1
@@ -30,7 +37,7 @@ ApplicationWindow {
     // Each app has its own, independently managed window and z-order.
     // Replacing the array ensures QML bindings react to state changes.
     property var windowStates: System.Apps.applications.map(function(app, index) {
-        return { opened: index === 0, minimized: false, order: index === 0 ? 1 : 0 }
+        return { opened: false, minimized: false, order: 0 }
     })
 
     function windowState(index) {
@@ -53,13 +60,20 @@ ApplicationWindow {
     function openApp(index) {
         if (index < 0 || index >= registeredAppCount) return
         var previous = windowState(index)
+        var win = appWindows.itemAt(index)
         launcherOpen = false
-        updateWindow(index, true, false, true)
         if (!previous.opened || previous.minimized) {
+            // Set the initial pose *before* the window becomes visible.
+            if (win) {
+                win.opacity = 0
+                win.scale = 0.94
+            }
+            updateWindow(index, true, false, true)
             Qt.callLater(function() {
-                var win = appWindows.itemAt(index)
                 if (win) win.animateIn()
             })
+        } else {
+            updateWindow(index, true, false, true)
         }
     }
     function focusApp(index) {
@@ -250,7 +264,7 @@ ApplicationWindow {
                 Repeater {
                     model: [
                         {label:"Giới thiệu CreOS", action:"about"},
-                        {label:"Thu nhỏ cửa sổ", action:"minimize"},
+                        {label:"Cài đặt CreOS", action:"settings"},
                         {label:"Thoát CreOS", action:"quit"}
                     ]
                     delegate: Button {
@@ -261,7 +275,7 @@ ApplicationWindow {
                         onClicked: {
                             appMenu.close()
                             if (modelData.action === "about") root.openApp(0)
-                            else if (modelData.action === "minimize") root.minimizeApp(root.activeAppIndex)
+                            else if (modelData.action === "settings") root.openApp(System.Apps.findIndex("settings"))
                             else Qt.quit()
                         }
                         background: Rectangle { radius: 9; color: parent.hovered ? "#E3EEFF" : "transparent" }
@@ -306,8 +320,8 @@ ApplicationWindow {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: bar.bottom
-            anchors.bottom: dock.top
-            anchors.bottomMargin: 6
+            // Dock floats above workspace; maximized apps use the full height.
+            anchors.bottom: scene.bottom
             clip: true
 
             function keepAllVisible() {
@@ -342,8 +356,8 @@ ApplicationWindow {
                     visible: windowRecord.opened && !windowRecord.minimized
                     loaded: windowRecord.opened || windowRecord.minimized
                     z: windowRecord.order
-                    width: Math.min(840, workspace.width - 74)
-                    height: Math.min(525, workspace.height - 48)
+                    width: Math.min(940, workspace.width - 80)
+                    height: Math.min(635, workspace.height - 90)
                     x: Math.max(9, (workspace.width - width) / 2 + index * 34 - 45)
                     y: Math.max(8, (workspace.height - height) / 2 + index * 24 - 26)
                     appTitle: modelData.name
@@ -357,10 +371,7 @@ ApplicationWindow {
                     onMinimizeRequested: root.minimizeApp(index)
                     onExitFinished: function(kind) { root.finishExit(index, kind) }
 
-                    Component.onCompleted: {
-                        if (index === 0)
-                            Qt.callLater(function() { appFrame.animateIn() })
-                    }
+
                 }
             }
         }
@@ -369,11 +380,11 @@ ApplicationWindow {
         Item {
             id: dock
             z: 15
-            width: System.Apps.applications.length * 65 + 91
-            height: 78
+            width: System.Apps.applications.length * 49 + 71
+            height: 61
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 15
+            anchors.bottomMargin: 9
 
             ShaderEffectSource {
                 id: dockCapture
@@ -392,8 +403,8 @@ ApplicationWindow {
             }
             Rectangle {
                 anchors.fill: parent
-                radius: 24
-                color: "#B7FFFFFF"
+                radius: 19
+                color: "#C3FFFFFF"
                 border.width: 1
                 border.color: "#F6FFFFFF"
             }
@@ -401,23 +412,23 @@ ApplicationWindow {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: parent.top
-                anchors.leftMargin: 16; anchors.rightMargin: 16
+                anchors.leftMargin: 13; anchors.rightMargin: 13
                 height: 1; color: "#CFFFFFFF"
             }
             Row {
                 anchors.centerIn: parent
-                spacing: 6
+                spacing: 4
                 Repeater {
                     model: System.Apps.applications
                     delegate: Item {
                         id: pinnedItem
                         required property var modelData
                         required property int index
-                        width: 59; height: 65
+                        width: 45; height: 52
                         AppIcon {
                             anchors.horizontalCenter: parent.horizontalCenter
-                            y: dockHit.containsMouse ? 0 : 7
-                            size: dockHit.containsMouse ? 51 : 45
+                            y: dockHit.containsMouse ? 0 : 5
+                            size: dockHit.containsMouse ? 42 : 36
                             glyph: pinnedItem.modelData.glyph
                             tint: pinnedItem.modelData.tint
                             Behavior on y { NumberAnimation { duration: 215; easing.type: Easing.OutBack } }
@@ -427,7 +438,7 @@ ApplicationWindow {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.bottom: parent.bottom
                             anchors.bottomMargin: 1
-                            width: 4; height: 4; radius: 2
+                            width: 3; height: 3; radius: 2
                             color: root.windowState(pinnedItem.index).opened ?
                                    "#4C587A" : "transparent"
                         }
@@ -441,18 +452,18 @@ ApplicationWindow {
                     }
                 }
                 Rectangle {
-                    width: 1; height: 38
+                    width: 1; height: 31
                     color: "#A0B2CC"
                     anchors.verticalCenter: parent.verticalCenter
                 }
                 Item {
-                    width: 59; height: 65
+                    width: 45; height: 52
                     Rectangle {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        y: launcherHit.containsMouse ? 0 : 7
-                        width: launcherHit.containsMouse ? 51 : 45
+                        y: launcherHit.containsMouse ? 0 : 5
+                        width: launcherHit.containsMouse ? 42 : 36
                         height: width
-                        radius: 15
+                        radius: 12
                         color: "#ECFFFFFF"
                         border.color: "#FFFFFF"
                         Behavior on y { NumberAnimation { duration: 215; easing.type: Easing.OutBack } }
@@ -460,7 +471,7 @@ ApplicationWindow {
                         Text {
                             anchors.centerIn: parent
                             text: "▦"
-                            font.pixelSize: 27
+                            font.pixelSize: 22
                             color: "#6876AB"
                         }
                     }
