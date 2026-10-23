@@ -13,6 +13,8 @@ Item {
     property real backgroundYOffset: 0
     property bool maximized: false
     property bool loaded: false
+    // CreOS owns hit testing: inactive windows can be raised, but not edited.
+    property bool activeWindow: false
     property int minimumPanelWidth: 500
     property int minimumPanelHeight: 355
     property real restoreX: 0
@@ -123,6 +125,19 @@ Item {
         color: "#EEF6FD"
         border.width: 1
         border.color: "#C4D0E4"
+
+        // Backstop catches otherwise-unhandled clicks/wheel events in the
+        // topmost window so they cannot reach applications behind it.
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.AllButtons
+            hoverEnabled: true
+            onPressed: function(mouse) {
+                host.focused()
+                mouse.accepted = true
+            }
+            onWheel: function(wheel) { wheel.accepted = true }
+        }
 
         // System buttons on the same single rounded panel: no second contour.
         Item {
@@ -253,6 +268,25 @@ Item {
         }
     }
 
+    // Inactive-window input barrier. Qt Quick pointer handlers can otherwise
+    // leave a wheel/click unaccepted, allowing a lower window to respond.
+    // First click on an inactive window only focuses it.
+    MouseArea {
+        id: inactiveInputBarrier
+        anchors.fill: parent
+        z: 90
+        visible: !host.activeWindow && host.loaded
+        enabled: visible
+        acceptedButtons: Qt.AllButtons
+        hoverEnabled: true
+        propagateComposedEvents: false
+        onPressed: function(mouse) {
+            host.focused()
+            mouse.accepted = true
+        }
+        onWheel: function(wheel) { wheel.accepted = true }
+    }
+
     // Passive tap to raise window, without blocking app control input.
     TapHandler {
         onTapped: host.focused()
@@ -260,41 +294,49 @@ Item {
     }
 
     ResizeHandle {
+        enabled: host.activeWindow
         windowItem: host; horizontal: -1; vertical: -1
         x: 0; y: 0; width: 16; height: 16
         onPressed: host.focused()
     }
     ResizeHandle {
+        enabled: host.activeWindow
         windowItem: host; horizontal: 1; vertical: -1
         x: host.width - 16; y: 0; width: 16; height: 16
         onPressed: host.focused()
     }
     ResizeHandle {
+        enabled: host.activeWindow
         windowItem: host; horizontal: -1; vertical: 1
         x: 0; y: host.height - 16; width: 16; height: 16
         onPressed: host.focused()
     }
     ResizeHandle {
+        enabled: host.activeWindow
         windowItem: host; horizontal: 1; vertical: 1
         x: host.width - 17; y: host.height - 17; width: 17; height: 17
         onPressed: host.focused()
     }
     ResizeHandle {
+        enabled: host.activeWindow
         windowItem: host; horizontal: -1; vertical: 0
         x: 0; y: 16; width: 9; height: host.height - 32
         onPressed: host.focused()
     }
     ResizeHandle {
+        enabled: host.activeWindow
         windowItem: host; horizontal: 1; vertical: 0
         x: host.width - 9; y: 16; width: 9; height: host.height - 32
         onPressed: host.focused()
     }
     ResizeHandle {
+        enabled: host.activeWindow
         windowItem: host; horizontal: 0; vertical: -1
         x: 16; y: 0; width: host.width - 32; height: 9
         onPressed: host.focused()
     }
     ResizeHandle {
+        enabled: host.activeWindow
         windowItem: host; horizontal: 0; vertical: 1
         x: 16; y: host.height - 9; width: host.width - 32; height: 9
         onPressed: host.focused()
