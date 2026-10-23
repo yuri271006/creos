@@ -130,4 +130,12 @@ class ProfileDialog(QDialog):
 
 def authenticate_desktop() -> bool:
     from creos_profile import profile_exists
-    return ProfileDialog(setup=not profile_exists()).exec() == QDialog.Accepted
+    try:
+        dialog = ProfileDialog(setup=not profile_exists())
+        return dialog.exec() == QDialog.Accepted
+    except (OSError, ValueError, KeyError) as exc:
+        QMessageBox.critical(
+            None, "Không thể mở tài khoản CreOS",
+            "Hồ sơ đang lỗi hoặc không thể đọc. Không tự xóa dữ liệu.\\n" + str(exc),
+        )
+        return False
