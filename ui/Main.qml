@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Effects
 import QtQuick.Layouts
@@ -223,19 +224,19 @@ ApplicationWindow {
                 }
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
-                    text: "Tệp"
+                    text: "CreOS"
                     font.pixelSize: 11
                     color: "#455674"
                 }
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
-                    text: "Cửa sổ"
+                    text: root.visibleAppCount + " cửa sổ"
                     font.pixelSize: 11
                     color: "#455674"
                 }
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
-                    text: "Developer Preview"
+                    text: "Hệ thống"
                     font.pixelSize: 11
                     color: "#7888A3"
                 }
