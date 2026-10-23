@@ -9,6 +9,7 @@ from PySide6.QtWebEngineQuick import QtWebEngineQuick
 from PySide6.QtWidgets import QApplication
 from setup_wizard import authenticate_desktop
 from creos_updater import UpdateManager
+from creos_profile import load_profile, profile_exists
 from PySide6.QtQml import QQmlApplicationEngine
 from state_store import CreosData
 from files_store import CreosFiles
@@ -35,6 +36,21 @@ class ReleaseStore(QObject):
     @Property("QVariantList", constant=True)
     def releases(self):
         return self._data["releases"]
+
+class AccountInfo(QObject):
+    """Read-only account metadata for Settings. Never expose a password."""
+    def __init__(self):
+        super().__init__()
+        self._profile = load_profile() if profile_exists() else {"name": "CreOS", "quota_gib": 2}
+
+    @Property(str, constant=True)
+    def username(self):
+        return self._profile["name"]
+
+    @Property(int, constant=True)
+    def quotaGiB(self):
+        return self._profile["quota_gib"]
+
 
 def main():
     smoke_test = "--smoke-test" in sys.argv
@@ -65,6 +81,7 @@ def main():
     engine.rootContext().setContextProperty("creosData", creos_data)
     engine.rootContext().setContextProperty("fileStore", file_store)
     engine.rootContext().setContextProperty("updateManager", update_manager)
+    engine.rootContext().setContextProperty("accountInfo", AccountInfo())
     engine.load(QUrl.fromLocalFile(str(BASE / "ui" / "Main.qml")))
     if not engine.rootObjects():
         print("CreOS: không tải được giao diện QML.", file=sys.stderr)
