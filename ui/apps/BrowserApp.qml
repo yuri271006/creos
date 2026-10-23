@@ -9,89 +9,82 @@ Item {
     id: browser
     clip: true
     property bool showingHome: true
+    property bool engineStarted: false
+    property string pendingUrl: "about:blank"
     property string errorMessage: ""
-    readonly property string homepage: "https://www.wikipedia.org/"
+    property real loadProgress: 0
 
-    function navigate(input) {
-        var raw = String(input).trim()
+    function navigate(text) {
+        var raw = String(text).trim()
         if (!raw) return
-        var destination = ""
         var lower = raw.toLowerCase()
+        var target = ""
         if (lower.indexOf("https://") === 0 || lower.indexOf("http://") === 0)
-            destination = raw
-        else if ((raw.indexOf(".") >= 0 || lower.indexOf("localhost") === 0)
-                 && raw.indexOf(" ") < 0)
-            destination = "https://" + raw
+            target = raw
+        else if (raw.indexOf(".") >= 0 && raw.indexOf(" ") === -1)
+            target = "https://" + raw
         else
-            destination = "https://www.google.com/search?q=" + encodeURIComponent(raw)
-        if (destination.length > 4096) return
-        browser.showingHome = false
-        browser.errorMessage = ""
-        web.url = destination
-        addressField.focus = false
+            target = "https://www.google.com/search?q=" + encodeURIComponent(raw)
+        if (target.length > 4096) return
+        pendingUrl = target
+        errorMessage = ""
+        showingHome = false
+        address.text = target
+        if (!engineStarted) engineStarted = true
+        else if (webLoader.item) webLoader.item.url = target
     }
     function goHome() {
-        web.stop()
         showingHome = true
-        addressField.text = ""
+        if (webLoader.item) webLoader.item.stop()
+        address.text = ""
         errorMessage = ""
     }
-
-    Rectangle {
-        anchors.fill: parent
-        color: "#F5F8FF"
+    function goBack() {
+        if (webLoader.item && webLoader.item.canGoBack)
+            webLoader.item.goBack()
+    }
+    function goForward() {
+        if (webLoader.item && webLoader.item.canGoForward)
+            webLoader.item.goForward()
+    }
+    function reload() {
+        if (webLoader.item && !showingHome) webLoader.item.reload()
     }
 
+    Rectangle { anchors.fill: parent; color: System.Theme.canvas }
     ColumnLayout {
         anchors.fill: parent
         spacing: 0
+
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 55
-            color: "#E9F3FB"
+            Layout.preferredHeight: 63
+            color: System.Theme.surface
             RowLayout {
                 anchors.fill: parent
                 anchors.leftMargin: 13
                 anchors.rightMargin: 13
-                spacing: 9
-
+                spacing: 8
                 Repeater {
                     model: [
-                        {symbol:"‹", hint:"Quay lại", action:"back"},
-                        {symbol:"›", hint:"Tiến tới", action:"forward"},
-                        {symbol:"↻", hint:"Tải lại", action:"reload"},
-                        {symbol:"⌂", hint:"Trang chủ", action:"home"}
+                        {label:"‹", what:"back", hint:"Quay lại"},
+                        {label:"›", what:"forward", hint:"Tiến tới"},
+                        {label:"⌂", what:"home", hint:"Trang chủ"},
+                        {label:"↻", what:"reload", hint:"Tải lại"}
                     ]
-                    delegate: Button {
-                        id: navButton
+                    delegate: SystemButton {
                         required property var modelData
-                        width: 34; height: 34
-                        hoverEnabled: true
-                        enabled: modelData.action === "home" || modelData.action === "reload"
-                                 || (modelData.action === "back" && web.canGoBack)
-                                 || (modelData.action === "forward" && web.canGoForward)
-                        opacity: enabled ? 1 : 0.43
+                        implicitWidth: 42
+                        text: modelData.label
+                        quiet: true
+                        enabled: modelData.what === "home" || modelData.what === "reload" ||
+                                (modelData.what === "back" && webLoader.item && webLoader.item.canGoBack) ||
+                                (modelData.what === "forward" && webLoader.item && webLoader.item.canGoForward)
                         onClicked: {
-                            if (modelData.action === "home") browser.goHome()
-                            else if (modelData.action === "back") { browser.showingHome = false; web.goBack() }
-                            else if (modelData.action === "forward") { browser.showingHome = false; web.goForward() }
-                            else if (modelData.action === "reload") {
-                                if (!browser.showingHome) {
-                                    if (web.loading) web.stop()
-                                    else web.reload()
-                                }
-                            }
-                        }
-                        background: Rectangle {
-                            radius: 10
-                            color: navButton.hovered ? "#D7E4FB" : "transparent"
-                        }
-                        contentItem: Text {
-                            text: navButton.modelData.symbol
-                            color: "#465B7D"
-                            font.pixelSize: 21
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
+                            if (modelData.what === "home") browser.goHome()
+                            else if (modelData.what === "back") browser.goBack()
+                            else if (modelData.what === "forward") browser.goForward()
+                            else browser.reload()
                         }
                         ToolTip.visible: hovered
                         ToolTip.text: modelData.hint
@@ -100,170 +93,158 @@ Item {
 
                 Rectangle {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 37
-                    radius: 12
-                    color: "#F8FFFFFF"
-                    border.width: 1
-                    border.color: "#D3E2F1"
-
-                    TextField {
-                        id: addressField
+                    Layout.preferredHeight: 40
+                    radius: 14
+                    color: System.Theme.inset
+                    RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: 11
+                        anchors.leftMargin: 13
                         anchors.rightMargin: 8
-                        placeholderText: "Nhập địa chỉ web hoặc tìm kiếm..."
-                        color: System.Theme.ink
-                        font.pixelSize: 12
-                        selectByMouse: true
-                        verticalAlignment: TextInput.AlignVCenter
-                        background: Item {}
-                        onAccepted: browser.navigate(text)
+                        spacing: 6
+                        Text {
+                            text: "⌕"
+                            font.pixelSize: 20
+                            color: System.Theme.muted
+                        }
+                        TextField {
+                            id: address
+                            Layout.fillWidth: true
+                            selectByMouse: true
+                            text: ""
+                            placeholderText: "Tìm kiếm hoặc nhập tên website"
+                            font.pixelSize: 12
+                            color: System.Theme.ink
+                            background: Item {}
+                            onAccepted: browser.navigate(text)
+                        }
                     }
                 }
-                Button {
-                    id: visitButton
+                SystemButton {
+                    implicitWidth: 47
                     text: "Đi"
-                    width: 38; height: 34
-                    onClicked: browser.navigate(addressField.text)
-                    background: Rectangle {
-                        radius: 10
-                        color: visitButton.hovered ? "#D8E3FA" : "#EEF4FE"
-                    }
+                    primary: true
+                    onClicked: browser.navigate(address.text)
                 }
             }
         }
+
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: web.loading && !browser.showingHome ? 3 : 0
-            color: "transparent"
+            Layout.preferredHeight: (!browser.showingHome && browser.loadProgress < 100) ? 3 : 0
+            color: System.Theme.accentSoft
             Rectangle {
+                width: parent.width * browser.loadProgress / 100
                 height: parent.height
-                width: parent.width * web.loadProgress / 100
-                color: "#637EE2"
+                color: System.Theme.accent
             }
         }
 
         Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            WebEngineView {
-                id: web
+            // Chromium is created lazily, only after navigation.
+            Loader {
+                id: webLoader
                 anchors.fill: parent
+                active: browser.engineStarted
                 visible: !browser.showingHome
-                url: "about:blank"
-                backgroundColor: "#FFFFFF"
-                onUrlChanged: {
-                    if (!browser.showingHome)
-                        addressField.text = String(url)
+                asynchronous: true
+                sourceComponent: Component {
+                    WebEngineView {
+                        backgroundColor: "#FFFFFF"
+                        url: "about:blank"
+                        onUrlChanged: {
+                            if (!browser.showingHome) address.text = String(url)
+                        }
+                        onLoadProgressChanged: browser.loadProgress = loadProgress
+                        onLoadingChanged: function(request) {
+                            if (request.status === WebEngineView.LoadFailedStatus && !browser.showingHome)
+                                browser.errorMessage = request.errorString
+                            else if (request.status === WebEngineView.LoadSucceededStatus)
+                                browser.errorMessage = ""
+                        }
+                    }
                 }
-                onLoadingChanged: function(request) {
-                    if (request.status === WebEngineView.LoadFailedStatus
-                        && !browser.showingHome)
-                        browser.errorMessage = request.errorString
-                    else if (request.status === WebEngineView.LoadSucceededStatus)
-                        browser.errorMessage = ""
+                onLoaded: {
+                    if (item) item.url = browser.pendingUrl
                 }
             }
+
             Rectangle {
                 anchors.fill: parent
                 visible: browser.showingHome
-                gradient: Gradient {
-                    GradientStop { position: 0; color: "#F6FBFF" }
-                    GradientStop { position: 1; color: "#E9EEFB" }
-                }
+                color: System.Theme.canvas
                 Column {
                     anchors.centerIn: parent
-                    width: Math.min(parent.width - 42, 540)
+                    width: Math.min(parent.width - 46, 510)
                     spacing: 18
                     AppIcon {
-                        size: 75
                         appId: "browser"
+                        size: 70
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     Text {
-                        text: "CreOS Browser"
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        color: "#324764"
-                        font.pixelSize: 29
+                        text: "Khám phá cùng CreOS"
+                        color: System.Theme.ink
+                        font.pixelSize: 23
                         font.weight: Font.DemiBold
+                        anchors.horizontalCenter: parent.horizontalCenter
                     }
                     Text {
-                        text: "Mở cả thế giới web ngay bên trong CreOS."
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        color: "#8396AE"
+                        text: "Một cửa sổ nhỏ dẫn đến cả thế giới."
+                        color: System.Theme.secondary
                         font.pixelSize: 12
+                        anchors.horizontalCenter: parent.horizontalCenter
                     }
-                    Rectangle {
+                    SurfaceCard {
                         width: parent.width
-                        height: 49
-                        radius: 16
-                        color: "#DFFFFFFF"
-                        border.color: "#FFFFFF"
+                        height: 58
                         TextField {
                             anchors.fill: parent
-                            anchors.margins: 10
-                            placeholderText: "Tìm kiếm hoặc nhập URL"
+                            anchors.margins: 14
+                            placeholderText: "Bạn muốn tìm điều gì?"
+                            font.pixelSize: 14
                             color: System.Theme.ink
                             selectByMouse: true
-                            font.pixelSize: 14
                             background: Item {}
                             onAccepted: browser.navigate(text)
                         }
                     }
+                    SectionLabel { text: "TRUY CẬP NHANH" }
                     Row {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        spacing: 12
+                        spacing: 9
                         Repeater {
                             model: [
-                                {label:"Wikipedia", href:"https://www.wikipedia.org/"},
-                                {label:"Qt", href:"https://www.qt.io/"},
-                                {label:"GitHub", href:"https://github.com/"}
+                                {name:"Wikipedia", url:"https://www.wikipedia.org/"},
+                                {name:"GitHub", url:"https://github.com/"},
+                                {name:"Qt", url:"https://www.qt.io/"}
                             ]
                             delegate: SystemButton {
                                 required property var modelData
-                                width: 110
-                                text: modelData.label
-                                symbol: "↗"
-                                onClicked: browser.navigate(modelData.href)
+                                text: modelData.name
+                                implicitWidth: 126
+                                onClicked: browser.navigate(modelData.url)
                             }
                         }
                     }
                 }
             }
-            Rectangle {
+            SurfaceCard {
                 visible: !browser.showingHome && browser.errorMessage !== ""
+                width: Math.min(parent.width - 30, 480)
+                height: 75
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 17
-                width: Math.min(parent.width - 35, 500)
-                height: 64
-                radius: 15
-                color: "#F9E5E9"
-                border.color: "#E5C0CB"
+                anchors.bottomMargin: 16
                 Text {
                     anchors.fill: parent
-                    anchors.margins: 13
+                    anchors.margins: 12
+                    text: "Không thể tải trang. " + browser.errorMessage
                     wrapMode: Text.Wrap
-                    text: "Không tải được trang: " + browser.errorMessage
-                    color: "#9C4158"
-                    font.pixelSize: 11
+                    font.pixelSize: 12
+                    color: System.Theme.danger
                 }
-            }
-        }
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 23
-            color: "#E8F1FA"
-            Text {
-                anchors.left: parent.left
-                anchors.leftMargin: 16
-                anchors.verticalCenter: parent.verticalCenter
-                text: browser.showingHome ? "Trang chủ · CreOS Browser" :
-                      (web.loading ? "Đang tải trang..." : web.title || "Trang web")
-                elide: Text.ElideRight
-                width: parent.width - 34
-                font.pixelSize: 10
-                color: "#8190A6"
             }
         }
     }
