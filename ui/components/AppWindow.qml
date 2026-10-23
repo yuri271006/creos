@@ -15,6 +15,12 @@ Item {
     property bool loaded: false
     // CreOS owns hit testing: inactive windows can be raised, but not edited.
     property bool activeWindow: false
+    // Disable the entire child interaction tree when this app is behind
+    // another window. Qt retains its painted content but stops clicks, wheel
+    // and keyboard focus reaching controls or the embedded WebEngine view.
+    onActiveWindowChanged: {
+        if (body.item) body.item.enabled = activeWindow
+    }
     property int minimumPanelWidth: 500
     property int minimumPanelHeight: 355
     property real restoreX: 0
@@ -230,6 +236,7 @@ Item {
             height: surface.height - bar.height - 17
             active: host.loaded
             source: host.componentSource
+            onLoaded: if (item) item.enabled = host.activeWindow
             onStatusChanged: {
                 if (status === Loader.Error)
                     console.error("CreOS: QML app failed:", host.appTitle, source)
