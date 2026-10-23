@@ -419,8 +419,8 @@ ApplicationWindow {
                             y: dockHit.containsMouse ? 0 : 5
                             size: dockHit.containsMouse ? 42 : 36
                             appId: pinnedItem.modelData.id
-                            Behavior on y { NumberAnimation { duration: 215; easing.type: Easing.OutBack } }
-                            Behavior on size { NumberAnimation { duration: 215; easing.type: Easing.OutBack } }
+                            Behavior on y { NumberAnimation { duration: System.Theme.durationNormal; easing.type: Easing.OutBack } }
+                            Behavior on size { NumberAnimation { duration: System.Theme.durationNormal; easing.type: Easing.OutBack } }
                         }
                         Rectangle {
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -454,8 +454,8 @@ ApplicationWindow {
                         radius: 12
                         color: "#ECFFFFFF"
                         border.color: "#FFFFFF"
-                        Behavior on y { NumberAnimation { duration: 215; easing.type: Easing.OutBack } }
-                        Behavior on width { NumberAnimation { duration: 215; easing.type: Easing.OutBack } }
+                        Behavior on y { NumberAnimation { duration: System.Theme.durationNormal; easing.type: Easing.OutBack } }
+                        Behavior on width { NumberAnimation { duration: System.Theme.durationNormal; easing.type: Easing.OutBack } }
                         Grid {
                             anchors.centerIn: parent
                             columns: 3
@@ -496,10 +496,10 @@ ApplicationWindow {
             scale: root.launcherOpen ? 1 : 0.94
             transformOrigin: Item.Bottom
             Behavior on opacity {
-                NumberAnimation { id: launcherOpacity; duration: 210; easing.type: Easing.OutCubic }
+                NumberAnimation { id: launcherOpacity; duration: System.Theme.durationNormal; easing.type: Easing.OutCubic }
             }
             Behavior on scale {
-                NumberAnimation { duration: 290; easing.type: Easing.OutBack }
+                NumberAnimation { duration: System.Theme.durationSlow; easing.type: Easing.OutBack }
             }
 
             Rectangle {
