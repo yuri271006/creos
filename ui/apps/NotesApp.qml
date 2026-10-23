@@ -165,7 +165,7 @@ Item {
                     Layout.preferredHeight: 44
                     Text {
                         Layout.fillWidth: true
-                        text: app.currentId ? "Đang chỉnh sửa" : "Ghi chú của bạn"
+                        text: app.currentId ? "Trình soạn thảo" : "Ghi chú"
                         font.pixelSize: 14
                         font.weight: Font.DemiBold
                         color: System.Theme.secondary
@@ -216,7 +216,7 @@ Item {
                                 selectByMouse: true
                                 font.pixelSize: 13
                                 color: System.Theme.ink
-                                placeholderText: "Viết những điều đang nghĩ..."
+                                placeholderText: "Nhập nội dung ghi chú..."
                                 background: Item {}
                                 onTextChanged: if (!app.loading) saveDelay.restart()
                             }
@@ -236,14 +236,14 @@ Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
                         Text {
-                            text: "Mọi ý tưởng đều đáng ghi lại."
+                            text: "Chưa có ghi chú"
                             font.pixelSize: 17
                             font.weight: Font.DemiBold
                             color: System.Theme.ink
                             anchors.horizontalCenter: parent.horizontalCenter
                         }
                         Text {
-                            text: "Tạo ghi chú đầu tiên để bắt đầu."
+                            text: "Chọn Tạo ghi chú để bắt đầu."
                             font.pixelSize: 12
                             color: System.Theme.secondary
                             anchors.horizontalCenter: parent.horizontalCenter
