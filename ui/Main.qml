@@ -201,7 +201,8 @@ ApplicationWindow {
             anchors.horizontalCenter: parent.horizontalCenter
             openWindows: root.visibleAppCount
             clockText: root.clockText
-            message: root.islandNotice
+            message: root.islandNotice !== "" ? root.islandNotice :
+                     (updateManager.ready ? "Có bản cập nhật" : "")
             onAction: function(cmd) {
                 if (cmd === "files") root.openApp(System.Apps.findIndex("files"))
                 else if (cmd === "settings") root.openApp(System.Apps.findIndex("settings"))
