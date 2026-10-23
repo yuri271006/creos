@@ -9,6 +9,7 @@ from __future__ import annotations
 from datetime import datetime
 from pathlib import Path
 import os
+import tempfile
 
 from PySide6.QtCore import QObject, Property, Signal, Slot
 
@@ -214,10 +215,17 @@ class CreosFiles(QObject):
             encoded = content.encode("utf-8")
             if len(encoded) > MAX_TEXT_BYTES:
                 raise ValueError("Tệp vượt giới hạn 512 KB.")
-            temp = self._child(name + ".creos-tmp", missing=True)
-            with temp.open("xb") as file:
-                file.write(encoded)
-            os.replace(temp, path)
+            # Atomic save with a unique temporary file in the same directory.
+            # No stale .tmp file can prevent the next save.
+            tmp_name = None
+            try:
+                descriptor, tmp_name = tempfile.mkstemp(prefix=".creos-", dir=str(path.parent))
+                with os.fdopen(descriptor, "wb") as file:
+                    file.write(encoded)
+                os.replace(tmp_name, path)
+            finally:
+                if tmp_name is not None and os.path.exists(tmp_name):
+                    os.unlink(tmp_name)
             self.refresh()
             return True
         except (ValueError, OSError) as exc:
