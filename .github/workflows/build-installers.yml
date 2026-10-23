@@ -31,6 +31,7 @@ jobs:
           sudo apt-get install -y dpkg-dev xvfb xauth libegl1 libgl1 libgl1-mesa-dri \
             libxcb-cursor0 libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 \
             libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 \
+            libxcb-shape0 libxcb-xfixes0 libxcb-xkb1 libx11-xcb1 libpulse0 \
             libnss3 libxcomposite1 libxdamage1 libasound2t64
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt 'pyinstaller>=6.10,<7'
@@ -40,6 +41,22 @@ jobs:
         run: |
           python packaging/build_binary.py
           python packaging/linux/build_deb.py
+      - name: Check bundled Qt xcb dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Checking libqxcb.so dynamic dependencies..."
+          plugin=$(find dist/CreOS -type f -name libqxcb.so -print -quit)
+          if [ -z "$plugin" ]; then
+            echo "::error::PyInstaller did not bundle the Qt xcb platform plugin"
+            exit 1
+          fi
+          ldd "$plugin"
+          if ldd "$plugin" | grep -F 'not found'; then
+            echo "::error::Qt xcb platform plugin has missing shared libraries"
+            exit 1
+          fi
+
       - name: Smoke test packaged CreOS on virtual display
         env:
           LIBGL_ALWAYS_SOFTWARE: '1'
