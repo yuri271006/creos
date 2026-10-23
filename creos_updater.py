@@ -122,8 +122,17 @@ class UpdateManager(QObject):
         if "error" in result:
             self._set("Chưa kiểm tra được cập nhật (kết nối mạng/GitHub).", False)
             return
-        self._available = result.get("latest", "")
-        self._asset = result.get("asset")
+        latest = result.get("latest", "")
+        candidate = result.get("asset")
+        if (self._ready_path and candidate and self._ready_path.is_file()
+                and self._ready_path.name == candidate["name"]):
+            self._available = latest
+            self._asset = candidate
+            self._set("Bộ cài CreOS " + latest + " đã tải. Sẵn sàng cài đặt.", False)
+            return
+        self._ready_path = None
+        self._available = latest
+        self._asset = candidate
         if not self._available:
             self._set("CreOS đã là bản mới nhất.", False)
         elif not self._asset:
