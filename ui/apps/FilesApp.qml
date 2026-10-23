@@ -150,12 +150,10 @@ Item {
                 RowLayout {
                     Layout.fillWidth: true
                     spacing: 9
-                    Text {
-                        text: "Tệp"
-                        font.pixelSize: 21
-                        font.weight: Font.DemiBold
-                        color: System.Theme.ink
+                    PaneHeader {
                         Layout.fillWidth: true
+                        heading: "Tệp"
+                        detail: fileStore.currentPath
                     }
                     SystemButton {
                         text: "+ Thư mục"
