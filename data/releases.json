@@ -1,20 +1,21 @@
 {
-  "version": "1.0.1",
+  "version": "1.1.0",
   "channel": "Release",
   "repository": "https://github.com/yuri271006/creos",
   "releases": [
     {
-      "version": "1.0.1",
-      "name": "CreOS",
+      "version": "1.1.0",
+      "name": "Human Interface",
       "type": "current",
       "status": "Cập nhật giao diện",
       "date": "23.10.2026",
-      "description": "Thiết kế lại bộ icon và sửa lỗi hiển thị góc bo của Dock/Launchpad.",
+      "description": "Thiết kế lại sáu ứng dụng cùng một bộ thành phần CreOS và ưu tiên hiệu năng đồ họa.",
       "highlights": [
-        "Sáu icon SVG được vẽ riêng, cùng một ngôn ngữ thiết kế.",
-        "Bỏ lớp blur hình chữ nhật lọt ra ngoài mép bo góc ở Dock và Launchpad.",
-        "Đồng nhất nhận diện CreOS trên Desktop, Dock và danh sách ứng dụng.",
-        "Giữ desktop toàn màn hình, Dock nổi và hệ thống đa cửa sổ."
+        "CreOS Human Interface: token màu sắc, bo góc, khoảng cách, kiểu chữ và motion.",
+        "AppPage, SurfaceCard, SystemButton, SegmentedTabs và SectionLabel dùng chung.",
+        "Ghi chú dạng split view, Máy tính phím lớn, Đồng hồ có tab giờ/bấm giờ, Cài đặt kiểu nhóm, Browser thanh tìm kiếm.",
+        "Giảm cập nhật thừa và trì hoãn khởi tạo WebEngine cho đến khi duyệt web.",
+        "Giữ các chức năng app cùng dữ liệu của người dùng."
       ]
     }
   ]
