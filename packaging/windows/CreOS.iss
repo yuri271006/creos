@@ -3,6 +3,12 @@
   #define AppVersion "1.3.0"
 #endif
 #define AppExe "CreOS.exe"
+#ifndef BundleDir
+  #define BundleDir "..\\..\\dist\\CreOS"
+#endif
+#ifndef OutputRoot
+  #define OutputRoot "..\\..\\dist"
+#endif
 
 [Setup]
 AppId={{C7CF1438-26B0-45C9-AC30-64C86220D147}
@@ -16,7 +22,7 @@ DefaultGroupName=CreOS
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 ArchitecturesAllowed=x64compatible
-OutputDir=..\..\dist
+OutputDir={#OutputRoot}
 OutputBaseFilename=CreOS-Setup-{#AppVersion}
 Compression=lzma2
 SolidCompression=yes
@@ -32,7 +38,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "Create desktop shortcut"; GroupDescription: "Shortcuts:"; Flags: unchecked
 
 [Files]
-Source: "..\..\dist\CreOS\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#BundleDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{autoprograms}\CreOS"; Filename: "{app}\{#AppExe}"
