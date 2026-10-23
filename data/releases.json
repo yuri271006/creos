@@ -1,20 +1,20 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "channel": "Release",
   "repository": "https://github.com/yuri271006/creos",
   "releases": [
     {
-      "version": "1.0.0",
+      "version": "1.0.1",
       "name": "CreOS",
       "type": "current",
-      "status": "Phát hành",
+      "status": "Cập nhật giao diện",
       "date": "23.10.2026",
-      "description": "Desktop toàn màn hình, Dock nổi và các ứng dụng tích hợp.",
+      "description": "Thiết kế lại bộ icon và sửa lỗi hiển thị góc bo của Dock/Launchpad.",
       "highlights": [
-        "Desktop toàn màn hình mặc định, phím F11 để trở về cửa sổ Ubuntu.",
-        "Dock nhỏ gọn nổi bên trên các cửa sổ.",
-        "Animation mở, đóng và thu nhỏ ứng dụng.",
-        "Ghi chú, Máy tính, Đồng hồ, Trình duyệt và Cài đặt."
+        "Sáu icon SVG được vẽ riêng, cùng một ngôn ngữ thiết kế.",
+        "Bỏ lớp blur hình chữ nhật lọt ra ngoài mép bo góc ở Dock và Launchpad.",
+        "Đồng nhất nhận diện CreOS trên Desktop, Dock và danh sách ứng dụng.",
+        "Giữ desktop toàn màn hình, Dock nổi và hệ thống đa cửa sổ."
       ]
     }
   ]
