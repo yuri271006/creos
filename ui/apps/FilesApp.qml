@@ -121,9 +121,7 @@ Item {
                     font.pixelSize: 11
                     color: System.Theme.secondary
                     lineHeight: 1.4
-                    text: fileStore.readOnly
-                        ? "Các tệp vận hành CreOS. Chỉ có thể xem, không được sửa hay xóa."
-                        : "Không gian dữ liệu của bạn. Tạo thư mục và quản lý tệp văn bản."
+                    text: fileStore.readOnly ? "Tệp hệ thống · Chỉ đọc" : "Tài liệu trong CreOS/data"
                 }
                 SurfaceCard {
                     width: parent.width
@@ -205,7 +203,8 @@ Item {
                     Layout.fillHeight: true
                     spacing: 11
                     SurfaceCard {
-                        Layout.preferredWidth: Math.max(205, parent.width * 0.46)
+                        visible: app.width >= 780 || app.selectedName === ""
+                        Layout.preferredWidth: app.width >= 780 ? Math.max(205, parent.width * 0.46) : parent.width
                         Layout.fillHeight: true
                         ColumnLayout {
                             anchors.fill: parent
@@ -294,6 +293,7 @@ Item {
                         }
                     }
                     SurfaceCard {
+                        visible: app.width >= 780 || app.selectedName !== ""
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         ColumnLayout {
@@ -302,6 +302,23 @@ Item {
                             spacing: 9
                             RowLayout {
                                 Layout.fillWidth: true
+                                SystemButton {
+                                    visible: app.width < 780 && app.selectedName !== ""
+                                    text: "‹"
+                                    implicitWidth: 40
+                                    quiet: true
+                                    onClicked: {
+                                        if (app.dirty) {
+                                            app.notice = "Lưu hoặc bỏ sửa trước khi trở về danh sách."
+                                            return
+                                        }
+                                        app.selectedName = ""
+                                        app.selectedFolder = false
+                                        app.updatingEditor = true
+                                        editor.text = ""
+                                        app.updatingEditor = false
+                                    }
+                                }
                                 Text {
                                     Layout.fillWidth: true
                                     text: app.selectedName || "Xem tệp"
