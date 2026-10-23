@@ -16,8 +16,11 @@ Item {
         var raw = String(input).trim()
         if (!raw) return
         var destination = ""
-        if (/^https?:\/\//i.test(raw)) destination = raw
-        else if (/^[^\s]+\.[^\s]+$/.test(raw))
+        var lower = raw.toLowerCase()
+        if (lower.indexOf("https://") === 0 || lower.indexOf("http://") === 0)
+            destination = raw
+        else if ((raw.indexOf(".") >= 0 || lower.indexOf("localhost") === 0)
+                 && raw.indexOf(" ") < 0)
             destination = "https://" + raw
         else
             destination = "https://www.google.com/search?q=" + encodeURIComponent(raw)
