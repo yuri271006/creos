@@ -11,12 +11,12 @@ QtObject {
         },
         {
             "id": "notes", "name": "Ghi chú",
-            "subtitle": "Ghi lại ý tưởng",
+            "subtitle": "Ghi chú cá nhân",
             "component": "NotesApp.qml", "appearance": "system"
         },
         {
             "id": "calculator", "name": "Máy tính",
-            "subtitle": "Tính toán nhanh",
+            "subtitle": "Các phép tính",
             "component": "CalculatorApp.qml", "appearance": "system"
         },
         {
@@ -26,7 +26,7 @@ QtObject {
         },
         {
             "id": "browser", "name": "Trình duyệt",
-            "subtitle": "Duyệt web trong CreOS",
+            "subtitle": "Duyệt web",
             "component": "BrowserApp.qml", "appearance": "system"
         },
         {
@@ -36,7 +36,7 @@ QtObject {
         },
         {
             "id": "settings", "name": "Cài đặt",
-            "subtitle": "Cá nhân hóa",
+            "subtitle": "Hình nền và giao diện",
             "component": "SettingsApp.qml", "appearance": "system"
         }
     ]
